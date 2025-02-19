@@ -1,11 +1,12 @@
 {
-  "extends": "@repo/typescript-config/nextjs.json",
+  "extends": "@ecomm/typescript-config/nextjs.json",
   "compilerOptions": {
     "plugins": [
       {
         "name": "next"
       }
-    ]
+    ],
+    "incremental": true
   },
   "include": [
     "**/*.ts",

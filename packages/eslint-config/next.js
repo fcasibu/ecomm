@@ -44,6 +44,19 @@ export const nextJsConfig = [
       ...pluginReactHooks.configs.recommended.rules,
       // React scope no longer necessary with new JSX transform.
       "react/react-in-jsx-scope": "off",
+      "@next/next/no-img-element": "off",
+      "@typescript-eslint/no-unused-vars": [
+        "error",
+        {
+          args: "all",
+          argsIgnorePattern: "^_",
+          caughtErrors: "all",
+          caughtErrorsIgnorePattern: "^_",
+          destructuredArrayIgnorePattern: "^_",
+          varsIgnorePattern: "^_",
+          ignoreRestSiblings: true,
+        },
+      ],
     },
   },
 ];

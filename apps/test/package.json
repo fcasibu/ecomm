@@ -1,0 +1,23 @@
+{
+  "name": "@ecomm/test",
+  "version": "0.0.0",
+  "dependencies": {
+    "@ecomm/services": "workspace:*",
+    "tsup": "^8.3.6",
+    "utility": "^2.5.0"
+  },
+  "devDependencies": {
+    "@ecomm/eslint-config": "workspace:*",
+    "@ecomm/typescript-config": "workspace:*",
+    "@types/node": "^22.13.0",
+    "eslint": "^9.20.0",
+    "typescript": "5.7.3"
+  },
+  "private": true,
+  "scripts": {
+    "build": "tsup",
+    "lint": "eslint . --max-warnings 0",
+    "test": "vitest run",
+    "check-types": "tsc --noEmit"
+  }
+}

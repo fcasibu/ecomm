@@ -1,0 +1,26 @@
+{
+  "name": "@ecomm/db",
+  "version": "0.0.0",
+  "devDependencies": {
+    "@ecomm/eslint-config": "workspace:*",
+    "@ecomm/typescript-config": "workspace:*",
+    "@types/node": "^22.13.0",
+    "eslint": "^9.20.0",
+    "typescript": "5.7.3"
+  },
+  "exports": {
+    ".": "./prisma/client.ts"
+  },
+  "private": true,
+  "scripts": {
+    "lint": "eslint . --max-warnings 0",
+    "prisma:generate": "prisma generate",
+    "prisma:migrate": "prisma migrate",
+    "postinstall": "prisma generate",
+    "check-types": "tsc --noEmit"
+  },
+  "dependencies": {
+    "prisma": "^6.4.0",
+    "@prisma/client": "6.4.0"
+  }
+}

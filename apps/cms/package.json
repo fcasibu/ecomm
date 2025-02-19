@@ -1,0 +1,48 @@
+{
+  "name": "@ecomm/cms",
+  "version": "0.1.0",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "dev": "next dev --turbopack --port 3000",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint --max-warnings 0",
+    "check-types": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@ecomm/lib": "workspace:*",
+    "@ecomm/services": "workspace:*",
+    "@ecomm/ui": "workspace:*",
+    "@ecomm/validations": "workspace:*",
+    "@faceless-ui/window-info": "^3.0.1",
+    "@hookform/resolvers": "^4.1.2",
+    "@prisma/nextjs-monorepo-workaround-plugin": "^6.4.1",
+    "@tanstack/react-table": "^8.21.2",
+    "autoprefixer": "^10.4.20",
+    "babel-plugin-react-compiler": "^19.0.0-beta-30d8a17-20250209",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "lucide-react": "^0.475.0",
+    "next": "15.2.1-canary.4",
+    "nuqs": "latest",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "react-hook-form": "^7.54.2",
+    "server-only": "^0.0.1",
+    "zod": "^3.24.2"
+  },
+  "devDependencies": {
+    "@ecomm/eslint-config": "workspace:*",
+    "@ecomm/typescript-config": "workspace:*",
+    "@types/node": "^22",
+    "@types/react": "19.0.8",
+    "@types/react-dom": "19.0.3",
+    "eslint": "^9.20.0",
+    "postcss": "^8",
+    "tailwindcss-animate": "^1.0.7",
+    "tailwindcss": "^3.4.1",
+    "tailwind-merge": "^3.0.1",
+    "typescript": "5.7.3"
+  }
+}
