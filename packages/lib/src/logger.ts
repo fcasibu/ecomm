@@ -1,7 +1,7 @@
 import pino from "pino";
 
 export const logger = pino({
-  level: process.env.LOG_LEVEL || "debug",
+  level: "debug",
   timestamp: pino.stdTimeFunctions.isoTime,
   serializers: {
     error: pino.stdSerializers.err,

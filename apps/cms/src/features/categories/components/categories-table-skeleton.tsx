@@ -1,6 +1,5 @@
 import { Card, CardHeader, CardFooter, CardContent } from "@ecomm/ui/card";
 import { Skeleton } from "@ecomm/ui/skeleton";
-import { PAGE_SIZE } from "./categories-table";
 import {
   Pagination,
   PaginationContent,
@@ -9,6 +8,7 @@ import {
   PaginationLink,
   PaginationNext,
 } from "@ecomm/ui/pagination";
+import { PAGE_SIZE } from "../constants";
 
 export function CategoriesTableSkeleton() {
   const skeletonItems = Array.from({ length: PAGE_SIZE }, (_, i) => i);

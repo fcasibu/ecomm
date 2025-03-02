@@ -32,6 +32,7 @@ export function CategorySearch() {
     >
       <div className="relative w-full max-w-md">
         <Input
+          aria-label="Search categories"
           type="text"
           value={query || ""}
           onChange={(e) => {
@@ -48,6 +49,7 @@ export function CategorySearch() {
         />
 
         <Button
+          aria-label="Clear search"
           type="button"
           variant="ghost"
           size="sm"

@@ -11,8 +11,7 @@ import {
 import Link from "next/link";
 import { ChevronRightIcon, LayersIcon } from "lucide-react";
 import { CategoriesPagination } from "./categories-pagination";
-
-export const PAGE_SIZE = 9;
+import { PAGE_SIZE } from "../constants";
 
 export async function CategoriesTable({
   where,

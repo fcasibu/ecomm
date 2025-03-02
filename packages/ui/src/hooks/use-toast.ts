@@ -1,6 +1,6 @@
 "use client";
 
-import { ToastActionElement, ToastProps } from "#ui/toast";
+import { type ToastActionElement, type ToastProps } from "#ui/toast";
 import * as React from "react";
 
 const TOAST_LIMIT = 1;
@@ -13,6 +13,7 @@ type ToasterToast = ToastProps & {
   action?: ToastActionElement;
 };
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const actionTypes = {
   ADD_TOAST: "ADD_TOAST",
   UPDATE_TOAST: "UPDATE_TOAST",

@@ -21,7 +21,7 @@ export interface ErrorResult {
 
 export type Result<T> = SuccessResult<T> | ErrorResult;
 
-function mapErrorToAppError(error: unknown): AppError {
+export function mapErrorToAppError(error: unknown): AppError {
   if (error instanceof Error) {
     switch (error.name) {
       case "ValidationError":

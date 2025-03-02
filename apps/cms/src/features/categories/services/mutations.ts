@@ -16,6 +16,7 @@ export const createCategory = async (input: CategoryCreateInput) => {
 
   if (result.success) {
     revalidateTag("categories");
+    revalidateTag("root_categories");
   }
 
   return result;

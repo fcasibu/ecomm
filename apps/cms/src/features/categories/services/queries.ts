@@ -14,9 +14,16 @@ export const getCategories = async (input: {
   return executeOperation(() => categoriesController.getAll(input));
 };
 
-export const getCategoryBySlug = async (slug: string) => {
+export const getRootCategories = async () => {
+  "use cache";
+  cacheTag("root_categories");
+
+  return executeOperation(() => categoriesController.getRootCategories());
+};
+
+export const getCategoryById = async (id: string) => {
   "use cache";
   cacheTag("category");
 
-  return executeOperation(() => categoriesController.getBySlug(slug));
+  return executeOperation(() => categoriesController.getById(id));
 };

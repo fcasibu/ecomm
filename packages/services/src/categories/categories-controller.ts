@@ -75,6 +75,25 @@ export class CategoriesController {
     }
   }
 
+  public async getById(id: string) {
+    logger.info({ id }, "Fetching category by id");
+
+    try {
+      const category = await this.categoriesService.getById(id);
+
+      if (!category) {
+        throw new NotFoundError(`Category ID "${id}" not found.`);
+      }
+
+      logger.info({ category }, "Category fetched by ID successfully");
+      return category;
+    } catch (error) {
+      this.mapError(error, {
+        message: `Error fetching category by ID "${id}"`,
+      });
+    }
+  }
+
   public async getBySlug(slug: string) {
     logger.info({ slug }, "Fetching category by slug");
 
@@ -108,6 +127,20 @@ export class CategoriesController {
     } catch (error) {
       this.mapError(error, {
         message: "Error fetching all categories",
+      });
+    }
+  }
+
+  public async getRootCategories() {
+    logger.info("Fetching all root categories");
+
+    try {
+      const categories = await this.categoriesService.getRootCategories();
+      logger.info({ categories }, "Root categories fetched successfully");
+      return categories;
+    } catch (error) {
+      this.mapError(error, {
+        message: "Error fetching all root categories",
       });
     }
   }

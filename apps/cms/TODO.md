@@ -9,9 +9,9 @@
   - [ ] Search functionality (by name or sku)
 
 - [ ] Categories
-  - [ ] Ability to add a category
-  - [ ] Show categories
-    - [ ] Pagination
+  - [x] Ability to add a category
+  - [x] Show categories
+    - [x] Pagination
   - [ ] Ability to delete a category
   - [ ] Ability to update a category
-  - [ ] Search functionality (by name or slug)
+  - [x] Search functionality (by name or slug)

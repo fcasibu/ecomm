@@ -77,6 +77,16 @@ export class CategoriesService {
     return { categories, totalCount };
   }
 
+  public async getRootCategories() {
+    const rootCategories = await this.prismaClient.category.findMany({
+      where: {
+        parentId: null,
+      },
+    });
+
+    return rootCategories;
+  }
+
   public async update(categoryId: string, input: CategoryUpdateInput) {
     return await this.prismaClient.category.update({
       where: { id: categoryId },

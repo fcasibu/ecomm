@@ -21,6 +21,8 @@ import { useTransition } from "react";
 import { Loader } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { TypographyH1 } from "@ecomm/ui/typography";
+import { CategorySelect } from "./category-select";
+import { ImageUpload } from "./category-image-upload";
 
 export function CategoriesForm() {
   const form = useForm<z.infer<typeof categoryCreateSchema>>({
@@ -29,6 +31,8 @@ export function CategoriesForm() {
       name: "",
       slug: "",
       description: "",
+      image: "",
+      parentId: undefined,
     },
   });
 
@@ -40,10 +44,21 @@ export function CategoriesForm() {
       const result = await createCategory(data);
 
       if (!result.success) {
-        toast({
-          title: "Category creation",
-          description: "There was an issue with creating a Category",
-        });
+        if (result.error.code === "DUPLICATE_ERROR") {
+          toast({
+            title: "Category creation",
+            description: (
+              <p>
+                Category with the slug <b>{data.slug}</b> already exists.
+              </p>
+            ),
+          });
+        } else {
+          toast({
+            title: "Category creation",
+            description: "There was an issue with creating a Category",
+          });
+        }
         return;
       }
 
@@ -52,7 +67,6 @@ export function CategoriesForm() {
         description: "Category was successfully created",
       });
 
-      form.reset();
       router.push("/categories");
     });
   };
@@ -105,6 +119,35 @@ export function CategoriesForm() {
                 <FormLabel>Description</FormLabel>
                 <FormControl>
                   <Input type="text" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="image"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Image</FormLabel>
+                <FormControl>
+                  <ImageUpload value={field.value} onChange={field.onChange} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="parentId"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Parent category</FormLabel>
+                <FormControl>
+                  <CategorySelect
+                    value={field.value}
+                    onChange={(categories) => field.onChange(categories)}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
