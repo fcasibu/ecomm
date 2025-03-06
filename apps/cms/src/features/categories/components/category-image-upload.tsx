@@ -39,8 +39,6 @@ export function ImageUpload({ value, onChange, ...props }: ImageUploadProps) {
     });
   };
 
-  console.log(props);
-
   return (
     <div>
       <div className="flex flex-wrap gap-2 mb-2">

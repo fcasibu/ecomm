@@ -2,7 +2,7 @@ import type { ReadonlyURLSearchParams } from "next/navigation";
 
 export function createQueryString(
   search: string | ReadonlyURLSearchParams | URLSearchParams,
-  params: Record<string, string | null>,
+  params: Record<string, string | null | undefined>,
 ) {
   const searchParams = new URLSearchParams(search);
   Object.entries(params).forEach(([key, val]) => {

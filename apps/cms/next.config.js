@@ -21,7 +21,7 @@ const nextConfig = {
   experimental: {
     ppr: true,
     reactCompiler: true,
-    dynamicIO: true,
+    useCache: true,
   },
   serverExternalPackages: ["pino"],
   webpack: (config, { isServer }) => {

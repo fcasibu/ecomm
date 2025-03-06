@@ -1,5 +1,5 @@
-import { CategoriesForm } from "@/features/categories/components/category-create-form";
+import { CategoryCreateForm } from "@/features/categories/components/category-create-form";
 
 export default async function Page() {
-  return <CategoriesForm />;
+  return <CategoryCreateForm />;
 }

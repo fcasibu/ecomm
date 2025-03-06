@@ -9,10 +9,10 @@ export const categoryCreateSchema = z.object({
 });
 
 export const categoryUpdateSchema = z.object({
-  name: z.string().nullish(),
-  slug: z.string().nullish(),
-  description: z.string().nullish(),
-  image: z.string().nullish(),
+  name: z.string().optional(),
+  slug: z.string().optional(),
+  description: z.string().optional(),
+  image: z.string().optional(),
   parentId: z.string().optional(),
 });
 

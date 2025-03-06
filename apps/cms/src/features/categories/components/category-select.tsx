@@ -12,19 +12,29 @@ import {
   CommandList,
 } from "@ecomm/ui/command";
 import { Popover, PopoverContent, PopoverTrigger } from "@ecomm/ui/popover";
-import { useGetRootCategories } from "../hooks/use-get-root-categories";
+import { useGetCategories } from "../hooks/use-get-categories";
 import { cn } from "@ecomm/ui/lib/utils";
 
 interface CategorySelectProps {
   value: string | undefined;
   onChange: (value: string | undefined) => void;
+  currentCategoryId?: string;
 }
 
-export function CategorySelect({ value, onChange }: CategorySelectProps) {
+export function CategorySelect({
+  value,
+  onChange,
+  currentCategoryId,
+}: CategorySelectProps) {
   const [open, setOpen] = useState(false);
-  const { result } = useGetRootCategories();
+  const { result } = useGetCategories({});
 
-  const rootCategories = result?.success ? result.data : [];
+  const rootCategories = result?.success
+    ? // TODO: should filter categories that's in the hierarchy
+      result.data.categories.filter(
+        (category) => category.id !== currentCategoryId,
+      )
+    : [];
 
   const category = rootCategories.find((category) => category.id === value);
 
@@ -55,7 +65,7 @@ export function CategorySelect({ value, onChange }: CategorySelectProps) {
                   <CommandItem
                     onSelect={() => {
                       if (value && category.id === value) {
-                        onChange(undefined);
+                        onChange("");
                         return;
                       }
 

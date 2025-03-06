@@ -9,9 +9,15 @@ import {
 import { NotFoundError } from "../errors/not-found-error";
 import { logger } from "@ecomm/lib/logger";
 import { DuplicateError } from "../errors/duplicate-error";
-import type { Category as CategoryType } from "@ecomm/db";
+import type { Prisma } from "@ecomm/db";
+import type { CategoryDTO } from "./category-dto";
 
-export type Category = CategoryType;
+type Category = Prisma.CategoryGetPayload<{
+  include: {
+    children: true;
+    products: true;
+  };
+}>;
 
 export class CategoriesController {
   constructor(private readonly categoriesService: CategoriesService) {}
@@ -25,7 +31,9 @@ export class CategoriesController {
     }
 
     try {
-      const category = await this.categoriesService.create(result.data);
+      const category = CategoriesController.mapCategory(
+        await this.categoriesService.create(result.data),
+      );
       logger.info({ category }, "Category created successfully");
       return category;
     } catch (error) {
@@ -45,9 +53,8 @@ export class CategoriesController {
     }
 
     try {
-      const updatedCategory = await this.categoriesService.update(
-        categoryId,
-        result.data,
+      const updatedCategory = CategoriesController.mapCategory(
+        await this.categoriesService.update(categoryId, result.data),
       );
       logger.info({ updatedCategory }, "Category updated successfully");
       return updatedCategory;
@@ -79,7 +86,9 @@ export class CategoriesController {
     logger.info({ id }, "Fetching category by id");
 
     try {
-      const category = await this.categoriesService.getById(id);
+      const category = CategoriesController.mapCategory(
+        await this.categoriesService.getById(id),
+      );
 
       if (!category) {
         throw new NotFoundError(`Category ID "${id}" not found.`);
@@ -98,7 +107,9 @@ export class CategoriesController {
     logger.info({ slug }, "Fetching category by slug");
 
     try {
-      const category = await this.categoriesService.getBySlug(slug);
+      const category = CategoriesController.mapCategory(
+        await this.categoriesService.getBySlug(slug),
+      );
 
       if (!category) {
         throw new NotFoundError(`Category slug "${slug}"  not found.`);
@@ -121,9 +132,16 @@ export class CategoriesController {
     logger.info({ input }, "Fetching all categories");
 
     try {
-      const categories = await this.categoriesService.getAll(input);
-      logger.info({ categories }, "Categories fetched successfully");
-      return categories;
+      const { categories, totalCount } =
+        await this.categoriesService.getAll(input);
+      const transformedCategories = categories.map(
+        CategoriesController.mapCategory,
+      );
+      logger.info(
+        { categories: transformedCategories, totalCount },
+        "Categories fetched successfully",
+      );
+      return { categories: transformedCategories, totalCount };
     } catch (error) {
       this.mapError(error, {
         message: "Error fetching all categories",
@@ -135,7 +153,9 @@ export class CategoriesController {
     logger.info("Fetching all root categories");
 
     try {
-      const categories = await this.categoriesService.getRootCategories();
+      const categories = (await this.categoriesService.getRootCategories()).map(
+        CategoriesController.mapCategory,
+      );
       logger.info({ categories }, "Root categories fetched successfully");
       return categories;
     } catch (error) {
@@ -143,6 +163,10 @@ export class CategoriesController {
         message: "Error fetching all root categories",
       });
     }
+  }
+
+  public async getCategoriesPath(categoryId: string) {
+    return this.categoriesService.getCategoriesPath(categoryId);
   }
 
   private mapError(
@@ -166,5 +190,27 @@ export class CategoriesController {
 
     logger.error({ error }, options?.message);
     throw error;
+  }
+
+  private static mapCategory(
+    category: Category | null | undefined,
+  ): CategoryDTO | null | undefined {
+    if (!category) return category;
+
+    return {
+      ...category,
+      products: category.products.map((product) => ({
+        ...product,
+        updatedAt: new Date(product.updatedAt).toLocaleDateString(),
+        createdAt: new Date(product.createdAt).toLocaleDateString(),
+      })),
+      children: category.children.map((child) => ({
+        ...child,
+        updatedAt: new Date(child.updatedAt).toLocaleDateString(),
+        createdAt: new Date(child.createdAt).toLocaleDateString(),
+      })),
+      updatedAt: new Date(category.updatedAt).toLocaleDateString(),
+      createdAt: new Date(category.createdAt).toLocaleDateString(),
+    };
   }
 }

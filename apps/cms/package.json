@@ -4,7 +4,7 @@
   "type": "module",
   "private": true,
   "scripts": {
-    "dev": "next dev --turbopack --port 3000",
+    "dev": "npx rimraf ./.next/cache/fetch-cache && next dev --turbopack",
     "build": "next build",
     "start": "next start",
     "lint": "next lint --max-warnings 0",
@@ -26,7 +26,7 @@
     "clsx": "^2.1.1",
     "jiti": "^2.4.2",
     "lucide-react": "^0.475.0",
-    "next": "15.2.1-canary.4",
+    "next": "15.2.2-canary.1",
     "nuqs": "latest",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",

@@ -12,11 +12,6 @@ export default async function Page({
 }: {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
-  const where = searchParams.then((sp) => ({
-    page: Number(sp.page || "1"),
-    query: sp.q as string,
-  }));
-
   return (
     <div>
       <TypographyH1 className="mb-8">Categories</TypographyH1>
@@ -39,7 +34,7 @@ export default async function Page({
           </Suspense>
         </div>
         <Suspense fallback={<CategoriesTableSkeleton />}>
-          <CategoriesTable where={where} />
+          <CategoriesTable searchParams={searchParams} />
         </Suspense>
       </div>
     </div>

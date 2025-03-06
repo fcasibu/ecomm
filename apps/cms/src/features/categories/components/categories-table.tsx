@@ -14,10 +14,14 @@ import { CategoriesPagination } from "./categories-pagination";
 import { PAGE_SIZE } from "../constants";
 
 export async function CategoriesTable({
-  where,
+  searchParams,
 }: {
-  where?: Promise<{ page?: number; query?: string }>;
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
+  const where = searchParams.then((sp) => ({
+    page: Number(sp.page || "1"),
+    query: sp.q as string,
+  }));
   const { page = 1, query = "" } = (await where) ?? {};
   const result = await getCategories({
     page,

@@ -17,6 +17,8 @@ export const createCategory = async (input: CategoryCreateInput) => {
   if (result.success) {
     revalidateTag("categories");
     revalidateTag("root_categories");
+    revalidateTag("category");
+    revalidateTag("categories_path");
   }
 
   return result;
@@ -26,7 +28,18 @@ export const updateCategoryById = async (
   categoryId: string,
   input: CategoryUpdateInput,
 ) => {
-  return executeOperation(() => categoriesController.update(categoryId, input));
+  const result = await executeOperation(() =>
+    categoriesController.update(categoryId, input),
+  );
+
+  if (result.success) {
+    revalidateTag("categories");
+    revalidateTag("root_categories");
+    revalidateTag("category");
+    revalidateTag("categories_path");
+  }
+
+  return result;
 };
 
 export const deleteCategoryById = async (categoryId: string) => {

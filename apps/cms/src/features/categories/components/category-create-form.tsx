@@ -24,7 +24,7 @@ import { TypographyH1 } from "@ecomm/ui/typography";
 import { CategorySelect } from "./category-select";
 import { ImageUpload } from "./category-image-upload";
 
-export function CategoriesForm() {
+export function CategoryCreateForm() {
   const form = useForm<z.infer<typeof categoryCreateSchema>>({
     resolver: zodResolver(categoryCreateSchema),
     defaultValues: {

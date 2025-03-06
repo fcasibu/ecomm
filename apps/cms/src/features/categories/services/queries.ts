@@ -3,6 +3,15 @@ import { categoriesController } from "@ecomm/services/registry";
 import { executeOperation } from "@ecomm/lib/execute-operation";
 import { unstable_cacheTag as cacheTag } from "next/cache";
 
+export const getCategoriesPath = async (categoryId: string) => {
+  "use cache";
+  cacheTag("categories_path");
+
+  return executeOperation(() =>
+    categoriesController.getCategoriesPath(categoryId),
+  );
+};
+
 export const getCategories = async (input: {
   page?: number;
   query?: string;
@@ -23,7 +32,7 @@ export const getRootCategories = async () => {
 
 export const getCategoryById = async (id: string) => {
   "use cache";
-  cacheTag("category");
+  cacheTag("category", `category_${id}`);
 
   return executeOperation(() => categoriesController.getById(id));
 };

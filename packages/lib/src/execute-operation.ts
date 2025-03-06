@@ -2,7 +2,8 @@ export type AppErrorCode =
   | "VALIDATION_ERROR"
   | "NOT_FOUND"
   | "DUPLICATE_ERROR"
-  | "INTERNAL_ERROR";
+  | "INTERNAL_ERROR"
+  | "MAX_TIER_REACHED_ERROR";
 
 export interface AppError {
   message: string;
@@ -39,6 +40,11 @@ export function mapErrorToAppError(error: unknown): AppError {
           message: error.message,
           code: "DUPLICATE_ERROR",
         };
+      case "MaxTierReachedError":
+        return {
+          message: error.message,
+          code: "MAX_TIER_REACHED_ERROR",
+        };
       default:
         return {
           message: error.message,
@@ -58,6 +64,14 @@ export async function executeOperation<T>(
 ): Promise<Result<T>> {
   try {
     const data = await operation();
+
+    if (!data) {
+      return {
+        success: false,
+        error: { message: "No data found", code: "NOT_FOUND" },
+      };
+    }
+
     return { success: true, data };
   } catch (error) {
     return {

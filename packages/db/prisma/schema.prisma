@@ -72,6 +72,7 @@ model Category {
   image       String?
   products    Product[]
   parentId    String?
+  tier        Int        @default(1)
   parent      Category?  @relation("CategoryToCategory", fields: [parentId], references: [id])
   children    Category[] @relation("CategoryToCategory") // Subcategories
   createdAt   DateTime   @default(now())
