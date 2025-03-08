@@ -13,7 +13,6 @@ export const categoryUpdateSchema = z.object({
   slug: z.string().optional(),
   description: z.string().optional(),
   image: z.string().optional(),
-  parentId: z.string().optional(),
 });
 
 export type CategoryCreateInput = z.infer<typeof categoryCreateSchema>;

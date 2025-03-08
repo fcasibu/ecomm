@@ -3,7 +3,8 @@ export type AppErrorCode =
   | "NOT_FOUND"
   | "DUPLICATE_ERROR"
   | "INTERNAL_ERROR"
-  | "MAX_TIER_REACHED_ERROR";
+  | "MAX_TIER_REACHED_ERROR"
+  | "CONSTRAINT_ERROR";
 
 export interface AppError {
   message: string;
@@ -44,6 +45,11 @@ export function mapErrorToAppError(error: unknown): AppError {
         return {
           message: error.message,
           code: "MAX_TIER_REACHED_ERROR",
+        };
+      case "ConstraintError":
+        return {
+          message: error.message,
+          code: "CONSTRAINT_ERROR",
         };
       default:
         return {

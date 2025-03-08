@@ -126,15 +126,6 @@ export class CategoriesService {
   }
 
   public async update(categoryId: string, input: CategoryUpdateInput) {
-    let tier = 1;
-    if (input.parentId) {
-      const metadata = await this.validateAndGetParentMetadata(input.parentId);
-
-      if (metadata) {
-        tier = metadata.tier;
-      }
-    }
-
     return await this.prismaClient.category.update({
       where: { id: categoryId },
       include: {
@@ -146,8 +137,6 @@ export class CategoriesService {
         slug: input.slug,
         description: input.description,
         image: input.image,
-        parentId: input.parentId || null,
-        tier,
       },
     });
   }

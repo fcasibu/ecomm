@@ -11,6 +11,7 @@ import { logger } from "@ecomm/lib/logger";
 import { DuplicateError } from "../errors/duplicate-error";
 import type { Prisma } from "@ecomm/db";
 import type { CategoryDTO } from "./category-dto";
+import { ConstraintError } from "../errors/constraint-error";
 
 type Category = Prisma.CategoryGetPayload<{
   include: {
@@ -74,10 +75,11 @@ export class CategoriesController {
       await this.categoriesService.delete(categoryId);
       logger.info({ categoryId }, "Category deleted successfully");
 
-      return null;
+      return { success: true };
     } catch (error) {
       this.mapError(error, {
         notFoundMessage: `Error deleting category: Category with the ID "${categoryId}" was not found.`,
+        constraintMessage: `Error deleting category: Cannot delete a Category with subcategories.`,
       });
     }
   }
@@ -175,6 +177,7 @@ export class CategoriesController {
       message?: string;
       notFoundMessage?: string;
       duplicateMessage?: string;
+      constraintMessage?: string;
     },
   ): never {
     switch ((error as { code?: string })?.code) {
@@ -185,6 +188,10 @@ export class CategoriesController {
       case "P2002": {
         logger.error({ error }, options?.duplicateMessage);
         throw new DuplicateError(options?.duplicateMessage ?? "");
+      }
+      case "P2003": {
+        logger.error({ error }, options?.constraintMessage);
+        throw new ConstraintError(options?.constraintMessage ?? "");
       }
     }
 

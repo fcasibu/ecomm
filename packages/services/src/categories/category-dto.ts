@@ -22,7 +22,7 @@ export interface CategoryDTO {
     stock: number;
     sku: string;
     images: string[];
-    categoryId: string;
+    categoryId: string | null;
   }[];
   children: {
     name: string;

@@ -56,8 +56,8 @@ model Product {
   stock        Int
   sku          String         @unique
   images       String[]
-  category     Category       @relation(fields: [categoryId], references: [id])
-  categoryId   String
+  category     Category?      @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  categoryId   String?
   createdAt    DateTime       @default(now())
   updatedAt    DateTime       @updatedAt
   OrderItem    OrderItem[]
@@ -73,8 +73,8 @@ model Category {
   products    Product[]
   parentId    String?
   tier        Int        @default(1)
-  parent      Category?  @relation("CategoryToCategory", fields: [parentId], references: [id])
-  children    Category[] @relation("CategoryToCategory") // Subcategories
+  parent      Category?  @relation("CategoryToCategory", fields: [parentId], references: [id], onDelete: Restrict)
+  children    Category[] @relation("CategoryToCategory")
   createdAt   DateTime   @default(now())
   updatedAt   DateTime   @updatedAt
 }
