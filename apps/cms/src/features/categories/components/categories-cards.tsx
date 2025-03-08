@@ -10,10 +10,10 @@ import {
 } from "@ecomm/ui/card";
 import Link from "next/link";
 import { ChevronRightIcon, LayersIcon } from "lucide-react";
-import { CategoriesPagination } from "./categories-pagination";
-import { PAGE_SIZE } from "../constants";
+import { CATEGORIES_PAGE_SIZE } from "../constants";
+import { QueryPagination } from "@/components/query-pagination";
 
-export async function CategoriesTable({
+export async function CategoriesCards({
   searchParams,
 }: {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
@@ -26,7 +26,7 @@ export async function CategoriesTable({
   const result = await getCategories({
     page,
     query: query.toLowerCase(),
-    pageSize: PAGE_SIZE,
+    pageSize: CATEGORIES_PAGE_SIZE,
   });
 
   if (!result.success) {
@@ -43,7 +43,7 @@ export async function CategoriesTable({
 
   const { categories, totalCount } = result.data;
 
-  const totalPages = Math.ceil(totalCount / PAGE_SIZE);
+  const totalPages = Math.ceil(totalCount / CATEGORIES_PAGE_SIZE);
 
   return (
     <div className="space-y-6">
@@ -82,7 +82,7 @@ export async function CategoriesTable({
           </Link>
         ))}
       </div>
-      <CategoriesPagination totalPages={totalPages} />
+      <QueryPagination totalPages={totalPages} />
     </div>
   );
 }

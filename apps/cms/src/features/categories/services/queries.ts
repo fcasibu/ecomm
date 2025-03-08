@@ -7,7 +7,7 @@ export const getCategoriesPath = async (categoryId: string) => {
   "use cache";
   cacheTag("all", "categories_path");
 
-  return executeOperation(() =>
+  return await executeOperation(() =>
     categoriesController.getCategoriesPath(categoryId),
   );
 };
@@ -20,19 +20,19 @@ export const getCategories = async (input: {
   "use cache";
   cacheTag("all", "categories");
 
-  return executeOperation(() => categoriesController.getAll(input));
+  return await executeOperation(() => categoriesController.getAll(input));
 };
 
 export const getRootCategories = async () => {
   "use cache";
   cacheTag("all", "root_categories");
 
-  return executeOperation(() => categoriesController.getRootCategories());
+  return await executeOperation(() => categoriesController.getRootCategories());
 };
 
 export const getCategoryById = async (id: string) => {
   "use cache";
   cacheTag("all", "category", `category_${id}`);
 
-  return executeOperation(() => categoriesController.getById(id));
+  return await executeOperation(() => categoriesController.getById(id));
 };

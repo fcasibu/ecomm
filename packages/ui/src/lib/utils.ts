@@ -15,3 +15,9 @@ export function slugify(name: string | null | undefined): string {
     .replace(/\s+/g, "-")
     .replace(/-+/g, "-");
 }
+
+export function assertValue(value: unknown, message: string): asserts value {
+  if (!value) {
+    throw new Error(message);
+  }
+}

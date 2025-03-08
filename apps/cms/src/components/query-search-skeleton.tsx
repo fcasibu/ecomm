@@ -2,7 +2,7 @@ import { Button } from "@ecomm/ui/button";
 import { X } from "lucide-react";
 import { Input } from "@ecomm/ui/input";
 
-export function CategorySearchSkeleton() {
+export function QuerySearchSkeleton() {
   return (
     <form className="flex gap-2">
       <div className="relative w-full max-w-md">

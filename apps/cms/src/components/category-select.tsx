@@ -12,30 +12,21 @@ import {
   CommandList,
 } from "@ecomm/ui/command";
 import { Popover, PopoverContent, PopoverTrigger } from "@ecomm/ui/popover";
-import { useGetCategories } from "../hooks/use-get-categories";
+import { useGetCategories } from "../features/categories/hooks/use-get-categories";
 import { cn } from "@ecomm/ui/lib/utils";
 
 interface CategorySelectProps {
   value: string | undefined;
   onChange: (value: string | undefined) => void;
-  currentCategoryId?: string;
 }
 
-export function CategorySelect({
-  value,
-  onChange,
-  currentCategoryId,
-}: CategorySelectProps) {
+export function CategorySelect({ value, onChange }: CategorySelectProps) {
   const [open, setOpen] = useState(false);
   const { result } = useGetCategories({});
 
-  const rootCategories = result?.success
-    ? result.data.categories.filter(
-        (category) => category.id !== currentCategoryId,
-      )
-    : [];
+  const categories = result?.success ? result.data.categories : [];
 
-  const category = rootCategories.find((category) => category.id === value);
+  const category = categories.find((category) => category.id === value);
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -59,7 +50,7 @@ export function CategorySelect({
           <CommandList>
             <CommandEmpty>No category found.</CommandEmpty>
             <CommandGroup>
-              {rootCategories.map((category) => (
+              {categories.map((category) => (
                 <div key={category.id}>
                   <CommandItem
                     onSelect={() => {

@@ -12,11 +12,7 @@ import {
 import { useQueryState } from "nuqs";
 import { useTransition } from "react";
 
-export function CategoriesPagination({
-  totalPages = 1,
-}: {
-  totalPages?: number;
-}) {
+export function QueryPagination({ totalPages = 1 }: { totalPages?: number }) {
   const [page, setPage] = useQueryState("page", {
     defaultValue: "1",
     shallow: false,

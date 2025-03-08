@@ -1,29 +1,32 @@
-export interface CategoryDTO {
+import type { Prisma } from "@ecomm/db";
+
+export interface ProductDTO {
   name: string;
-  slug: string;
   description: string | null;
-  image: string | null;
-  parentId: string | null;
+  features: string[];
   id: string;
   createdAt: string;
   updatedAt: string;
-  products: {
+  category: {
     name: string;
     id: string;
     description: string | null;
     createdAt: string;
     updatedAt: string;
-    features: string[];
-    categoryId: string | null;
-  }[];
-  children: {
-    name: string;
     slug: string;
-    description: string | null;
     image: string | null;
     parentId: string | null;
+    tier: number | null;
+  } | null;
+  variants: {
     id: string;
     createdAt: string;
     updatedAt: string;
+    image: string;
+    sku: string;
+    price: Prisma.Decimal;
+    currencyCode: string;
+    stock: number;
+    attributes: Prisma.JsonValue | null;
   }[];
 }

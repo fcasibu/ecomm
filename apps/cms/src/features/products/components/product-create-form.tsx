@@ -1,79 +1,68 @@
 "use client";
 
-import { zodResolver } from "@hookform/resolvers/zod";
+import { CategorySelect } from "@/components/category-select";
 import { Button } from "@ecomm/ui/button";
 import {
-  Form,
-  FormControl,
   FormField,
   FormItem,
   FormLabel,
+  FormControl,
   FormMessage,
+  Form,
 } from "@ecomm/ui/form";
 import { Input } from "@ecomm/ui/input";
-import { categoryCreateSchema } from "@ecomm/validations/categories/category-schema";
+import { MultiInput } from "@ecomm/ui/multi-input";
+import { productCreateSchema } from "@ecomm/validations/products/product-schema";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Loader } from "lucide-react";
 import { useForm } from "react-hook-form";
 import type { z } from "zod";
-import { slugify } from "@ecomm/ui/lib/utils";
-import { createCategory } from "@/features/categories/services/mutations";
-import { toast } from "@ecomm/ui/hooks/use-toast";
 import { useTransition } from "react";
-import { Loader } from "lucide-react";
+import { createProduct } from "../services/mutations";
+import { toast } from "@ecomm/ui/hooks/use-toast";
 import { useRouter } from "next/navigation";
 import { TypographyH1 } from "@ecomm/ui/typography";
-import { ImageUpload } from "./category-image-upload";
-import { CategorySelect } from "@/components/category-select";
 
-export function CategoryCreateForm() {
-  const form = useForm<z.infer<typeof categoryCreateSchema>>({
-    resolver: zodResolver(categoryCreateSchema),
+export function ProductCreateForm() {
+  const form = useForm<z.infer<typeof productCreateSchema>>({
+    resolver: zodResolver(productCreateSchema),
     defaultValues: {
       name: "",
-      slug: "",
       description: "",
-      image: "",
-      parentId: undefined,
+      categoryId: undefined,
+      features: [],
+      variants: [],
     },
   });
 
-  const router = useRouter();
   const [isPending, startTransition] = useTransition();
+  const router = useRouter();
 
-  const handleSubmit = (data: z.infer<typeof categoryCreateSchema>) => {
+  const handleSubmit = (data: z.infer<typeof productCreateSchema>) => {
     startTransition(async () => {
-      const result = await createCategory(data);
+      const result = await createProduct(data);
 
       if (!result.success) {
-        if (result.error.code === "DUPLICATE_ERROR") {
-          toast({
-            title: "Category creation",
-            description: (
-              <p>
-                Category with the slug <b>{data.slug}</b> already exists.
-              </p>
-            ),
-          });
-        } else {
-          toast({
-            title: "Category creation",
-            description: "There was an issue with creating a Category",
-          });
-        }
+        toast({
+          title: "Product Creation",
+          description: "There was an issue with creating a product.",
+        });
+
         return;
       }
 
       toast({
-        title: "Category creation",
-        description: "Category was successfully created",
+        title: "Product creation",
+        description: "Product was successfully created",
       });
 
-      router.push("/categories");
+      router.push("/products");
     });
   };
 
   return (
     <div className="max-w-4xl mx-auto p-8 space-y-8">
-      <TypographyH1>Create a new category</TypographyH1>
+      <TypographyH1>Create a new product</TypographyH1>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
           <FormField
@@ -88,23 +77,8 @@ export function CategoryCreateForm() {
                     {...field}
                     onChange={(e) => {
                       field.onChange(e);
-                      form.setValue("slug", slugify(e.target.value));
                     }}
                   />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
-            name="slug"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Slug</FormLabel>
-                <FormControl>
-                  <Input type="text" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -124,25 +98,27 @@ export function CategoryCreateForm() {
               </FormItem>
             )}
           />
+
           <FormField
             control={form.control}
-            name="image"
+            name="features"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Image</FormLabel>
+                <FormLabel>Features</FormLabel>
                 <FormControl>
-                  <ImageUpload value={field.value} onChange={field.onChange} />
+                  <MultiInput {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
             )}
           />
+
           <FormField
             control={form.control}
-            name="parentId"
+            name="categoryId"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Parent category</FormLabel>
+                <FormLabel>Category</FormLabel>
                 <FormControl>
                   <CategorySelect
                     value={field.value}
@@ -154,11 +130,23 @@ export function CategoryCreateForm() {
             )}
           />
 
+          <FormField
+            control={form.control}
+            name="variants"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Variants</FormLabel>
+                <FormControl></FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
           <div className="flex justify-end gap-4">
             <Button
               variant="outline"
               type="button"
-              onClick={() => router.push("/categories")}
+              onClick={() => router.push("/products")}
             >
               Cancel
             </Button>

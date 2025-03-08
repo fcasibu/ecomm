@@ -4,25 +4,26 @@ import type {
   ProductUpdateInput,
 } from "@ecomm/validations/products/product-schema";
 
-// TODO(fcasibu): Create CRUD
-
 export class ProductsService {
   constructor(private readonly prismaClient: PrismaClient) {}
 
   public async create(input: ProductCreateInput) {
     return await this.prismaClient.product.create({
       data: {
-        sku: input.sku,
         features: input.features,
         name: input.name,
-        price: input.price,
-        stock: input.stock,
-        images: input.images,
         description: input.description,
-        currencyCode: input.currencyCode,
-        category: {
-          connect: { id: input.categoryId },
-        },
+        ...(input.categoryId
+          ? {
+              category: {
+                connect: { id: input.categoryId },
+              },
+            }
+          : {}),
+      },
+      include: {
+        category: true,
+        variants: true,
       },
     });
   }
@@ -32,28 +33,70 @@ export class ProductsService {
       where: { id: productId },
       include: {
         category: true,
+        variants: true,
       },
     });
   }
 
   public async getAll({
-    page = 1,
-    pageSize = 10,
-    categoryId,
+    page,
+    query,
+    pageSize,
   }: {
+    query?: string;
     page?: number;
     pageSize?: number;
-    categoryId?: string;
   }) {
-    return await this.prismaClient.product.findMany({
-      where: categoryId ? { categoryId } : {},
-      skip: (page - 1) * pageSize,
-      take: pageSize,
-      orderBy: { name: "asc" },
-      include: {
-        category: true,
-      },
-    });
+    const [products, totalCount] = await this.prismaClient.$transaction([
+      this.prismaClient.product.findMany({
+        include: {
+          variants: true,
+          category: true,
+        },
+        ...(page && pageSize
+          ? { skip: (page - 1) * pageSize, take: pageSize }
+          : {}),
+        ...(query
+          ? {
+              where: {
+                OR: [
+                  {
+                    name: { contains: query, mode: "insensitive" },
+                  },
+                  {
+                    variants: {
+                      some: { sku: { contains: query, mode: "insensitive" } },
+                    },
+                  },
+                ],
+              },
+            }
+          : {}),
+        orderBy: {
+          updatedAt: "desc",
+        },
+      }),
+      this.prismaClient.product.count({
+        ...(query
+          ? {
+              where: {
+                OR: [
+                  {
+                    name: { contains: query, mode: "insensitive" },
+                  },
+                  {
+                    variants: {
+                      some: { sku: { contains: query, mode: "insensitive" } },
+                    },
+                  },
+                ],
+              },
+            }
+          : {}),
+      }),
+    ]);
+
+    return { products, totalCount };
   }
 
   public async update(productId: string, input: Partial<ProductUpdateInput>) {
@@ -63,12 +106,13 @@ export class ProductsService {
         name: input.name,
         features: input.features,
         description: input.description,
-        price: input.price,
-        stock: input.stock,
-        images: input.images,
         category: {
           update: { id: input.categoryId },
         },
+      },
+      include: {
+        category: true,
+        variants: true,
       },
     });
   }

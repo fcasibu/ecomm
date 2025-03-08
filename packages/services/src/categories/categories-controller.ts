@@ -8,10 +8,9 @@ import {
 } from "@ecomm/validations/categories/category-schema";
 import { NotFoundError } from "../errors/not-found-error";
 import { logger } from "@ecomm/lib/logger";
-import { DuplicateError } from "../errors/duplicate-error";
 import type { Prisma } from "@ecomm/db";
 import type { CategoryDTO } from "./category-dto";
-import { ConstraintError } from "../errors/constraint-error";
+import { BaseController } from "../base-controller";
 
 type Category = Prisma.CategoryGetPayload<{
   include: {
@@ -20,18 +19,20 @@ type Category = Prisma.CategoryGetPayload<{
   };
 }>;
 
-export class CategoriesController {
-  constructor(private readonly categoriesService: CategoriesService) {}
+export class CategoriesController extends BaseController {
+  constructor(private readonly categoriesService: CategoriesService) {
+    super();
+  }
 
   public async create(input: CategoryCreateInput) {
-    logger.info({ input }, "Creating a new category");
-    const result = categoryCreateSchema.safeParse(input);
-
-    if (!result.success) {
-      throw new ValidationError(result.error);
-    }
-
     try {
+      logger.info({ input }, "Creating a new category");
+      const result = categoryCreateSchema.safeParse(input);
+
+      if (!result.success) {
+        throw new ValidationError(result.error);
+      }
+
       const category = CategoriesController.mapCategory(
         await this.categoriesService.create(result.data),
       );
@@ -46,14 +47,14 @@ export class CategoriesController {
   }
 
   public async update(categoryId: string, input: CategoryUpdateInput) {
-    logger.info({ categoryId, input }, "Updating category");
-    const result = categoryUpdateSchema.safeParse(input);
-
-    if (!result.success) {
-      throw new ValidationError(result.error);
-    }
-
     try {
+      logger.info({ categoryId, input }, "Updating category");
+      const result = categoryUpdateSchema.safeParse(input);
+
+      if (!result.success) {
+        throw new ValidationError(result.error);
+      }
+
       const updatedCategory = CategoriesController.mapCategory(
         await this.categoriesService.update(categoryId, result.data),
       );
@@ -136,9 +137,10 @@ export class CategoriesController {
     try {
       const { categories, totalCount } =
         await this.categoriesService.getAll(input);
-      const transformedCategories = categories.map(
-        CategoriesController.mapCategory,
-      );
+      const transformedCategories = categories
+        .map(CategoriesController.mapCategory)
+        .filter((category): category is CategoryDTO => Boolean(category));
+
       logger.info(
         { categories: transformedCategories, totalCount },
         "Categories fetched successfully",
@@ -171,34 +173,6 @@ export class CategoriesController {
     return this.categoriesService.getCategoriesPath(categoryId);
   }
 
-  private mapError(
-    error: unknown,
-    options?: {
-      message?: string;
-      notFoundMessage?: string;
-      duplicateMessage?: string;
-      constraintMessage?: string;
-    },
-  ): never {
-    switch ((error as { code?: string })?.code) {
-      case "P2025": {
-        logger.error({ error }, options?.notFoundMessage);
-        throw new NotFoundError(options?.notFoundMessage ?? "");
-      }
-      case "P2002": {
-        logger.error({ error }, options?.duplicateMessage);
-        throw new DuplicateError(options?.duplicateMessage ?? "");
-      }
-      case "P2003": {
-        logger.error({ error }, options?.constraintMessage);
-        throw new ConstraintError(options?.constraintMessage ?? "");
-      }
-    }
-
-    logger.error({ error }, options?.message);
-    throw error;
-  }
-
   private static mapCategory(
     category: Category | null | undefined,
   ): CategoryDTO | null | undefined {
@@ -208,16 +182,16 @@ export class CategoriesController {
       ...category,
       products: category.products.map((product) => ({
         ...product,
-        updatedAt: new Date(product.updatedAt).toLocaleDateString(),
-        createdAt: new Date(product.createdAt).toLocaleDateString(),
+        updatedAt: product.updatedAt.toLocaleDateString(),
+        createdAt: product.createdAt.toLocaleDateString(),
       })),
       children: category.children.map((child) => ({
         ...child,
-        updatedAt: new Date(child.updatedAt).toLocaleDateString(),
-        createdAt: new Date(child.createdAt).toLocaleDateString(),
+        updatedAt: child.updatedAt.toLocaleDateString(),
+        createdAt: child.createdAt.toLocaleDateString(),
       })),
-      updatedAt: new Date(category.updatedAt).toLocaleDateString(),
-      createdAt: new Date(category.createdAt).toLocaleDateString(),
+      updatedAt: category.updatedAt.toLocaleDateString(),
+      createdAt: category.createdAt.toLocaleDateString(),
     };
   }
 }

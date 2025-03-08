@@ -46,22 +46,31 @@ model Address {
 }
 
 model Product {
-  id           String         @id @default(uuid())
-  name         String
-  slug         String         @unique
-  description  String?
-  features     String[]
+  id            String           @id @default(uuid())
+  name          String
+  description   String?
+  features      String[]
+  category      Category?        @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  categoryId    String?
+  createdAt     DateTime         @default(now())
+  updatedAt     DateTime         @updatedAt
+  orderItems    OrderItem[]
+  wishlistItems WishlistItem[]
+  variants      ProductVariant[]
+}
+
+model ProductVariant {
+  id           String   @id @default(uuid())
+  product      Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  productId    String
+  sku          String   @unique
   price        Decimal
   currencyCode String
   stock        Int
-  sku          String         @unique
-  images       String[]
-  category     Category?      @relation(fields: [categoryId], references: [id], onDelete: SetNull)
-  categoryId   String?
-  createdAt    DateTime       @default(now())
-  updatedAt    DateTime       @updatedAt
-  OrderItem    OrderItem[]
-  WishlistItem WishlistItem[]
+  image        String
+  attributes   Json?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 }
 
 model Category {
@@ -96,7 +105,7 @@ model Order {
   paymentId   String?
   createdAt   DateTime    @default(now())
   updatedAt   DateTime    @updatedAt
-  Payment     Payment?
+  payment     Payment?
 }
 
 model OrderItem {

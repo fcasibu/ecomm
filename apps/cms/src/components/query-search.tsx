@@ -6,7 +6,7 @@ import { useQueryState } from "nuqs";
 import { Input } from "@ecomm/ui/input";
 import { useRef, useTransition } from "react";
 
-export function CategorySearch() {
+export function QuerySearch() {
   const [query, setQuery] = useQueryState("q", {
     defaultValue: "",
   });
