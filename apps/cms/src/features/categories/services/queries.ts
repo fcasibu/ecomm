@@ -5,7 +5,7 @@ import { unstable_cacheTag as cacheTag } from "next/cache";
 
 export const getCategoriesPath = async (categoryId: string) => {
   "use cache";
-  cacheTag("categories_path");
+  cacheTag("all", "categories_path");
 
   return executeOperation(() =>
     categoriesController.getCategoriesPath(categoryId),
@@ -18,21 +18,21 @@ export const getCategories = async (input: {
   pageSize?: number;
 }) => {
   "use cache";
-  cacheTag("categories");
+  cacheTag("all", "categories");
 
   return executeOperation(() => categoriesController.getAll(input));
 };
 
 export const getRootCategories = async () => {
   "use cache";
-  cacheTag("root_categories");
+  cacheTag("all", "root_categories");
 
   return executeOperation(() => categoriesController.getRootCategories());
 };
 
 export const getCategoryById = async (id: string) => {
   "use cache";
-  cacheTag("category", `category_${id}`);
+  cacheTag("all", "category", `category_${id}`);
 
   return executeOperation(() => categoriesController.getById(id));
 };

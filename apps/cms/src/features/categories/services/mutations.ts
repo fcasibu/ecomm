@@ -24,6 +24,21 @@ export const createCategory = async (input: CategoryCreateInput) => {
   return result;
 };
 
+export const deleteCategoryById = async (categoryId: string) => {
+  const result = await executeOperation(() =>
+    categoriesController.delete(categoryId),
+  );
+
+  if (result.success) {
+    revalidateTag("categories");
+    revalidateTag("root_categories");
+    revalidateTag("category");
+    revalidateTag("categories_path");
+  }
+
+  return result;
+};
+
 export const updateCategoryById = async (
   categoryId: string,
   input: CategoryUpdateInput,
@@ -40,8 +55,4 @@ export const updateCategoryById = async (
   }
 
   return result;
-};
-
-export const deleteCategoryById = async (categoryId: string) => {
-  return executeOperation(() => categoriesController.delete(categoryId));
 };

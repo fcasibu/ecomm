@@ -30,8 +30,7 @@ export function CategorySelect({
   const { result } = useGetCategories({});
 
   const rootCategories = result?.success
-    ? // TODO: should filter categories that's in the hierarchy
-      result.data.categories.filter(
+    ? result.data.categories.filter(
         (category) => category.id !== currentCategoryId,
       )
     : [];

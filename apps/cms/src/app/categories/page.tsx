@@ -22,11 +22,6 @@ export default async function Page({
               Create
             </Link>
           </Button>
-          <Button asChild>
-            <Link href="#" className="mb-4 min-w-[220px]">
-              Generate Category with AI
-            </Link>
-          </Button>
         </div>
         <div className="mb-4">
           <Suspense fallback={<CategorySearchSkeleton />}>

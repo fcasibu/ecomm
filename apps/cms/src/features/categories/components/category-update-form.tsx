@@ -31,12 +31,14 @@ import { categoryUpdateSchema } from "@ecomm/validations/categories/category-sch
 import { useForm } from "react-hook-form";
 import type { z } from "zod";
 import { slugify } from "@ecomm/ui/lib/utils";
-import { updateCategoryById } from "@/features/categories/services/mutations";
+import {
+  deleteCategoryById,
+  updateCategoryById,
+} from "@/features/categories/services/mutations";
 import { toast } from "@ecomm/ui/hooks/use-toast";
 import { useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { Text, TypographyH1, TypographyH2 } from "@ecomm/ui/typography";
-import { CategorySelect } from "./category-select";
 import { ImageUpload } from "./category-image-upload";
 import { ChevronRight, ImageIcon, Loader, Package, Tag } from "lucide-react";
 import { Card, CardContent } from "@ecomm/ui/card";
@@ -63,14 +65,13 @@ export function CategoryUpdateForm({
       slug: category.slug,
       description: category.description ?? "",
       image: category.image ?? "",
-      parentId: category.parentId ?? undefined,
     },
   });
 
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
 
-  const onSubmit = (data: z.infer<typeof categoryUpdateSchema>) => {
+  const handleSubmit = (data: z.infer<typeof categoryUpdateSchema>) => {
     startTransition(async () => {
       const result = await updateCategoryById(category.id, data);
 
@@ -88,19 +89,6 @@ export function CategoryUpdateForm({
             break;
           }
 
-          case "MAX_TIER_REACHED_ERROR": {
-            toast({
-              title: "Category update",
-              description: (
-                <p>
-                  The parent with the category id <b>{data.parentId}</b> is
-                  already a tier 3 category. It is not possible to create a tier
-                  4 category.
-                </p>
-              ),
-            });
-            break;
-          }
           default: {
             toast({
               title: "Category update",
@@ -121,6 +109,25 @@ export function CategoryUpdateForm({
     });
   };
 
+  const handleDelete = () => {
+    startTransition(async () => {
+      const result = await deleteCategoryById(category.id);
+
+      if (!result.success) {
+        if (result.error.code === "CONSTRAINT_ERROR") {
+          toast({
+            title: "Category deletion",
+            description: result.error.message,
+          });
+        }
+
+        return;
+      }
+
+      router.push("/categories");
+    });
+  };
+
   return (
     <div className="max-w-4xl mx-auto p-8 space-y-8">
       <TypographyH1>Update Category</TypographyH1>
@@ -130,7 +137,7 @@ export function CategoryUpdateForm({
         />
       </Suspense>
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+        <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
           <FormField
             control={form.control}
             name="name"
@@ -192,31 +199,28 @@ export function CategoryUpdateForm({
               </FormItem>
             )}
           />
-          <FormField
-            control={form.control}
-            name="parentId"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Parent category</FormLabel>
-                <FormControl>
-                  <CategorySelect
-                    value={field.value}
-                    onChange={(categories) => field.onChange(categories)}
-                    currentCategoryId={category.id}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
 
           <div className="flex justify-end gap-4">
             <Button
               variant="outline"
               type="button"
+              disabled={isPending}
               onClick={() => router.push("/categories")}
             >
               Cancel
+            </Button>
+            <Button
+              disabled={isPending}
+              variant="destructive"
+              type="button"
+              className="min-w-[120px]"
+              onClick={handleDelete}
+            >
+              {isPending ? (
+                <Loader className="animate-spin" size={16} />
+              ) : (
+                "Delete"
+              )}
             </Button>
             <Button
               disabled={isPending}
@@ -232,6 +236,7 @@ export function CategoryUpdateForm({
           </div>
         </form>
       </Form>
+
       <SubCategories subCategories={category?.children ?? []} />
       <Products products={category?.products ?? []} />
     </div>
