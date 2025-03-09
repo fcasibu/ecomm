@@ -442,81 +442,72 @@ function Products({ products }: { products: CategoryDTO["products"] }) {
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-        {currentProducts.map((product) => (
-          <Card
-            key={product.id}
-            className="overflow-hidden transition-all hover:shadow-md flex flex-col h-full"
-          >
-            <div className="relative">
-              {product.variants[0]?.image ? (
-                <div className="h-40 bg-gray-100 w-full">
-                  <img
-                    src={product.variants[0].image}
-                    alt={product.name}
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-              ) : (
-                <div className="flex items-center justify-center h-40 bg-slate-100">
-                  <ImageIcon className="h-10 w-10 text-slate-400" />
-                </div>
-              )}
+        {currentProducts.map((product) => {
+          const variant = product.variants[0];
 
-              <div className="absolute top-2 right-2 flex flex-col gap-1">
-                <Badge className="bg-white text-slate-800">
-                  <Tag className="mr-1 h-3 w-3" />
-                  {product.variants[0] &&
-                    formatPrice(
-                      Number(product.variants[0].price),
-                      product.variants[0].currencyCode,
+          return (
+            <Link
+              key={product.id}
+              aria-label={`Go to ${product.name}`}
+              href={`/products/${product.id}`}
+            >
+              <Card className="overflow-hidden transition-all hover:shadow-md flex flex-col h-full">
+                <div className="relative">
+                  {variant?.image ? (
+                    <div className="h-40 bg-gray-100 w-full">
+                      <img
+                        src={variant.image}
+                        alt={product.name}
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                  ) : (
+                    <div className="flex items-center justify-center h-40 bg-slate-100">
+                      <ImageIcon className="h-10 w-10 text-slate-400" />
+                    </div>
+                  )}
+
+                  <div className="absolute top-2 right-2 flex flex-col gap-1">
+                    <Badge className="bg-white text-slate-800">
+                      <Tag className="mr-1 h-3 w-3" />
+                      {variant?.price &&
+                        variant.currencyCode &&
+                        formatPrice(variant.price, variant.currencyCode)}
+                    </Badge>
+
+                    {variant?.stock && (
+                      <Badge
+                        className={`${variant.stock > 10 ? "bg-green-100 text-green-800" : variant.stock > 0 ? "bg-amber-100 text-amber-800" : "bg-red-100 text-red-800"}`}
+                      >
+                        <Package className="mr-1 h-3 w-3" />
+                        {variant.stock > 0
+                          ? `${variant.stock} in stock`
+                          : "Out of stock"}
+                      </Badge>
                     )}
-                </Badge>
+                  </div>
+                </div>
 
-                {product.variants[0]?.stock && (
-                  <Badge
-                    className={`${Number(product.variants[0].stock) > 10 ? "bg-green-100 text-green-800" : Number(product.variants[0].stock) > 0 ? "bg-amber-100 text-amber-800" : "bg-red-100 text-red-800"}`}
-                  >
-                    <Package className="mr-1 h-3 w-3" />
-                    {Number(product.variants[0].stock) > 0
-                      ? `${product.variants[0].stock} in stock`
-                      : "Out of stock"}
-                  </Badge>
-                )}
-              </div>
-            </div>
+                <CardContent className="p-4 flex flex-col flex-grow">
+                  <div>
+                    <Text size="lg" className="mb-1 font-semibold truncate">
+                      {product.name}
+                    </Text>
+                    <Text size="xs" className="mb-2 text-slate-500">
+                      SKU: {variant?.sku}
+                    </Text>
+                  </div>
 
-            <CardContent className="p-4 flex flex-col flex-grow">
-              <div>
-                <Text size="lg" className="mb-1 font-semibold truncate">
-                  {product.name}
-                </Text>
-                <Text size="xs" className="mb-2 text-slate-500">
-                  SKU: {product.variants[0]?.sku}
-                </Text>
-              </div>
-
-              <div className="flex justify-between items-center mt-auto pt-4">
-                <Badge variant="outline" className="text-xs">
-                  {product.updatedAt}
-                </Badge>
-
-                <Button
-                  asChild
-                  variant="ghost"
-                  size="sm"
-                  className="p-0 h-8 w-8"
-                >
-                  <Link
-                    aria-label={`Go to ${product.name}`}
-                    href={`/products/${product.id}`}
-                  >
-                    <ChevronRight className="h-4 w-4" />
-                  </Link>
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-        ))}
+                  <div className="flex justify-between items-center mt-auto pt-4">
+                    <Badge variant="outline" className="text-xs">
+                      {product.updatedAt}
+                    </Badge>
+                  </div>
+                </CardContent>
+              </Card>
+            </Link>
+          );
+        })}
       </div>
 
       {totalPages > 1 && (
