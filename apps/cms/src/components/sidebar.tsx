@@ -24,7 +24,6 @@ const navItems = [
   { name: "Categories", href: "/categories", icon: List },
   { name: "Customers", href: "/customers", icon: Users },
   { name: "Orders", href: "/orders", icon: ShoppingCart },
-  { name: "Payments", href: "/payments", icon: CreditCard },
 ];
 
 export function Sidebar() {
