@@ -6,7 +6,7 @@ export interface ProductVariant {
   updatedAt: string;
   image: string;
   sku: string;
-  price: Prisma.Decimal;
+  price: number;
   currencyCode: string;
   stock: number;
   attributes: Prisma.JsonValue | null;

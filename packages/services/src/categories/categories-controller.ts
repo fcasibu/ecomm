@@ -188,6 +188,7 @@ export class CategoriesController extends BaseController {
         createdAt: product.createdAt.toLocaleDateString(),
         variants: product.variants.map((variant) => ({
           ...variant,
+          price: variant.price.toNumber(),
           updatedAt: variant.updatedAt.toLocaleDateString(),
           createdAt: variant.createdAt.toLocaleDateString(),
         })),
