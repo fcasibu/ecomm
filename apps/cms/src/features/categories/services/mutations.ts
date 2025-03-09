@@ -19,6 +19,8 @@ export const createCategory = async (input: CategoryCreateInput) => {
     revalidateTag("root_categories");
     revalidateTag("category");
     revalidateTag("categories_path");
+    revalidateTag("product");
+    revalidateTag("products");
   }
 
   return result;
@@ -34,6 +36,8 @@ export const deleteCategoryById = async (categoryId: string) => {
     revalidateTag("root_categories");
     revalidateTag("category");
     revalidateTag("categories_path");
+    revalidateTag("product");
+    revalidateTag("products");
   }
 
   return result;
@@ -52,6 +56,8 @@ export const updateCategoryById = async (
     revalidateTag("root_categories");
     revalidateTag("category");
     revalidateTag("categories_path");
+    revalidateTag("product");
+    revalidateTag("products");
   }
 
   return result;

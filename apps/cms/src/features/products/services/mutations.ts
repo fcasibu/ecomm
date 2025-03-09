@@ -12,6 +12,10 @@ export const createProduct = async (input: ProductCreateInput) => {
   if (result.success) {
     revalidateTag("products");
     revalidateTag("product");
+    revalidateTag("categories");
+    revalidateTag("category");
+    revalidateTag("root_categories");
+    revalidateTag("categories_path");
   }
 
   return result;
