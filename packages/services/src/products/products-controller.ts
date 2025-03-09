@@ -71,6 +71,21 @@ export class ProductsController extends BaseController {
     }
   }
 
+  public async delete(productId: string) {
+    logger.info({ productId }, "Deleting product");
+
+    try {
+      await this.productsService.delete(productId);
+      logger.info({ productId }, "Product deleted successfully");
+
+      return { success: true };
+    } catch (error) {
+      this.mapError(error, {
+        notFoundMessage: `Error deleting product: Product with the ID "${productId}" was not found.`,
+      });
+    }
+  }
+
   public async getById(id: string) {
     try {
       logger.info({ id }, "Fetching product");

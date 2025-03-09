@@ -15,11 +15,12 @@ import { MultiInput } from "@ecomm/ui/multi-input";
 import {
   productUpdateSchema,
   productUpdateVariantSchema,
+  type ProductUpdateInput,
+  type ProductVariantUpdateInput,
 } from "@ecomm/validations/products/product-schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader, Plus } from "lucide-react";
 import { useForm } from "react-hook-form";
-import type { z } from "zod";
 import { useState, useTransition } from "react";
 import { toast } from "@ecomm/ui/hooks/use-toast";
 import { useRouter } from "next/navigation";
@@ -34,10 +35,10 @@ import {
 } from "@ecomm/ui/sheet";
 import { ImageUpload } from "@/components/image-upload";
 import type { ProductDTO } from "@ecomm/services/products/product-dto";
-import { updateProductById } from "../services/mutations";
+import { deleteProductById, updateProductById } from "../services/mutations";
 
 export function ProductUpdateForm({ product }: { product: ProductDTO }) {
-  const form = useForm<z.infer<typeof productUpdateSchema>>({
+  const form = useForm<ProductUpdateInput>({
     resolver: zodResolver(productUpdateSchema),
     defaultValues: {
       name: product.name,
@@ -51,7 +52,7 @@ export function ProductUpdateForm({ product }: { product: ProductDTO }) {
   const [isPending, startTransition] = useTransition();
   const router = useRouter();
 
-  const handleSubmit = (data: z.infer<typeof productUpdateSchema>) => {
+  const handleSubmit = (data: ProductUpdateInput) => {
     startTransition(async () => {
       const result = await updateProductById(product.id, data);
 
@@ -68,6 +69,23 @@ export function ProductUpdateForm({ product }: { product: ProductDTO }) {
         title: "Product update",
         description: "Product was successfully updated",
       });
+
+      router.push("/products");
+    });
+  };
+
+  const handleDelete = () => {
+    startTransition(async () => {
+      const result = await deleteProductById(product.id);
+
+      if (!result.success) {
+        toast({
+          title: "Product deletion",
+          description: result.error.message,
+        });
+
+        return;
+      }
 
       router.push("/products");
     });
@@ -178,6 +196,19 @@ export function ProductUpdateForm({ product }: { product: ProductDTO }) {
             </Button>
             <Button
               disabled={isPending}
+              variant="destructive"
+              type="button"
+              className="min-w-[120px]"
+              onClick={handleDelete}
+            >
+              {isPending ? (
+                <Loader className="animate-spin" size={16} />
+              ) : (
+                "Delete"
+              )}
+            </Button>
+            <Button
+              disabled={isPending}
               type="submit"
               className="min-w-[120px]"
             >
@@ -194,11 +225,9 @@ export function ProductUpdateForm({ product }: { product: ProductDTO }) {
   );
 }
 
-type ProductVariant = z.infer<typeof productUpdateVariantSchema>;
-
 interface ProductVariantsControlProps {
-  value: ProductVariant[];
-  onChange: (value: ProductVariant[]) => void;
+  value: ProductVariantUpdateInput[];
+  onChange: (value: ProductVariantUpdateInput[]) => void;
 }
 
 function ProductVariantsControl({
@@ -207,13 +236,14 @@ function ProductVariantsControl({
   ...props
 }: ProductVariantsControlProps) {
   const [isOpen, setIsOpen] = useState(false);
-  const [currentItem, setCurrentItem] = useState<ProductVariant | null>(null);
+  const [currentItem, setCurrentItem] =
+    useState<ProductVariantUpdateInput | null>(null);
 
-  const form = useForm<ProductVariant>({
+  const form = useForm<ProductVariantUpdateInput>({
     resolver: zodResolver(productUpdateVariantSchema),
   });
 
-  const handleSubmit = (data: ProductVariant) => {
+  const handleSubmit = (data: ProductVariantUpdateInput) => {
     onChange(
       currentItem
         ? value.map((item) =>
@@ -242,7 +272,7 @@ function ProductVariantsControl({
     setCurrentItem(null);
   };
 
-  const handleVariantClick = (item: ProductVariant) => {
+  const handleVariantClick = (item: ProductVariantUpdateInput) => {
     form.reset(item);
     setCurrentItem(item);
   };

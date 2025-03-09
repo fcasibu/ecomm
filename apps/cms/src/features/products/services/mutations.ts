@@ -43,3 +43,18 @@ export const updateProductById = async (
 
   return result;
 };
+
+export const deleteProductById = async (id: string) => {
+  const result = await executeOperation(() => productsController.delete(id));
+
+  if (result.success) {
+    revalidateTag("products");
+    revalidateTag("product");
+    revalidateTag("categories");
+    revalidateTag("category");
+    revalidateTag("root_categories");
+    revalidateTag("categories_path");
+  }
+
+  return result;
+};
