@@ -39,7 +39,7 @@ import { toast } from "@ecomm/ui/hooks/use-toast";
 import { useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { Text, TypographyH1, TypographyH2 } from "@ecomm/ui/typography";
-import { ChevronRight, ImageIcon, Loader, Package, Tag } from "lucide-react";
+import { ImageIcon, Loader, Package, Tag } from "lucide-react";
 import { Card, CardContent } from "@ecomm/ui/card";
 import { Badge } from "@ecomm/ui/badge";
 import type { CategoryDTO } from "@ecomm/services/categories/category-dto";
@@ -306,60 +306,49 @@ function SubCategories({
       <TypographyH2>Subcategories</TypographyH2>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
         {subCategories.map((category) => (
-          <Card
+          <Link
             key={category.id}
-            className="overflow-hidden transition-all hover:shadow-md flex flex-col h-full"
+            aria-label={`Go to ${category.name}`}
+            href={`/categories/${category.id}`}
           >
-            <div className="relative">
-              {category.image ? (
-                <div className="h-32 bg-gray-100 w-full">
-                  <img
-                    src={category.image}
-                    alt={category.name}
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-              ) : (
-                <div className="flex items-center justify-center h-32 bg-slate-100">
-                  <ImageIcon className="h-10 w-10 text-slate-400" />
-                </div>
-              )}
-            </div>
-
-            <CardContent className="p-4 flex flex-col flex-grow">
-              <div>
-                <div className="mb-2 font-semibold text-lg truncate">
-                  {category.name}
-                </div>
-
-                {category.description && (
-                  <p className="text-sm text-gray-500 line-clamp-2">
-                    {category.description}
-                  </p>
+            <Card className="overflow-hidden transition-all hover:shadow-md flex flex-col h-full">
+              <div className="relative">
+                {category.image ? (
+                  <div className="h-32 bg-gray-100 w-full">
+                    <img
+                      src={category.image}
+                      alt={category.name}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                ) : (
+                  <div className="flex items-center justify-center h-32 bg-slate-100">
+                    <ImageIcon className="h-10 w-10 text-slate-400" />
+                  </div>
                 )}
               </div>
 
-              <div className="flex justify-between items-center mt-auto pt-4">
-                <Badge variant="outline" className="text-xs">
-                  {category.updatedAt}
-                </Badge>
+              <CardContent className="p-4 flex flex-col flex-grow">
+                <div>
+                  <div className="mb-2 font-semibold text-lg truncate">
+                    {category.name}
+                  </div>
 
-                <Button
-                  asChild
-                  variant="ghost"
-                  size="sm"
-                  className="p-0 h-8 w-8"
-                >
-                  <Link
-                    aria-label={`Go to ${category.name}`}
-                    href={`/categories/${category.id}`}
-                  >
-                    <ChevronRight className="h-4 w-4" />
-                  </Link>
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
+                  {category.description && (
+                    <p className="text-sm text-gray-500 line-clamp-2">
+                      {category.description}
+                    </p>
+                  )}
+                </div>
+
+                <div className="flex justify-between items-center mt-auto pt-4">
+                  <Badge variant="outline" className="text-xs">
+                    {category.updatedAt}
+                  </Badge>
+                </div>
+              </CardContent>
+            </Card>
+          </Link>
         ))}
       </div>
     </div>
