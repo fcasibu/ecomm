@@ -3,6 +3,7 @@ import type {
   ProductCreateInput,
   ProductUpdateInput,
 } from "@ecomm/validations/products/product-schema";
+import { generateSku } from "../utils/generate-sku";
 
 export class ProductsService {
   constructor(private readonly prismaClient: PrismaClient) {}
@@ -13,6 +14,15 @@ export class ProductsService {
         features: input.features,
         name: input.name,
         description: input.description,
+        variants: {
+          createMany: {
+            data:
+              input.variants?.map((variant) => ({
+                ...variant,
+                sku: generateSku(input.name!),
+              })) ?? [],
+          },
+        },
         ...(input.categoryId
           ? {
               category: {
@@ -99,13 +109,25 @@ export class ProductsService {
     return { products, totalCount };
   }
 
-  public async update(productId: string, input: Partial<ProductUpdateInput>) {
+  public async update(productId: string, input: ProductUpdateInput) {
     return await this.prismaClient.product.update({
       where: { id: productId },
       data: {
-        name: input.name,
         features: input.features,
+        name: input.name,
         description: input.description,
+        ...(input.variants.length
+          ? {
+              variants: {
+                updateMany: {
+                  data: input.variants,
+                  where: {
+                    productId,
+                  },
+                },
+              },
+            }
+          : {}),
         category: {
           update: { id: input.categoryId },
         },

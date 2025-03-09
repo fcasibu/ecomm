@@ -22,7 +22,7 @@ export function ImageUpload({ value, onChange, ...props }: ImageUploadProps) {
       if (!file) return;
 
       try {
-        await new Promise((resolve) => setTimeout(resolve, 1000));
+        // TODO(fcasibu): DAM
         const imageUrl = URL.createObjectURL(file);
         onChange(imageUrl);
         toast({
@@ -45,7 +45,7 @@ export function ImageUpload({ value, onChange, ...props }: ImageUploadProps) {
         {value && (
           <img
             src={value}
-            alt="Category image"
+            alt="Uploaded image"
             className="object-cover rounded aspect-square"
             width={100}
             height={100}

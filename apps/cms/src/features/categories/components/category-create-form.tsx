@@ -21,8 +21,8 @@ import { useTransition } from "react";
 import { Loader } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { TypographyH1 } from "@ecomm/ui/typography";
-import { ImageUpload } from "./category-image-upload";
 import { CategorySelect } from "@/components/category-select";
+import { ImageUpload } from "@/components/image-upload";
 
 export function CategoryCreateForm() {
   const form = useForm<z.infer<typeof categoryCreateSchema>>({

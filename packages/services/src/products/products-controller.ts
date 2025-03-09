@@ -108,6 +108,7 @@ export class ProductsController extends BaseController {
         ...variant,
         createdAt: variant.createdAt.toLocaleDateString(),
         updatedAt: variant.updatedAt.toLocaleDateString(),
+        price: variant.price.toNumber(),
       })),
       ...(product.category
         ? {

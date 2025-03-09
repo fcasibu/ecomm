@@ -39,7 +39,6 @@ import { toast } from "@ecomm/ui/hooks/use-toast";
 import { useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { Text, TypographyH1, TypographyH2 } from "@ecomm/ui/typography";
-import { ImageUpload } from "./category-image-upload";
 import { ChevronRight, ImageIcon, Loader, Package, Tag } from "lucide-react";
 import { Card, CardContent } from "@ecomm/ui/card";
 import { Badge } from "@ecomm/ui/badge";
@@ -48,6 +47,7 @@ import Link from "next/link";
 import { formatPrice } from "@ecomm/lib/format-price";
 import type { Result } from "@ecomm/lib/execute-operation";
 import { Skeleton } from "@ecomm/ui/skeleton";
+import { ImageUpload } from "@/components/image-upload";
 
 export function CategoryUpdateForm({
   category,

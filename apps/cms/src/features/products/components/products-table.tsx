@@ -49,7 +49,7 @@ export async function ProductsTable({
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead className="w-[100px]">SKU</TableHead>
+            <TableHead className="w-[140px]">SKU</TableHead>
             <TableHead>Name</TableHead>
             <TableHead>Description</TableHead>
             <TableHead>Category</TableHead>
