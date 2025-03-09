@@ -4,7 +4,7 @@
   "type": "module",
   "private": true,
   "scripts": {
-    "dev": "npx rimraf ./.next/cache/fetch-cache && next dev --turbopack",
+    "dev": "npx rimraf ./.next/cache/fetch-cache && next dev",
     "build": "next build",
     "start": "next start",
     "lint": "next lint --max-warnings 0",

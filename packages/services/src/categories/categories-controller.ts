@@ -11,6 +11,7 @@ import { logger } from "@ecomm/lib/logger";
 import type { Prisma } from "@ecomm/db";
 import type { CategoryDTO } from "./category-dto";
 import { BaseController } from "../base-controller";
+import type { ProductVariant } from "../products/product-dto";
 
 type Category = Prisma.CategoryGetPayload<{
   include: {
@@ -191,6 +192,8 @@ export class CategoriesController extends BaseController {
           price: variant.price.toNumber(),
           updatedAt: variant.updatedAt.toLocaleDateString(),
           createdAt: variant.createdAt.toLocaleDateString(),
+          attributes:
+            variant.attributes?.valueOf() as ProductVariant["attributes"],
         })),
       })),
       children: category.children.map((child) => ({

@@ -1,5 +1,4 @@
 import { z } from "zod";
-import { jsonSchema } from "../zod-schema";
 
 export const productCreateVariantSchema = z.object({
   price: z.number(),
@@ -9,12 +8,13 @@ export const productCreateVariantSchema = z.object({
   attributes: z
     .object({
       title: z.string(),
-      value: jsonSchema,
+      value: z.string(),
     })
     .optional(),
 });
 
 export const productUpdateVariantSchema = z.object({
+  sku: z.string().optional(),
   price: z.number(),
   currencyCode: z.string().min(1, "Currency code is required"),
   stock: z.number(),
@@ -22,7 +22,7 @@ export const productUpdateVariantSchema = z.object({
   attributes: z
     .object({
       title: z.string(),
-      value: jsonSchema,
+      value: z.string(),
     })
     .optional(),
 });
@@ -43,7 +43,7 @@ export const productUpdateSchema = z.object({
   categoryId: z.string().optional(),
   features: z.array(z.string()),
   variants: z
-    .array(productCreateVariantSchema)
+    .array(productUpdateVariantSchema)
     .min(1, "A product must have a variant"),
 });
 

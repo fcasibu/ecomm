@@ -1,9 +1,5 @@
 {
   "extends": "@ecomm/typescript-config/node.json",
-  "include": [
-    "src"
-  ],
-  "exclude": [
-    "node_modules"
-  ]
+  "include": ["src"],
+  "exclude": ["node_modules"]
 }

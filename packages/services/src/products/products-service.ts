@@ -9,8 +9,12 @@ export class ProductsService {
   constructor(private readonly prismaClient: PrismaClient) {}
 
   public async create(input: ProductCreateInput) {
+    const sku = generateSku(input.name);
+    const randomSuffix = Date.now().toString(36).slice(-6);
+
     return await this.prismaClient.product.create({
       data: {
+        sku,
         features: input.features,
         name: input.name,
         description: input.description,
@@ -19,7 +23,7 @@ export class ProductsService {
             data:
               input.variants?.map((variant) => ({
                 ...variant,
-                sku: generateSku(input.name!),
+                sku: `${sku}-${randomSuffix.toUpperCase()}`,
               })) ?? [],
           },
         },
@@ -110,27 +114,60 @@ export class ProductsService {
   }
 
   public async update(productId: string, input: ProductUpdateInput) {
+    const product = await this.prismaClient.product.findUnique({
+      where: { id: productId },
+      select: { sku: true },
+    });
+
+    const sku = product?.sku;
+    const randomSuffix = Date.now().toString(36).slice(-6);
+
     return await this.prismaClient.product.update({
       where: { id: productId },
       data: {
         features: input.features,
         name: input.name,
         description: input.description,
-        ...(input.variants.length
+        variants: {
+          deleteMany: {
+            productId,
+            NOT: {
+              sku: {
+                in: input.variants
+                  .map((variant) => variant.sku)
+                  .filter((sku): sku is string => Boolean(sku)),
+              },
+            },
+          },
+          updateMany: input.variants
+            .filter((variant) => variant.sku)
+            .map((variant) => ({
+              where: { sku: variant.sku as string },
+              data: {
+                ...variant,
+                sku: variant.sku as string,
+              },
+            })),
+          createMany: {
+            data: input.variants
+              .filter((variant) => !variant.sku)
+              .map((variant) => ({
+                ...variant,
+                sku: `${sku}-${randomSuffix.toUpperCase()}`,
+              })),
+          },
+        },
+        category: input.categoryId
           ? {
-              variants: {
-                updateMany: {
-                  data: input.variants,
-                  where: {
-                    productId,
-                  },
+              connect: { id: input.categoryId },
+            }
+          : {
+              disconnect: {
+                products: {
+                  some: { id: productId },
                 },
               },
-            }
-          : {}),
-        category: {
-          update: { id: input.categoryId },
-        },
+            },
       },
       include: {
         category: true,

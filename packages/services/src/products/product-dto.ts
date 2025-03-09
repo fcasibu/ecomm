@@ -1,5 +1,3 @@
-import type { Prisma } from "@ecomm/db";
-
 export interface ProductVariant {
   id: string;
   createdAt: string;
@@ -9,7 +7,7 @@ export interface ProductVariant {
   price: number;
   currencyCode: string;
   stock: number;
-  attributes: Prisma.JsonValue | null;
+  attributes: { value?: string; title?: string } | undefined;
 }
 
 export interface ProductDTO {

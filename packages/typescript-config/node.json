@@ -4,8 +4,6 @@
   "compilerOptions": {
     "module": "preserve",
     "noEmit": true,
-    "lib": [
-      "es2022"
-    ]
+    "lib": ["es2022"]
   }
 }

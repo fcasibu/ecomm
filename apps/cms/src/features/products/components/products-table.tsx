@@ -10,6 +10,7 @@ import { getProducts } from "../services/queries";
 import { PRODUCTS_PAGE_SIZE } from "@/features/categories/constants";
 import { TypographyH2 } from "@ecomm/ui/typography";
 import { QueryPagination } from "@/components/query-pagination";
+import Link from "next/link";
 
 export async function ProductsTable({
   searchParams,
@@ -58,16 +59,24 @@ export async function ProductsTable({
         <TableBody>
           {products.map((product) => (
             <TableRow key={product.id}>
-              <TableCell className="font-medium">
-                {product.variants[0]?.sku}
+              <TableCell className="font-medium max-w-[140px] truncate">
+                <Link href={`/products/${product.id}`}>
+                  {product.variants[0]?.sku}
+                </Link>
               </TableCell>
               <TableCell className="max-w-[20ch] truncate">
-                {product.name}
+                <Link href={`/products/${product.id}`}>{product.name}</Link>
               </TableCell>
               <TableCell className="max-w-[20ch] truncate">
-                {product.description}
+                <Link href={`/products/${product.id}`}>
+                  {product.description}
+                </Link>
               </TableCell>
-              <TableCell>{product.category?.name}</TableCell>
+              <TableCell>
+                <Link href={`/products/${product.id}`}>
+                  {product.category?.name}
+                </Link>
+              </TableCell>
             </TableRow>
           ))}
         </TableBody>

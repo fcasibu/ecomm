@@ -1,13 +1,15 @@
 import {
   productCreateSchema,
+  productUpdateSchema,
   type ProductCreateInput,
+  type ProductUpdateInput,
 } from "@ecomm/validations/products/product-schema";
 import type { ProductsService } from "./products-service";
 import { ValidationError } from "../errors/validation-error";
 import { BaseController } from "../base-controller";
 import type { Prisma } from "@ecomm/db";
 import { logger } from "@ecomm/lib/logger";
-import type { ProductDTO } from "./product-dto";
+import type { ProductDTO, ProductVariant } from "./product-dto";
 import { NotFoundError } from "../errors/not-found-error";
 
 type Product = Prisma.ProductGetPayload<{
@@ -43,6 +45,28 @@ export class ProductsController extends BaseController {
     } catch (error) {
       this.mapError(error, {
         message: "Error creating product",
+      });
+    }
+  }
+
+  public async update(productId: string, input: ProductUpdateInput) {
+    try {
+      logger.info({ productId, input }, "Updating product");
+      const result = productUpdateSchema.safeParse(input);
+
+      if (!result.success) {
+        throw new ValidationError(result.error);
+      }
+
+      const updatedProduct = ProductsController.mapProduct(
+        await this.productsService.update(productId, result.data),
+      );
+      logger.info({ updatedProduct }, "Product updated successfully");
+      return updatedProduct;
+    } catch (error) {
+      this.mapError(error, {
+        message: `Error updating category`,
+        notFoundMessage: `Error updating category: Product ID "${productId}" not found.`,
       });
     }
   }
@@ -109,6 +133,8 @@ export class ProductsController extends BaseController {
         createdAt: variant.createdAt.toLocaleDateString(),
         updatedAt: variant.updatedAt.toLocaleDateString(),
         price: variant.price.toNumber(),
+        attributes:
+          variant.attributes?.valueOf() as ProductVariant["attributes"],
       })),
       ...(product.category
         ? {

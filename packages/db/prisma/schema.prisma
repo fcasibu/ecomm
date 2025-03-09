@@ -47,6 +47,7 @@ model Address {
 
 model Product {
   id            String           @id @default(uuid())
+  sku           String           @unique
   name          String
   description   String?
   features      String[]

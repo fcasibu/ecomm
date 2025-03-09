@@ -13,15 +13,14 @@ import {
 import { Input } from "@ecomm/ui/input";
 import { MultiInput } from "@ecomm/ui/multi-input";
 import {
-  productCreateSchema,
-  productCreateVariantSchema,
+  productUpdateSchema,
+  productUpdateVariantSchema,
 } from "@ecomm/validations/products/product-schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader, Plus } from "lucide-react";
 import { useForm } from "react-hook-form";
 import type { z } from "zod";
 import { useState, useTransition } from "react";
-import { createProduct } from "../services/mutations";
 import { toast } from "@ecomm/ui/hooks/use-toast";
 import { useRouter } from "next/navigation";
 import { TypographyH1 } from "@ecomm/ui/typography";
@@ -34,38 +33,40 @@ import {
   SheetTrigger,
 } from "@ecomm/ui/sheet";
 import { ImageUpload } from "@/components/image-upload";
+import type { ProductDTO } from "@ecomm/services/products/product-dto";
+import { updateProductById } from "../services/mutations";
 
-export function ProductCreateForm() {
-  const form = useForm<z.infer<typeof productCreateSchema>>({
-    resolver: zodResolver(productCreateSchema),
+export function ProductUpdateForm({ product }: { product: ProductDTO }) {
+  const form = useForm<z.infer<typeof productUpdateSchema>>({
+    resolver: zodResolver(productUpdateSchema),
     defaultValues: {
-      name: "",
-      description: "",
-      categoryId: undefined,
-      features: [],
-      variants: [],
+      name: product.name,
+      description: product.description ?? "",
+      categoryId: product.category?.id ?? undefined,
+      features: product.features,
+      variants: product.variants,
     },
   });
 
   const [isPending, startTransition] = useTransition();
   const router = useRouter();
 
-  const handleSubmit = (data: z.infer<typeof productCreateSchema>) => {
+  const handleSubmit = (data: z.infer<typeof productUpdateSchema>) => {
     startTransition(async () => {
-      const result = await createProduct(data);
+      const result = await updateProductById(product.id, data);
 
       if (!result.success) {
         toast({
-          title: "Product Creation",
-          description: "There was an issue with creating a product.",
+          title: "Product Update",
+          description: "There was an issue with updating the product.",
         });
 
         return;
       }
 
       toast({
-        title: "Product creation",
-        description: "Product was successfully created",
+        title: "Product update",
+        description: "Product was successfully updated",
       });
 
       router.push("/products");
@@ -74,7 +75,7 @@ export function ProductCreateForm() {
 
   return (
     <div className="max-w-4xl mx-auto p-8 space-y-8">
-      <TypographyH1>Create a new product</TypographyH1>
+      <TypographyH1>Update product</TypographyH1>
       <Form {...form}>
         <form
           onSubmit={(e) => {
@@ -193,7 +194,7 @@ export function ProductCreateForm() {
   );
 }
 
-type ProductVariant = z.infer<typeof productCreateVariantSchema>;
+type ProductVariant = z.infer<typeof productUpdateVariantSchema>;
 
 interface ProductVariantsControlProps {
   value: ProductVariant[];
@@ -209,8 +210,7 @@ function ProductVariantsControl({
   const [currentItem, setCurrentItem] = useState<ProductVariant | null>(null);
 
   const form = useForm<ProductVariant>({
-    resolver: zodResolver(productCreateVariantSchema),
-    defaultValues: {},
+    resolver: zodResolver(productUpdateVariantSchema),
   });
 
   const handleSubmit = (data: ProductVariant) => {
