@@ -25,7 +25,9 @@ export class CategoriesService {
     return await this.prismaClient.category.create({
       include: {
         children: true,
-        products: true,
+        products: {
+          include: { variants: true },
+        },
       },
       data: {
         name: input.name,
@@ -43,7 +45,9 @@ export class CategoriesService {
       where: { id: categoryId },
       include: {
         children: true,
-        products: true,
+        products: {
+          include: { variants: true },
+        },
       },
     });
   }
@@ -53,7 +57,9 @@ export class CategoriesService {
       where: { slug },
       include: {
         children: true,
-        products: true,
+        products: {
+          include: { variants: true },
+        },
       },
     });
   }
@@ -71,7 +77,9 @@ export class CategoriesService {
       this.prismaClient.category.findMany({
         include: {
           children: true,
-          products: true,
+          products: {
+            include: { variants: true },
+          },
         },
         ...(page && pageSize
           ? { skip: (page - 1) * pageSize, take: pageSize }
@@ -118,7 +126,9 @@ export class CategoriesService {
       },
       include: {
         children: true,
-        products: true,
+        products: {
+          include: { variants: true },
+        },
       },
     });
 
@@ -130,7 +140,9 @@ export class CategoriesService {
       where: { id: categoryId },
       include: {
         children: true,
-        products: true,
+        products: {
+          include: { variants: true },
+        },
       },
       data: {
         name: input.name,
@@ -194,7 +206,7 @@ export class CategoriesService {
 
     if (!parentData) return { tier: 1 };
 
-    const nextTier = parentData.tier + 1;
+    const nextTier = (parentData?.tier || 0) + 1;
 
     if (nextTier > this.MAX_HIERARCHY) {
       throw new MaxTierReachedError(this.MAX_HIERARCHY);

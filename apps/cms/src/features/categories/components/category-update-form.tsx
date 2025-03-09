@@ -448,10 +448,10 @@ function Products({ products }: { products: CategoryDTO["products"] }) {
             className="overflow-hidden transition-all hover:shadow-md flex flex-col h-full"
           >
             <div className="relative">
-              {product.images && product.images.length > 0 ? (
+              {product.variants[0]?.image ? (
                 <div className="h-40 bg-gray-100 w-full">
                   <img
-                    src={product.images?.[0]}
+                    src={product.variants[0].image}
                     alt={product.name}
                     className="w-full h-full object-cover"
                   />
@@ -465,17 +465,23 @@ function Products({ products }: { products: CategoryDTO["products"] }) {
               <div className="absolute top-2 right-2 flex flex-col gap-1">
                 <Badge className="bg-white text-slate-800">
                   <Tag className="mr-1 h-3 w-3" />
-                  {formatPrice(Number(product.price), product.currencyCode)}
+                  {product.variants[0] &&
+                    formatPrice(
+                      Number(product.variants[0].price),
+                      product.variants[0].currencyCode,
+                    )}
                 </Badge>
 
-                <Badge
-                  className={`${Number(product.stock) > 10 ? "bg-green-100 text-green-800" : Number(product.stock) > 0 ? "bg-amber-100 text-amber-800" : "bg-red-100 text-red-800"}`}
-                >
-                  <Package className="mr-1 h-3 w-3" />
-                  {Number(product.stock) > 0
-                    ? `${product.stock} in stock`
-                    : "Out of stock"}
-                </Badge>
+                {product.variants[0]?.stock && (
+                  <Badge
+                    className={`${Number(product.variants[0].stock) > 10 ? "bg-green-100 text-green-800" : Number(product.variants[0].stock) > 0 ? "bg-amber-100 text-amber-800" : "bg-red-100 text-red-800"}`}
+                  >
+                    <Package className="mr-1 h-3 w-3" />
+                    {Number(product.variants[0].stock) > 0
+                      ? `${product.variants[0].stock} in stock`
+                      : "Out of stock"}
+                  </Badge>
+                )}
               </div>
             </div>
 
@@ -485,32 +491,8 @@ function Products({ products }: { products: CategoryDTO["products"] }) {
                   {product.name}
                 </Text>
                 <Text size="xs" className="mb-2 text-slate-500">
-                  SKU: {product.sku}
+                  SKU: {product.variants[0]?.sku}
                 </Text>
-                {product.description && (
-                  <Text size="sm" className="text-gray-500 line-clamp-2 mb-2">
-                    {product.description}
-                  </Text>
-                )}
-
-                {product.features && product.features.length > 0 && (
-                  <div className="flex flex-wrap gap-1 mt-2">
-                    {product.features.slice(0, 2).map((feature, index) => (
-                      <Badge
-                        key={index}
-                        variant="secondary"
-                        className="text-xs"
-                      >
-                        {feature}
-                      </Badge>
-                    ))}
-                    {product.features.length > 2 && (
-                      <Badge variant="secondary" className="text-xs">
-                        +{product.features.length - 2}
-                      </Badge>
-                    )}
-                  </div>
-                )}
               </div>
 
               <div className="flex justify-between items-center mt-auto pt-4">

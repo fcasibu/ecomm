@@ -1,3 +1,5 @@
+import type { ProductVariant } from "../products/product-dto";
+
 export interface CategoryDTO {
   name: string;
   slug: string;
@@ -15,6 +17,7 @@ export interface CategoryDTO {
     updatedAt: string;
     features: string[];
     categoryId: string | null;
+    variants: ProductVariant[];
   }[];
   children: {
     name: string;

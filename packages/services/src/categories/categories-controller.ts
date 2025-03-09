@@ -15,7 +15,9 @@ import { BaseController } from "../base-controller";
 type Category = Prisma.CategoryGetPayload<{
   include: {
     children: true;
-    products: true;
+    products: {
+      include: { variants: true };
+    };
   };
 }>;
 
@@ -184,6 +186,11 @@ export class CategoriesController extends BaseController {
         ...product,
         updatedAt: product.updatedAt.toLocaleDateString(),
         createdAt: product.createdAt.toLocaleDateString(),
+        variants: product.variants.map((variant) => ({
+          ...variant,
+          updatedAt: variant.updatedAt.toLocaleDateString(),
+          createdAt: variant.createdAt.toLocaleDateString(),
+        })),
       })),
       children: category.children.map((child) => ({
         ...child,

@@ -1,5 +1,17 @@
 import type { Prisma } from "@ecomm/db";
 
+export interface ProductVariant {
+  id: string;
+  createdAt: string;
+  updatedAt: string;
+  image: string;
+  sku: string;
+  price: Prisma.Decimal;
+  currencyCode: string;
+  stock: number;
+  attributes: Prisma.JsonValue | null;
+}
+
 export interface ProductDTO {
   name: string;
   description: string | null;
@@ -18,15 +30,5 @@ export interface ProductDTO {
     parentId: string | null;
     tier: number | null;
   } | null;
-  variants: {
-    id: string;
-    createdAt: string;
-    updatedAt: string;
-    image: string;
-    sku: string;
-    price: Prisma.Decimal;
-    currencyCode: string;
-    stock: number;
-    attributes: Prisma.JsonValue | null;
-  }[];
+  variants: ProductVariant[];
 }
