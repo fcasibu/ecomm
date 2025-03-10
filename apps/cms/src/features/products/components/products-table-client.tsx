@@ -22,6 +22,8 @@ export function ProductsTableClient({ products }: { products: ProductDTO[] }) {
           <TableHead>Name</TableHead>
           <TableHead>Description</TableHead>
           <TableHead>Category</TableHead>
+          <TableHead>Created at</TableHead>
+          <TableHead>Updated at</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
@@ -48,6 +50,8 @@ export function ProductsTableClient({ products }: { products: ProductDTO[] }) {
               {product.description}
             </TableCell>
             <TableCell>{product.category?.name}</TableCell>
+            <TableCell>{product.createdAt}</TableCell>
+            <TableCell>{product.updatedAt}</TableCell>
           </TableRow>
         ))}
       </TableBody>
