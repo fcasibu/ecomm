@@ -60,9 +60,7 @@ export async function ProductsTable({
           {products.map((product) => (
             <TableRow key={product.id}>
               <TableCell className="font-medium max-w-[140px] truncate">
-                <Link href={`/products/${product.id}`}>
-                  {product.variants[0]?.sku}
-                </Link>
+                <Link href={`/products/${product.id}`}>{product.sku}</Link>
               </TableCell>
               <TableCell className="max-w-[20ch] truncate">
                 <Link href={`/products/${product.id}`}>{product.name}</Link>

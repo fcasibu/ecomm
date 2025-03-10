@@ -483,7 +483,7 @@ function Products({ products }: { products: CategoryDTO["products"] }) {
                       {product.name}
                     </Text>
                     <Text size="xs" className="mb-2 text-slate-500">
-                      SKU: {variant?.sku}
+                      SKU: {product.sku}
                     </Text>
                   </div>
 

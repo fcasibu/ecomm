@@ -11,6 +11,7 @@ export interface CategoryDTO {
   updatedAt: string;
   products: {
     name: string;
+    sku: string;
     id: string;
     description: string | null;
     createdAt: string;

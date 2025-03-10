@@ -12,6 +12,7 @@ export interface ProductVariant {
 
 export interface ProductDTO {
   name: string;
+  sku: string;
   description: string | null;
   features: string[];
   id: string;
