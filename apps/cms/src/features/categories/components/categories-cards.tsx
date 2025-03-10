@@ -22,7 +22,7 @@ export async function CategoriesCards({
     page: Number(sp.page || "1"),
     query: sp.q as string,
   }));
-  const { page = 1, query = "" } = (await where) ?? {};
+  const { page = 1, query = "" } = await where;
   const result = await getCategories({
     page,
     query: query.toLowerCase(),

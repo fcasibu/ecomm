@@ -13,7 +13,7 @@ export async function CustomersTable({
     page: Number(sp.page || "1"),
     query: sp.q as string,
   }));
-  const { page = 1, query = "" } = (await where) ?? {};
+  const { query, page } = await where;
 
   const result = await getCustomers({
     page,
