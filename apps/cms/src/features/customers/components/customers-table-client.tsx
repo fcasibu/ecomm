@@ -9,6 +9,7 @@ import {
   TableHeader,
   TableRow,
 } from "@ecomm/ui/table";
+import { Minus } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 export function CustomersTableClient({
@@ -45,10 +46,10 @@ export function CustomersTableClient({
             className="cursor-pointer"
           >
             <TableCell className="max-w-[140px] truncate">
-              {customer.userId}
+              {customer.userId || <Minus />}
             </TableCell>
-            <TableCell>{customer.firstName}</TableCell>
-            <TableCell>{customer.lastName}</TableCell>
+            <TableCell>{customer.firstName || <Minus />}</TableCell>
+            <TableCell>{customer.lastName || <Minus />}</TableCell>
             <TableCell>{customer.email}</TableCell>
             <TableCell>{customer.createdAt}</TableCell>
             <TableCell>{customer.updatedAt}</TableCell>

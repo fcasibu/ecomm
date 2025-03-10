@@ -9,6 +9,7 @@ import {
   TableHeader,
   TableRow,
 } from "@ecomm/ui/table";
+import { Minus } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 export function ProductsTableClient({ products }: { products: ProductDTO[] }) {
@@ -47,9 +48,9 @@ export function ProductsTableClient({ products }: { products: ProductDTO[] }) {
               {product.name}
             </TableCell>
             <TableCell className="max-w-[20ch] truncate">
-              {product.description}
+              {product.description || <Minus />}
             </TableCell>
-            <TableCell>{product.category?.name}</TableCell>
+            <TableCell>{product.category?.name || <Minus />}</TableCell>
             <TableCell>{product.createdAt}</TableCell>
             <TableCell>{product.updatedAt}</TableCell>
           </TableRow>
