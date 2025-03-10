@@ -14,17 +14,21 @@ datasource db {
 }
 
 model Customer {
-  id        String    @id @default(uuid())
-  userId    String    @unique
-  name      String?
-  email     String    @unique
-  phone     String?
-  addresses Address[]
-  orders    Order[]
-  cart      Cart[]
-  wishlist  Wishlist?
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
+  id         String    @id @default(uuid())
+  userId     String?   @unique
+  firstName  String?
+  middleName String?
+  lastName   String?
+  birthDate  DateTime?
+  password   String?
+  email      String    @unique
+  phone      String?
+  addresses  Address[]
+  orders     Order[]
+  cart       Cart[]
+  wishlist   Wishlist?
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
 }
 
 enum AddressType {
