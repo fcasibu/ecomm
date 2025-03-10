@@ -1,5 +1,6 @@
 import { PrismaClient } from "@ecomm/db";
 import type { CustomerCreateInput } from "@ecomm/validations/customers/customers-schema";
+import { hashPassword } from "../utils/password";
 
 export class CustomersService {
   constructor(private readonly prismaClient: PrismaClient) {}
@@ -17,7 +18,9 @@ export class CustomersService {
         middleName: input.middleName,
         lastName: input.lastName,
         birthDate: input.birthDate,
-        password: input.password,
+        password: input.password
+          ? await hashPassword(input.password)
+          : undefined,
         email: input.email,
         phone: input.phone,
         addresses: {
