@@ -21,6 +21,7 @@ model Customer {
   phone     String?
   addresses Address[]
   orders    Order[]
+  cart      Cart[]
   wishlist  Wishlist?
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
@@ -58,6 +59,7 @@ model Product {
   orderItems    OrderItem[]
   wishlistItems WishlistItem[]
   variants      ProductVariant[]
+  CartItem      CartItem[]
 }
 
 model ProductVariant {
@@ -87,6 +89,34 @@ model Category {
   children    Category[] @relation("CategoryToCategory")
   createdAt   DateTime   @default(now())
   updatedAt   DateTime   @updatedAt
+}
+
+enum CartStatus {
+  ACTIVE
+  ABANDONED
+  COMPLETED
+}
+
+model Cart {
+  id          String     @id @default(uuid())
+  customer    Customer?  @relation(fields: [customerId], references: [id])
+  customerId  String?
+  items       CartItem[]
+  totalAmount Decimal
+  status      CartStatus @default(ACTIVE)
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+}
+
+model CartItem {
+  id        String   @id @default(uuid())
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  productId String
+  quantity  Int
+  cart      Cart     @relation(fields: [cartId], references: [id], onDelete: Cascade)
+  cartId    String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 enum OrderStatus {
@@ -124,7 +154,7 @@ model OrderItem {
 model Wishlist {
   id         String         @id @default(uuid())
   customer   Customer       @relation(fields: [customerId], references: [id])
-  customerId String         @unique // One wishlist per customer
+  customerId String         @unique
   items      WishlistItem[]
 }
 
