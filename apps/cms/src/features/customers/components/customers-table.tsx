@@ -11,9 +11,9 @@ export async function CustomersTable({
 }) {
   const where = searchParams.then((sp) => ({
     page: Number(sp.page || "1"),
-    query: sp.q as string,
+    query: (sp.q as string) ?? "",
   }));
-  const { query, page } = await where;
+  const { query = "", page = 1 } = await where;
 
   const result = await getCustomers({
     page,

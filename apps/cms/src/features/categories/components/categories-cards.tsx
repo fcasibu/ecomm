@@ -20,7 +20,7 @@ export async function CategoriesCards({
 }) {
   const where = searchParams.then((sp) => ({
     page: Number(sp.page || "1"),
-    query: sp.q as string,
+    query: (sp.q as string) ?? "",
   }));
   const { page = 1, query = "" } = await where;
   const result = await getCategories({

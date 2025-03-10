@@ -1,16 +1,8 @@
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@ecomm/ui/table";
 import { getProducts } from "../services/queries";
 import { PRODUCTS_PAGE_SIZE } from "@/features/categories/constants";
 import { TypographyH2 } from "@ecomm/ui/typography";
 import { QueryPagination } from "@/components/query-pagination";
-import Link from "next/link";
+import { ProductsTableClient } from "./products-table-client";
 
 export async function ProductsTable({
   searchParams,
@@ -19,9 +11,9 @@ export async function ProductsTable({
 }) {
   const where = searchParams.then((sp) => ({
     page: Number(sp.page || "1"),
-    query: sp.q as string,
+    query: (sp.q as string) ?? "",
   }));
-  const { page = 1, query = "" } = (await where) ?? {};
+  const { page = 1, query = "" } = await where;
 
   const result = await getProducts({
     page,
@@ -47,38 +39,7 @@ export async function ProductsTable({
 
   return (
     <div className="space-y-6">
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead className="w-[140px]">SKU</TableHead>
-            <TableHead>Name</TableHead>
-            <TableHead>Description</TableHead>
-            <TableHead>Category</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {products.map((product) => (
-            <TableRow key={product.id}>
-              <TableCell className="font-medium max-w-[140px] truncate">
-                <Link href={`/products/${product.id}`}>{product.sku}</Link>
-              </TableCell>
-              <TableCell className="max-w-[20ch] truncate">
-                <Link href={`/products/${product.id}`}>{product.name}</Link>
-              </TableCell>
-              <TableCell className="max-w-[20ch] truncate">
-                <Link href={`/products/${product.id}`}>
-                  {product.description}
-                </Link>
-              </TableCell>
-              <TableCell>
-                <Link href={`/products/${product.id}`}>
-                  {product.category?.name}
-                </Link>
-              </TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+      <ProductsTableClient products={products} />
       <QueryPagination totalPages={totalPages} />
     </div>
   );

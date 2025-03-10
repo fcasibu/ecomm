@@ -40,6 +40,7 @@ export const customerCreateSchema = z
           message: "Passwords do not match",
         });
       }
+
       if (!data.password || data.password.length === 0) {
         ctx.addIssue({
           path: ["password"],
