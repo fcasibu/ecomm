@@ -25,7 +25,7 @@ export default async function Page({
         </div>
         <div className="mb-4">
           <Suspense fallback={<QuerySearchSkeleton />}>
-            <QuerySearch />
+            <QuerySearch label="Search categories" />
           </Suspense>
         </div>
         <Suspense fallback={<CategoriesCardsSkeleton />}>

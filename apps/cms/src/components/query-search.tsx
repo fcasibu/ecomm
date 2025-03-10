@@ -6,7 +6,7 @@ import { useQueryState } from "nuqs";
 import { Input } from "@ecomm/ui/input";
 import { useRef, useTransition } from "react";
 
-export function QuerySearch() {
+export function QuerySearch({ label = "Search" }: { label?: string }) {
   const [query, setQuery] = useQueryState("q", {
     defaultValue: "",
   });
@@ -32,8 +32,9 @@ export function QuerySearch() {
     >
       <div className="relative w-full max-w-md">
         <Input
-          aria-label="Search categories"
+          aria-label={label}
           type="text"
+          placeholder={label}
           value={query || ""}
           onChange={(e) => {
             setQuery(e.target.value);

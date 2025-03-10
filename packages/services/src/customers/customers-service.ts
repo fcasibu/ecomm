@@ -54,13 +54,7 @@ export class CustomersService {
         ...(query
           ? {
               where: {
-                OR: [
-                  {
-                    firstName: { contains: query, mode: "insensitive" },
-                  },
-                  { lastName: { contains: query, mode: "insensitive" } },
-                  { email: { contains: query, mode: "insensitive" } },
-                ],
+                OR: [{ email: { contains: query, mode: "insensitive" } }],
               },
             }
           : {}),
@@ -72,13 +66,7 @@ export class CustomersService {
         ...(query
           ? {
               where: {
-                OR: [
-                  {
-                    firstName: { contains: query, mode: "insensitive" },
-                  },
-                  { lastName: { contains: query, mode: "insensitive" } },
-                  { email: { contains: query, mode: "insensitive" } },
-                ],
+                OR: [{ email: { contains: query, mode: "insensitive" } }],
               },
             }
           : {}),
