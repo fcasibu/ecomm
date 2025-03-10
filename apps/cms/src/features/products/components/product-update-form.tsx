@@ -215,7 +215,7 @@ export function ProductUpdateForm({ product }: { product: ProductDTO }) {
               {isPending ? (
                 <Loader className="animate-spin" size={16} />
               ) : (
-                "Create"
+                "Save"
               )}
             </Button>
           </div>
