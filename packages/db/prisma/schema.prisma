@@ -38,7 +38,7 @@ enum AddressType {
 
 model Address {
   id         String      @id @default(uuid())
-  customer   Customer    @relation(fields: [customerId], references: [id])
+  customer   Customer    @relation(fields: [customerId], references: [id], onDelete: Cascade)
   customerId String
   type       AddressType
   street     String

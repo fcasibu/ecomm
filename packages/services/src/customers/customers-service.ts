@@ -134,5 +134,9 @@ export class CustomersService {
     });
   }
 
-  public async delete() {}
+  public async delete(customerId: string) {
+    return await this.prismaClient.customer.delete({
+      where: { id: customerId },
+    });
+  }
 }

@@ -73,7 +73,20 @@ export class CustomersController extends BaseController {
     }
   }
 
-  public async delete() {}
+  public async delete(customerId: string) {
+    logger.info({ customerId }, "Deleting customer");
+
+    try {
+      await this.customersService.delete(customerId);
+      logger.info({ customerId }, "Customer deleted successfully");
+
+      return { success: true };
+    } catch (error) {
+      this.mapError(error, {
+        notFoundMessage: `Error deleting customer: Customer with the ID "${customerId}" was not found.`,
+      });
+    }
+  }
 
   public async getById(id: string) {
     try {

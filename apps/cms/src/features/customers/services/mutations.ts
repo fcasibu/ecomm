@@ -37,3 +37,13 @@ export const updateCustomerById = async (
 
   return result;
 };
+
+export const deleteCustomerById = async (id: string) => {
+  const result = await executeOperation(() => customersController.delete(id));
+
+  if (result.success) {
+    revalidateTag("customers");
+  }
+
+  return result;
+};

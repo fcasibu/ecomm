@@ -35,8 +35,8 @@ import {
 import { Text, TypographyH2 } from "@ecomm/ui/typography";
 import {
   type CustomerCreateInput,
-  type AddressCreateInput,
-  addressCreateSchema,
+  type AddressInput,
+  addressSchema,
 } from "@ecomm/validations/customers/customers-schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Plus } from "lucide-react";
@@ -67,8 +67,8 @@ export function AddressesStage() {
 }
 
 export interface AddressControlProps {
-  value: AddressCreateInput[];
-  onChange: (value: AddressCreateInput[]) => void;
+  value: AddressInput[];
+  onChange: (value: AddressInput[]) => void;
 }
 
 export function AddressControl({
@@ -77,12 +77,10 @@ export function AddressControl({
   ...props
 }: AddressControlProps) {
   const [isOpen, setIsOpen] = useState(false);
-  const [currentItem, setCurrentItem] = useState<AddressCreateInput | null>(
-    null,
-  );
+  const [currentItem, setCurrentItem] = useState<AddressInput | null>(null);
 
-  const form = useForm<AddressCreateInput>({
-    resolver: zodResolver(addressCreateSchema),
+  const form = useForm<AddressInput>({
+    resolver: zodResolver(addressSchema),
     defaultValues: {
       type: "BILLING",
       street: "",
@@ -93,7 +91,7 @@ export function AddressControl({
     },
   });
 
-  const handleSubmit = (data: AddressCreateInput) => {
+  const handleSubmit = (data: AddressInput) => {
     onChange(
       currentItem
         ? value.map((item) =>
@@ -122,7 +120,7 @@ export function AddressControl({
     setCurrentItem(null);
   };
 
-  const handleAddressClick = (item: AddressCreateInput) => {
+  const handleAddressClick = (item: AddressInput) => {
     form.reset(item);
     setCurrentItem(item);
   };
@@ -158,6 +156,7 @@ export function AddressControl({
       <SheetContent>
         <Form {...form}>
           <form
+            id="address-form"
             onSubmit={(e) => {
               e.preventDefault();
               e.stopPropagation();
@@ -278,7 +277,7 @@ export function AddressControl({
                   Remove
                 </Button>
               )}
-              <Button type="submit">
+              <Button form="address-form" type="submit">
                 {currentItem ? "Update address" : "Save changes"}
               </Button>
             </SheetFooter>
@@ -293,8 +292,8 @@ function AddressTable({
   addresses,
   handleAddressClick,
 }: {
-  addresses: AddressCreateInput[];
-  handleAddressClick: (item: AddressCreateInput) => void;
+  addresses: AddressInput[];
+  handleAddressClick: (item: AddressInput) => void;
 }) {
   return (
     <Table>

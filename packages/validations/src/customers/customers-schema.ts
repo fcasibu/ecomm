@@ -1,23 +1,13 @@
 import { z } from "zod";
 
-export const addressCreateSchema = z.object({
+export const addressSchema = z.object({
   id: z.string().optional(),
   type: z.enum(["BILLING", "SHIPPING"]),
-  street: z.string(),
-  city: z.string(),
+  street: z.string().min(1, "Street is required"),
+  city: z.string().min(1, "City is required"),
   state: z.string(),
-  postalCode: z.string(),
-  country: z.string(),
-});
-
-export const addressUpdateSchema = z.object({
-  id: z.string().optional(),
-  type: z.enum(["BILLING", "SHIPPING"]),
-  street: z.string(),
-  city: z.string(),
-  state: z.string(),
-  postalCode: z.string(),
-  country: z.string(),
+  postalCode: z.string().min(1, "Postal code is required"),
+  country: z.string().min(1, "Country is required"),
 });
 
 export const customerCreateSchema = z
@@ -31,7 +21,7 @@ export const customerCreateSchema = z
     email: z.string().email(),
     phone: z.string().optional(),
     addresses: z
-      .array(addressCreateSchema)
+      .array(addressSchema)
       .max(5, "You can only have 5 maximum addresses"),
     authMode: z.boolean().optional(),
     currentStage: z
@@ -80,11 +70,11 @@ export const customerUpdateSchema = z.object({
   email: z.string().email(),
   phone: z.string().optional(),
   addresses: z
-    .array(addressUpdateSchema)
+    .array(addressSchema)
     .max(5, "You can only have 5 maximum addresses"),
 });
 
 export type CustomerCreateInput = z.infer<typeof customerCreateSchema>;
-export type AddressCreateInput = z.infer<typeof addressCreateSchema>;
+export type AddressInput = z.infer<typeof addressSchema>;
 
 export type CustomerUpdateInput = z.infer<typeof customerUpdateSchema>;

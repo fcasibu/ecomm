@@ -16,7 +16,7 @@ import { useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { CustomerDetailsStage } from "./customer-details-stage";
 import { AddressesStage } from "./addresses-stage";
-import { updateCustomerById } from "../services/mutations";
+import { deleteCustomerById, updateCustomerById } from "../services/mutations";
 import { toast } from "@ecomm/ui/hooks/use-toast";
 
 export function CustomerUpdateForm({ customer }: { customer: CustomerDTO }) {
@@ -58,6 +58,23 @@ export function CustomerUpdateForm({ customer }: { customer: CustomerDTO }) {
     });
   };
 
+  const handleDelete = () => {
+    startTransition(async () => {
+      const result = await deleteCustomerById(customer.id);
+
+      if (!result.success) {
+        toast({
+          title: "Customer deletion",
+          description: result.error.message,
+        });
+
+        return;
+      }
+
+      router.push("/customers");
+    });
+  };
+
   return (
     <div className="max-w-4xl mx-auto p-8 space-y-8">
       <TypographyH1>Update customer</TypographyH1>
@@ -91,6 +108,19 @@ export function CustomerUpdateForm({ customer }: { customer: CustomerDTO }) {
               onClick={() => router.push("/customers")}
             >
               Cancel
+            </Button>
+            <Button
+              disabled={isPending}
+              variant="destructive"
+              type="button"
+              className="min-w-[120px]"
+              onClick={handleDelete}
+            >
+              {isPending ? (
+                <Loader className="animate-spin" size={16} />
+              ) : (
+                "Delete"
+              )}
             </Button>
             <Button
               disabled={isPending}
