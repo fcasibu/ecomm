@@ -1,34 +1,48 @@
 import { PrismaClient } from "@ecomm/db";
+import type { Prisma } from "@ecomm/db";
 import type {
   CategoryCreateInput,
   CategoryUpdateInput,
 } from "@ecomm/validations/categories/category-schema";
+import type { SearchOptions } from "../base-service";
+import { BaseService } from "../base-service";
 import { MaxTierReachedError } from "../errors/max-tier-reached-error";
 import { MaxCategoryChildrenCountError } from "../errors/max-children-count-error";
+import { createTextSearchCondition } from "../utils/prisma-helpers";
 
-export class CategoriesService {
-  constructor(private readonly prismaClient: PrismaClient) {}
+const CATEGORY_INCLUDE = {
+  children: true,
+  products: {
+    include: { variants: true },
+  },
+} as const satisfies Prisma.CategoryInclude;
 
+export type Category = Prisma.CategoryGetPayload<{
+  include: {
+    children: true;
+    products: {
+      include: { variants: true };
+    };
+  };
+}>;
+
+export class CategoriesService extends BaseService {
   private readonly MAX_HIERARCHY = 3;
   private readonly MAX_CHILDREN_COUNT = 12;
+
+  constructor(prismaClient: PrismaClient) {
+    super(prismaClient);
+  }
 
   public async create(input: CategoryCreateInput) {
     let tier = 1;
     if (input.parentId) {
       const metadata = await this.validateAndGetParentMetadata(input.parentId);
-
-      if (metadata) {
-        tier = metadata.tier;
-      }
+      tier = metadata.tier;
     }
 
     return await this.prismaClient.category.create({
-      include: {
-        children: true,
-        products: {
-          include: { variants: true },
-        },
-      },
+      include: CATEGORY_INCLUDE,
       data: {
         name: input.name,
         slug: input.slug,
@@ -43,107 +57,53 @@ export class CategoriesService {
   public async getById(categoryId: string) {
     return await this.prismaClient.category.findUnique({
       where: { id: categoryId },
-      include: {
-        children: true,
-        products: {
-          include: { variants: true },
-        },
-      },
+      include: CATEGORY_INCLUDE,
     });
   }
 
   public async getBySlug(slug: string) {
     return await this.prismaClient.category.findUnique({
       where: { slug },
-      include: {
-        children: true,
-        products: {
-          include: { variants: true },
-        },
-      },
+      include: CATEGORY_INCLUDE,
     });
   }
 
-  public async getAll({
-    page,
-    query,
-    pageSize,
-  }: {
-    query?: string;
-    page?: number;
-    pageSize?: number;
-  }) {
+  public async getAll(options: SearchOptions) {
+    const { query, page = 1, pageSize = 20 } = options;
+    const pagination = this.buildPagination({ page, pageSize });
+
+    let whereCondition = {};
+
+    if (query) {
+      whereCondition = createTextSearchCondition(query, ["name", "slug"]);
+    }
+
     const [categories, totalCount] = await this.prismaClient.$transaction([
       this.prismaClient.category.findMany({
-        include: {
-          children: true,
-          products: {
-            include: { variants: true },
-          },
-        },
-        ...(page && pageSize
-          ? { skip: (page - 1) * pageSize, take: pageSize }
-          : {}),
-        ...(query
-          ? {
-              where: {
-                OR: [
-                  {
-                    name: { contains: query, mode: "insensitive" },
-                  },
-                  { slug: { contains: query, mode: "insensitive" } },
-                ],
-              },
-            }
-          : {}),
-        orderBy: {
-          updatedAt: "desc",
-        },
+        include: CATEGORY_INCLUDE,
+        where: whereCondition,
+        orderBy: { updatedAt: "desc" },
+        ...pagination,
       }),
-      this.prismaClient.category.count({
-        ...(query
-          ? {
-              where: {
-                OR: [
-                  {
-                    name: { contains: query, mode: "insensitive" },
-                  },
-                  { slug: { contains: query, mode: "insensitive" } },
-                ],
-              },
-            }
-          : {}),
-      }),
+      this.prismaClient.category.count({ where: whereCondition }),
     ]);
 
-    return { categories, totalCount };
+    return this.formatPaginatedResponse(categories, totalCount, options);
   }
 
   public async getRootCategories() {
-    const rootCategories = await this.prismaClient.category.findMany({
+    return await this.prismaClient.category.findMany({
       where: {
         parentId: null,
       },
-      include: {
-        children: true,
-        products: {
-          include: { variants: true },
-        },
-      },
+      include: CATEGORY_INCLUDE,
     });
-
-    return rootCategories;
   }
 
   public async update(categoryId: string, input: CategoryUpdateInput) {
     return await this.prismaClient.category.update({
       where: { id: categoryId },
-      include: {
-        children: true,
-        products: {
-          include: { variants: true },
-        },
-      },
+      include: CATEGORY_INCLUDE,
       data: {
         name: input.name,
         slug: input.slug,
@@ -154,35 +114,21 @@ export class CategoriesService {
   }
 
   public async delete(categoryId: string) {
-    return this.prismaClient.category.delete({
+    return await this.prismaClient.category.delete({
       where: { id: categoryId },
+      include: CATEGORY_INCLUDE,
     });
   }
 
   public async getCategoriesPath(categoryId: string) {
-    const path: { id: string; name: string; slug: string }[] = [];
-
-    let currentCategory = await this.prismaClient.category.findUnique({
-      where: { id: categoryId },
-      select: {
-        id: true,
-        name: true,
-        slug: true,
-        parentId: true,
-      },
-    });
-
-    while (currentCategory) {
-      path.unshift({
-        id: currentCategory.id,
-        name: currentCategory.name,
-        slug: currentCategory.slug,
-      });
-
-      if (!currentCategory.parentId) break;
-
-      currentCategory = await this.prismaClient.category.findUnique({
-        where: { id: currentCategory.parentId },
+    const path: {
+      id: string;
+      name: string;
+      slug: string;
+    }[] = [];
+    const fetchCategoryData = async (id: string) => {
+      const category = await this.prismaClient.category.findUnique({
+        where: { id },
         select: {
           id: true,
           name: true,
@@ -190,13 +136,26 @@ export class CategoriesService {
           parentId: true,
         },
       });
-    }
 
+      if (!category) return;
+
+      path.unshift({
+        id: category.id,
+        name: category.name,
+        slug: category.slug,
+      });
+
+      if (category.parentId) {
+        await fetchCategoryData(category.parentId);
+      }
+    };
+
+    await fetchCategoryData(categoryId);
     return path;
   }
 
   private async validateAndGetParentMetadata(parentId: string) {
-    const parentData = await this.prismaClient.category.findUnique({
+    const parentData = await this.prismaClient.category.findUniqueOrThrow({
       where: { id: parentId },
       select: {
         tier: true,
@@ -204,9 +163,7 @@ export class CategoriesService {
       },
     });
 
-    if (!parentData) return { tier: 1 };
-
-    const nextTier = (parentData?.tier || 0) + 1;
+    const nextTier = (parentData.tier || 0) + 1;
 
     if (nextTier > this.MAX_HIERARCHY) {
       throw new MaxTierReachedError(this.MAX_HIERARCHY);

@@ -1,7 +1,6 @@
-import type { CustomersService } from "./customers-service";
+import type { Customer, CustomersService } from "./customers-service";
 import { ValidationError } from "../errors/validation-error";
 import { BaseController } from "../base-controller";
-import type { Prisma } from "@ecomm/db";
 import { logger } from "@ecomm/lib/logger";
 import { NotFoundError } from "../errors/not-found-error";
 import {
@@ -11,15 +10,6 @@ import {
   type CustomerUpdateInput,
 } from "@ecomm/validations/customers/customers-schema";
 import type { CustomerDTO } from "./customer-dto";
-
-type Customer = Prisma.CustomerGetPayload<{
-  include: {
-    addresses: true;
-  };
-  omit: {
-    password: true;
-  };
-}>;
 
 export class CustomersController extends BaseController {
   constructor(private readonly customersService: CustomersService) {
@@ -118,17 +108,23 @@ export class CustomersController extends BaseController {
     logger.info({ input }, "Fetching all customers");
 
     try {
-      const { customers, totalCount } =
-        await this.customersService.getAll(input);
-      const transformedCustomers = customers
+      const result = await this.customersService.getAll(input);
+
+      const transformedCustomers = result.items
         .map(CustomersController.mapCustomer)
         .filter((customer): customer is CustomerDTO => Boolean(customer));
 
-      logger.info(
-        { customers: transformedCustomers, totalCount },
-        "Customers fetched successfully",
-      );
-      return { customers: transformedCustomers, totalCount };
+      const response = {
+        customers: transformedCustomers,
+        totalCount: result.totalCount,
+        pageCount: result.pageCount,
+        currentPage: result.currentPage,
+        pageSize: result.pageSize,
+      };
+
+      logger.info({ response }, "Customers fetched successfully");
+
+      return response;
     } catch (error) {
       this.mapError(error, {
         message: "Error fetching all customers",

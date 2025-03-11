@@ -35,16 +35,12 @@ export class CloudinaryService implements DAM {
   }
 
   public async upload(file: string, identifier: string): Promise<string> {
-    try {
-      const result = await this.cloudinary.uploader.upload(file, {
-        public_id: identifier,
-        unique_filename: false,
-        overwrite: true,
-      });
+    const result = await this.cloudinary.uploader.upload(file, {
+      public_id: identifier,
+      unique_filename: false,
+      overwrite: true,
+    });
 
-      return result.public_id;
-    } catch (error) {
-      throw error;
-    }
+    return result.public_id;
   }
 }

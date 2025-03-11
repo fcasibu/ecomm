@@ -4,20 +4,12 @@ import {
   type ProductCreateInput,
   type ProductUpdateInput,
 } from "@ecomm/validations/products/product-schema";
-import type { ProductsService } from "./products-service";
+import type { Product, ProductsService } from "./products-service";
 import { ValidationError } from "../errors/validation-error";
 import { BaseController } from "../base-controller";
-import type { Prisma } from "@ecomm/db";
 import { logger } from "@ecomm/lib/logger";
 import type { ProductDTO, ProductVariant } from "./product-dto";
 import { NotFoundError } from "../errors/not-found-error";
-
-type Product = Prisma.ProductGetPayload<{
-  include: {
-    category: true;
-    variants: true;
-  };
-}>;
 
 export class ProductsController extends BaseController {
   constructor(private readonly productsService: ProductsService) {
@@ -116,17 +108,23 @@ export class ProductsController extends BaseController {
     logger.info({ input }, "Fetching all products");
 
     try {
-      const { products, totalCount } = await this.productsService.getAll(input);
+      const result = await this.productsService.getAll(input);
 
-      const transformedProducts = products
+      const transformedProducts = result.items
         .map(ProductsController.mapProduct)
         .filter((product): product is ProductDTO => Boolean(product));
 
-      logger.info(
-        { products: transformedProducts, totalCount },
-        "Products fetched successfully",
-      );
-      return { products: transformedProducts, totalCount };
+      const response = {
+        products: transformedProducts,
+        totalCount: result.totalCount,
+        pageCount: result.pageCount,
+        currentPage: result.currentPage,
+        pageSize: result.pageSize,
+      };
+
+      logger.info({ response }, "Products fetched successfully");
+
+      return response;
     } catch (error) {
       this.mapError(error, {
         message: "Error fetching all products",

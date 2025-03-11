@@ -1,4 +1,4 @@
-import type { CategoriesService } from "./categories-service";
+import type { CategoriesService, Category } from "./categories-service";
 import { ValidationError } from "../errors/validation-error";
 import {
   type CategoryCreateInput,
@@ -8,19 +8,9 @@ import {
 } from "@ecomm/validations/categories/category-schema";
 import { NotFoundError } from "../errors/not-found-error";
 import { logger } from "@ecomm/lib/logger";
-import type { Prisma } from "@ecomm/db";
 import type { CategoryDTO } from "./category-dto";
 import { BaseController } from "../base-controller";
 import type { ProductVariant } from "../products/product-dto";
-
-type Category = Prisma.CategoryGetPayload<{
-  include: {
-    children: true;
-    products: {
-      include: { variants: true };
-    };
-  };
-}>;
 
 export class CategoriesController extends BaseController {
   constructor(private readonly categoriesService: CategoriesService) {
@@ -138,17 +128,23 @@ export class CategoriesController extends BaseController {
     logger.info({ input }, "Fetching all categories");
 
     try {
-      const { categories, totalCount } =
-        await this.categoriesService.getAll(input);
-      const transformedCategories = categories
+      const result = await this.categoriesService.getAll(input);
+
+      const transformedCategories = result.items
         .map(CategoriesController.mapCategory)
         .filter((category): category is CategoryDTO => Boolean(category));
 
-      logger.info(
-        { categories: transformedCategories, totalCount },
-        "Categories fetched successfully",
-      );
-      return { categories: transformedCategories, totalCount };
+      const response = {
+        categories: transformedCategories,
+        totalCount: result.totalCount,
+        pageCount: result.pageCount,
+        currentPage: result.currentPage,
+        pageSize: result.pageSize,
+      };
+
+      logger.info({ response }, "Categories fetched successfully");
+
+      return response;
     } catch (error) {
       this.mapError(error, {
         message: "Error fetching all categories",
@@ -173,7 +169,7 @@ export class CategoriesController extends BaseController {
   }
 
   public async getCategoriesPath(categoryId: string) {
-    return this.categoriesService.getCategoriesPath(categoryId);
+    return await this.categoriesService.getCategoriesPath(categoryId);
   }
 
   private static mapCategory(

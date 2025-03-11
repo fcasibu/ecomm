@@ -1,4 +1,4 @@
-import { z, ZodIssue } from "zod";
+import { z, type ZodIssue } from "zod";
 import { BaseError } from "./base-error";
 
 export class ValidationError extends BaseError {
