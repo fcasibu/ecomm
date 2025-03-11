@@ -750,6 +750,7 @@ function AddressTable({
         {addresses.map((address, index) => (
           <SheetTrigger asChild key={index}>
             <TableRow
+              aria-label="Edit address"
               className="cursor-pointer"
               onClick={() => handleAddressClick(address)}
             >
