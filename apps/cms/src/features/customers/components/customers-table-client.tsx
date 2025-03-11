@@ -36,10 +36,12 @@ export function CustomersTableClient({
           <TableRow
             aria-label="Go to customer details"
             key={customer.id}
-            onClick={() => router.push(`/customers/${customer.id}`)}
+            onClick={() =>
+              router.push(`/customers/${customer.id}/customer-details`)
+            }
             onKeyDown={(e) => {
               if (e.key === "Enter" || e.key === " ") {
-                router.push(`/customers/${customer.id}`);
+                router.push(`/customers/${customer.id}/customer-details`);
               }
             }}
             tabIndex={0}

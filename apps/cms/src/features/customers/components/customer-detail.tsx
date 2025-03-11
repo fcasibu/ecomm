@@ -3,13 +3,14 @@ import { CustomerUpdateForm } from "./customer-update-form";
 import { getCustomerById } from "../services/queries";
 
 export async function CustomerDetail({
-  customerId,
+  param,
 }: {
-  customerId: Promise<string>;
+  param: Promise<{ id: string; tab?: string }>;
 }) {
-  const result = await getCustomerById(await customerId);
+  const { id, tab } = await param;
+  const result = await getCustomerById(id);
 
   if (!result.success) return notFound();
 
-  return <CustomerUpdateForm customer={result.data} />;
+  return <CustomerUpdateForm tab={tab} customer={result.data} />;
 }

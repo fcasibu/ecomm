@@ -2,8 +2,15 @@ import { CustomerDetail } from "@/features/customers/components/customer-detail"
 import { Loader } from "lucide-react";
 import { Suspense } from "react";
 
-export default function Page({ params }: { params: Promise<{ id: string }> }) {
-  const id = params.then((p) => p.id);
+export default function Page({
+  params,
+}: {
+  params: Promise<{ slug: string[] }>;
+}) {
+  const param = params.then((p) => ({
+    id: p.slug[0] as string,
+    tab: p.slug?.[1],
+  }));
 
   return (
     <Suspense
@@ -13,7 +20,7 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
         </div>
       }
     >
-      <CustomerDetail customerId={id} />
+      <CustomerDetail param={param} />
     </Suspense>
   );
 }
