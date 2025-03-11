@@ -16,7 +16,7 @@ import {
   type CustomerCreateInput,
 } from "@ecomm/validations/customers/customers-schema";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Fragment, useEffect, useState, useTransition } from "react";
+import { useEffect, useState, useTransition } from "react";
 import { useForm, useFormContext } from "react-hook-form";
 import { createCustomer } from "../services/mutations";
 import { toast } from "@ecomm/ui/hooks/use-toast";
@@ -24,7 +24,7 @@ import { useRouter } from "next/navigation";
 import { Input } from "@ecomm/ui/input";
 import { Text, TypographyH1, TypographyH2 } from "@ecomm/ui/typography";
 import { Separator } from "@ecomm/ui/separator";
-import { Circle, Loader, Plus } from "lucide-react";
+import { Loader, Plus } from "lucide-react";
 import { CalendarInput } from "@ecomm/ui/calendar-input";
 import { cn } from "@ecomm/ui/lib/utils";
 import { Button } from "@ecomm/ui/button";
@@ -87,10 +87,27 @@ function useMultiStage(initialStage: Stage["key"]) {
     }
   };
 
+  const goToStage = (stage: Stage["key"]) => {
+    setCurrentStage(stage);
+  };
+
+  const isStageDisabled = (stageKey: Stage["key"]) => {
+    const currentStageIndex = stages.findIndex(
+      (stage) => stage.key === currentStage,
+    );
+    const disabledStages = stages.filter(
+      (_, index) => index > currentStageIndex,
+    );
+
+    return disabledStages.some((stage) => stage.key === stageKey);
+  };
+
   return {
     currentStage,
     onNext,
     onPrevious,
+    goToStage,
+    isStageDisabled,
     isLast: currentStage === "addresses",
   };
 }
@@ -116,8 +133,14 @@ export function CustomerCreateForm() {
     },
   });
 
-  const { currentStage, onNext, onPrevious, isLast } =
-    useMultiStage("customer-details");
+  const {
+    currentStage,
+    onNext,
+    onPrevious,
+    goToStage,
+    isStageDisabled,
+    isLast,
+  } = useMultiStage("customer-details");
 
   const [isPending, startTransition] = useTransition();
   const router = useRouter();
@@ -162,7 +185,11 @@ export function CustomerCreateForm() {
   return (
     <div>
       <TypographyH1>Create a customer</TypographyH1>
-      <StageIndicator currentStage={currentStage} />
+      <StageIndicator
+        currentStage={currentStage}
+        goToStage={goToStage}
+        isStageDisabled={isStageDisabled}
+      />
       <Form {...form}>
         <form
           onSubmit={(e) => {
@@ -233,43 +260,55 @@ function StageController(props: {
   );
 }
 
-function StageIndicator({ currentStage }: { currentStage: Stage["key"] }) {
+function StageIndicator({
+  currentStage,
+  goToStage,
+  isStageDisabled,
+}: {
+  currentStage: Stage["key"];
+  goToStage: (stage: Stage["key"]) => void;
+  isStageDisabled: (stage: Stage["key"]) => boolean;
+}) {
   return (
     <div className="flex justify-between gap-6 w-full">
       {stages.map((stage, index) => (
-        <Fragment key={stage.key}>
-          <div
-            className={cn("flex items-center flex-1", {
-              "justify-end flex-grow-0": index === stages.length - 1,
-            })}
-          >
-            <div className="flex items-center gap-2 w-full">
-              <div className="relative flex w-[40px] h-[40px]">
-                <Circle
-                  className={cn("stroke-1", {
-                    "fill-blue-500 stroke-transparent":
+        <div
+          key={stage.key}
+          className={cn("flex items-center flex-1", {
+            "justify-end flex-grow-0": index === stages.length - 1,
+          })}
+        >
+          <div className="flex items-center gap-2 w-full">
+            <div className="flex w-[40px] h-[40px] justify-center items-center">
+              <Button
+                aria-label={`Move to ${stage.title}`}
+                variant="none"
+                className={cn(
+                  "w-[40px] h-[40px] rounded-full outline outline-black flex justify-center items-center",
+                  {
+                    "outline-none outline-transparent bg-blue-500 outline-offset-0":
                       currentStage === stage.key,
-                  })}
-                  size={40}
-                />
+                  },
+                )}
+                disabled={isStageDisabled(stage.key)}
+                onClick={() => goToStage(stage.key)}
+                size="icon"
+              >
                 <span
-                  className={cn(
-                    "absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-black",
-                    {
-                      "text-white": currentStage === stage.key,
-                    },
-                  )}
+                  className={cn("text-black pointer-events-none text-lg", {
+                    "text-white": currentStage === stage.key,
+                  })}
                 >
                   {index + 1}
                 </span>
-              </div>
-              <span className="flex-shrink-0">{stage.title}</span>
-              {index !== stages.length - 1 && (
-                <Separator className="bg-gray-500 !flex-shrink" />
-              )}
+              </Button>
             </div>
+            <span className="flex-shrink-0">{stage.title}</span>
+            {index !== stages.length - 1 && (
+              <Separator className="bg-gray-500 !flex-shrink" />
+            )}
           </div>
-        </Fragment>
+        </div>
       ))}
     </div>
   );
