@@ -23,6 +23,14 @@ const nextConfig = {
     reactCompiler: true,
     useCache: true,
   },
+  images: {
+    remotePatterns: [
+      {
+        hostname: "*.cloudinary.com",
+      },
+    ],
+    dangerouslyAllowSVG: true,
+  },
   serverExternalPackages: ["pino"],
   webpack: (config, { isServer }) => {
     if (isServer) {

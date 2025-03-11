@@ -6,12 +6,40 @@ import { useTransition } from "react";
 import { Button } from "@ecomm/ui/button";
 import { Input } from "@ecomm/ui/input";
 import { toast } from "@ecomm/ui/hooks/use-toast";
+import { uploadImage } from "@/features/image/services/mutations";
+import { ImageComponent } from "@ecomm/ui/image";
 
 interface ImageUploadProps
   extends Omit<React.ComponentProps<"input">, "onChange" | "value"> {
   value: string | undefined;
   onChange: (value: string) => void;
 }
+
+const readFileAsDataURL = (file: File): Promise<string> => {
+  return new Promise((resolve, reject) => {
+    if (!(file instanceof File)) {
+      return reject(new Error("Invalid file provided"));
+    }
+
+    const reader = new FileReader();
+
+    reader.onload = () => {
+      if (typeof reader.result === "string") {
+        resolve(reader.result);
+      } else {
+        reject(new Error("Failed to read file as Data URL"));
+      }
+    };
+
+    reader.onerror = () => reject(new Error("File reading error"));
+
+    try {
+      reader.readAsDataURL(file);
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
 
 export function ImageUpload({ value, onChange, ...props }: ImageUploadProps) {
   const [isPending, startTransition] = useTransition();
@@ -21,21 +49,45 @@ export function ImageUpload({ value, onChange, ...props }: ImageUploadProps) {
       const file = event.target.files?.[0];
       if (!file) return;
 
-      try {
-        // TODO(fcasibu): DAM
-        const imageUrl = URL.createObjectURL(file);
-        onChange(imageUrl);
-        toast({
-          title: "Success",
-          description: "Image uploaded successfully",
-        });
-      } catch {
-        toast({
-          title: "Error",
-          description: "Failed to upload image. Please try again.",
-          variant: "destructive",
-        });
+      const dataURL = await readFileAsDataURL(file);
+
+      const result = await uploadImage(
+        dataURL,
+        file.name.replace(/\.[^/.]+$/, "").toLowerCase(),
+      );
+
+      if (!result.success) {
+        switch (result.error.code) {
+          case "INVALID_IMAGE_FORMAT":
+            toast({
+              title: "Error",
+              description: "Invalid image format. Please try again.",
+              variant: "destructive",
+            });
+            break;
+          case "IMAGE_UPLOAD_ERROR":
+            toast({
+              title: "Error",
+              description: "Failed to upload image. Please try again.",
+              variant: "destructive",
+            });
+            break;
+          default:
+            toast({
+              title: "Error",
+              description: "An unexpected error occurred. Please try again.",
+              variant: "destructive",
+            });
+        }
+        return;
       }
+
+      toast({
+        title: "Success",
+        description: "Image uploaded successfully",
+      });
+
+      onChange(result.data);
     });
   };
 
@@ -43,7 +95,7 @@ export function ImageUpload({ value, onChange, ...props }: ImageUploadProps) {
     <div>
       <div className="flex flex-wrap gap-2 mb-2">
         {value && (
-          <img
+          <ImageComponent
             src={value}
             alt="Uploaded image"
             className="object-cover rounded aspect-square"

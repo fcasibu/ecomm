@@ -4,7 +4,9 @@ export type AppErrorCode =
   | "DUPLICATE_ERROR"
   | "INTERNAL_ERROR"
   | "MAX_TIER_REACHED_ERROR"
-  | "CONSTRAINT_ERROR";
+  | "CONSTRAINT_ERROR"
+  | "INVALID_IMAGE_FORMAT"
+  | "IMAGE_UPLOAD_ERROR";
 
 export interface AppError {
   message: string;
@@ -50,6 +52,16 @@ export function mapErrorToAppError(error: unknown): AppError {
         return {
           message: error.message,
           code: "CONSTRAINT_ERROR",
+        };
+      case "InvalidImageFormatError":
+        return {
+          message: error.message,
+          code: "INVALID_IMAGE_FORMAT",
+        };
+      case "ImageUploadError":
+        return {
+          message: error.message,
+          code: "IMAGE_UPLOAD_ERROR",
         };
       default:
         return {

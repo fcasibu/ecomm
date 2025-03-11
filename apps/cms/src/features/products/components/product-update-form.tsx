@@ -36,6 +36,7 @@ import {
 import { ImageUpload } from "@/components/image-upload";
 import type { ProductDTO } from "@ecomm/services/products/product-dto";
 import { deleteProductById, updateProductById } from "../services/mutations";
+import { ImageComponent } from "@ecomm/ui/image";
 
 export function ProductUpdateForm({ product }: { product: ProductDTO }) {
   const form = useForm<ProductUpdateInput>({
@@ -297,11 +298,14 @@ function ProductVariantsControl({
               onClick={() => handleVariantClick(item)}
             >
               <div className="w-24 h-24 aspect-square border border-black flex justify-center items-center cursor-pointer">
-                <img
+                <ImageComponent
                   src={item.image}
+                  className="object-cover aspect-square"
                   alt={`Product variant ${index + 1}`}
                   width={96}
                   height={96}
+                  loading="eager"
+                  fetchPriority="high"
                 />
               </div>
             </SheetTrigger>

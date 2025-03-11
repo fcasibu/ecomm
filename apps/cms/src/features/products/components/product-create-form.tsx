@@ -34,6 +34,7 @@ import {
   SheetTrigger,
 } from "@ecomm/ui/sheet";
 import { ImageUpload } from "@/components/image-upload";
+import { ImageComponent } from "@ecomm/ui/image";
 
 export function ProductCreateForm() {
   const form = useForm<z.infer<typeof productCreateSchema>>({
@@ -267,8 +268,9 @@ function ProductVariantsControl({
               onClick={() => handleVariantClick(item)}
             >
               <div className="w-24 h-24 aspect-square border border-black flex justify-center items-center cursor-pointer">
-                <img
+                <ImageComponent
                   src={item.image}
+                  className="object-cover aspect-square"
                   alt={`Product variant ${index + 1}`}
                   width={96}
                   height={96}

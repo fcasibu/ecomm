@@ -10,7 +10,6 @@ export class ProductsService {
 
   public async create(input: ProductCreateInput) {
     const sku = generateSku(input.name);
-    const randomSuffix = Date.now().toString(36).slice(-6);
 
     return await this.prismaClient.product.create({
       data: {
@@ -21,9 +20,9 @@ export class ProductsService {
         variants: {
           createMany: {
             data:
-              input.variants?.map((variant) => ({
+              input.variants?.map((variant, index) => ({
                 ...variant,
-                sku: `${sku}-${randomSuffix.toUpperCase()}`,
+                sku: `${sku}-${(Date.now() + index).toString(36).slice(-6)}`,
               })) ?? [],
           },
         },
@@ -120,7 +119,6 @@ export class ProductsService {
     });
 
     const sku = product?.sku;
-    const randomSuffix = Date.now().toString(36).slice(-6);
 
     return await this.prismaClient.product.update({
       where: { id: productId },
@@ -151,9 +149,9 @@ export class ProductsService {
           createMany: {
             data: input.variants
               .filter((variant) => !variant.sku)
-              .map((variant) => ({
+              .map((variant, index) => ({
                 ...variant,
-                sku: `${sku}-${randomSuffix.toUpperCase()}`,
+                sku: `${sku}-${(Date.now() + index).toString(36).slice(-6)}`,
               })),
           },
         },
