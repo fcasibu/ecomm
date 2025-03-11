@@ -18,6 +18,7 @@ import { CustomerDetailsStage } from "./customer-details-stage";
 import { AddressesStage } from "./addresses-stage";
 import { deleteCustomerById, updateCustomerById } from "../services/mutations";
 import { toast } from "@ecomm/ui/hooks/use-toast";
+import Link from "next/link";
 
 export function CustomerUpdateForm({
   customer,
@@ -95,21 +96,15 @@ export function CustomerUpdateForm({
         >
           <Tabs defaultValue={tab ?? "customer-details"}>
             <TabsList>
-              <TabsTrigger
-                onClick={() =>
-                  router.replace(`/customers/${customer.id}/customer-details`)
-                }
-                value="customer-details"
-              >
-                Customer details
+              <TabsTrigger asChild value="customer-details">
+                <Link href={`/customers/${customer.id}/customer-details`}>
+                  Customer details
+                </Link>
               </TabsTrigger>
-              <TabsTrigger
-                onClick={() =>
-                  router.replace(`/customers/${customer.id}/addresses`)
-                }
-                value="addresses"
-              >
-                Addresses
+              <TabsTrigger asChild value="addresses">
+                <Link href={`/customers/${customer.id}/addresses`}>
+                  Addresses
+                </Link>
               </TabsTrigger>
             </TabsList>
             <TabsContent value="customer-details">
