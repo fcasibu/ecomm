@@ -104,8 +104,6 @@ export function CategoryUpdateForm({
         title: "Category update",
         description: "Category was successfully updated",
       });
-
-      router.push("/categories");
     });
   };
 

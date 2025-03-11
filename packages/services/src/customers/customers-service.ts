@@ -1,5 +1,8 @@
 import { PrismaClient } from "@ecomm/db";
-import type { CustomerCreateInput } from "@ecomm/validations/customers/customers-schema";
+import type {
+  CustomerCreateInput,
+  CustomerUpdateInput,
+} from "@ecomm/validations/customers/customers-schema";
 import { hashPassword } from "../utils/password";
 
 export class CustomersService {
@@ -25,14 +28,26 @@ export class CustomersService {
         phone: input.phone,
         addresses: {
           createMany: {
-            data: input.addresses ?? [],
+            data: input.addresses,
           },
         },
       },
     });
   }
 
-  public async getById() {}
+  public async getById(customerId: string) {
+    return await this.prismaClient.customer.findUnique({
+      where: {
+        id: customerId,
+      },
+      include: {
+        addresses: true,
+      },
+      omit: {
+        password: true,
+      },
+    });
+  }
 
   public async getAll({
     page,
@@ -79,7 +94,45 @@ export class CustomersService {
     return { customers, totalCount };
   }
 
-  public async update() {}
+  public async update(customerId: string, input: CustomerUpdateInput) {
+    return await this.prismaClient.customer.update({
+      where: { id: customerId },
+      include: {
+        addresses: true,
+      },
+      omit: {
+        password: true,
+      },
+      data: {
+        firstName: input.firstName,
+        middleName: input.middleName,
+        lastName: input.lastName,
+        birthDate: input.birthDate,
+        email: input.email,
+        phone: input.phone,
+        addresses: {
+          deleteMany: {
+            customerId,
+            id: {
+              notIn: input.addresses
+                .map((address) => address.id)
+                .filter((id): id is string => Boolean(id)),
+            },
+          },
+          updateMany: input.addresses
+            .filter((address) => address.id)
+            .map((address) => ({
+              where: { id: address.id as string },
+              data: address,
+            })),
+
+          createMany: {
+            data: input.addresses.filter((address) => !address.id),
+          },
+        },
+      },
+    });
+  }
 
   public async delete() {}
 }

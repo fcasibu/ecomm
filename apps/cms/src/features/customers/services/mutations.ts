@@ -4,7 +4,10 @@ import "server-only";
 
 import { executeOperation } from "@ecomm/lib/execute-operation";
 import { customersController } from "@ecomm/services/registry";
-import type { CustomerCreateInput } from "@ecomm/validations/customers/customers-schema";
+import type {
+  CustomerCreateInput,
+  CustomerUpdateInput,
+} from "@ecomm/validations/customers/customers-schema";
 import { revalidateTag } from "next/cache";
 
 export const createCustomer = async (input: CustomerCreateInput) => {
@@ -14,6 +17,22 @@ export const createCustomer = async (input: CustomerCreateInput) => {
 
   if (result.success) {
     revalidateTag("customers");
+  }
+
+  return result;
+};
+
+export const updateCustomerById = async (
+  id: string,
+  input: CustomerUpdateInput,
+) => {
+  const result = await executeOperation(() =>
+    customersController.update(id, input),
+  );
+
+  if (result.success) {
+    revalidateTag("customers");
+    revalidateTag(`customer_${id}`);
   }
 
   return result;

@@ -1,6 +1,17 @@
 import { z } from "zod";
 
 export const addressCreateSchema = z.object({
+  id: z.string().optional(),
+  type: z.enum(["BILLING", "SHIPPING"]),
+  street: z.string(),
+  city: z.string(),
+  state: z.string(),
+  postalCode: z.string(),
+  country: z.string(),
+});
+
+export const addressUpdateSchema = z.object({
+  id: z.string().optional(),
   type: z.enum(["BILLING", "SHIPPING"]),
   street: z.string(),
   city: z.string(),
@@ -19,7 +30,9 @@ export const customerCreateSchema = z
     passwordConfirm: z.string().optional(),
     email: z.string().email(),
     phone: z.string().optional(),
-    addresses: z.array(addressCreateSchema).optional(),
+    addresses: z
+      .array(addressCreateSchema)
+      .max(5, "You can only have 5 maximum addresses"),
     authMode: z.boolean().optional(),
     currentStage: z
       .enum(["customer-details", "security", "addresses"])
@@ -63,11 +76,12 @@ export const customerUpdateSchema = z.object({
   firstName: z.string().optional(),
   middleName: z.string().optional(),
   lastName: z.string().optional(),
-  birthDate: z.string().date().optional(),
-  password: z.string().optional(),
+  birthDate: z.date().optional(),
   email: z.string().email(),
   phone: z.string().optional(),
-  addresses: z.array(addressCreateSchema).optional(),
+  addresses: z
+    .array(addressUpdateSchema)
+    .max(5, "You can only have 5 maximum addresses"),
 });
 
 export type CustomerCreateInput = z.infer<typeof customerCreateSchema>;

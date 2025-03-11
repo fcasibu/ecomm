@@ -70,8 +70,6 @@ export function ProductUpdateForm({ product }: { product: ProductDTO }) {
         title: "Product update",
         description: "Product was successfully updated",
       });
-
-      router.push("/products");
     });
   };
 

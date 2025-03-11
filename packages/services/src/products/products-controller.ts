@@ -65,8 +65,8 @@ export class ProductsController extends BaseController {
       return updatedProduct;
     } catch (error) {
       this.mapError(error, {
-        message: `Error updating category`,
-        notFoundMessage: `Error updating category: Product ID "${productId}" not found.`,
+        message: `Error updating product`,
+        notFoundMessage: `Error updating product: Product ID "${productId}" not found.`,
       });
     }
   }

@@ -129,22 +129,17 @@ export class ProductsService {
         variants: {
           deleteMany: {
             productId,
-            NOT: {
-              sku: {
-                in: input.variants
-                  .map((variant) => variant.sku)
-                  .filter((sku): sku is string => Boolean(sku)),
-              },
+            sku: {
+              notIn: input.variants
+                .map((variant) => variant.sku)
+                .filter((sku): sku is string => Boolean(sku)),
             },
           },
           updateMany: input.variants
             .filter((variant) => variant.sku)
             .map((variant) => ({
               where: { sku: variant.sku as string },
-              data: {
-                ...variant,
-                sku: variant.sku as string,
-              },
+              data: variant,
             })),
           createMany: {
             data: input.variants

@@ -10,9 +10,7 @@ import {
   FormMessage,
 } from "@ecomm/ui/form";
 import {
-  addressCreateSchema,
   customerCreateSchema,
-  type AddressCreateInput,
   type CustomerCreateInput,
 } from "@ecomm/validations/customers/customers-schema";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -21,39 +19,15 @@ import { useForm, useFormContext } from "react-hook-form";
 import { createCustomer } from "../services/mutations";
 import { toast } from "@ecomm/ui/hooks/use-toast";
 import { useRouter } from "next/navigation";
-import { Input } from "@ecomm/ui/input";
-import { Text, TypographyH1, TypographyH2 } from "@ecomm/ui/typography";
+import { TypographyH1, TypographyH2 } from "@ecomm/ui/typography";
 import { Separator } from "@ecomm/ui/separator";
-import { Loader, Plus } from "lucide-react";
-import { CalendarInput } from "@ecomm/ui/calendar-input";
+import { Loader } from "lucide-react";
 import { cn } from "@ecomm/ui/lib/utils";
 import { Button } from "@ecomm/ui/button";
 import { PasswordInput } from "@ecomm/ui/password-input";
 import { Switch } from "@ecomm/ui/switch";
-import {
-  Sheet,
-  SheetContent,
-  SheetFooter,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "@ecomm/ui/sheet";
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@ecomm/ui/select";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@ecomm/ui/table";
+import { CustomerDetailsStage } from "./customer-details-stage";
+import { AddressesStage } from "./addresses-stage";
 
 interface Stage {
   title: string;
@@ -195,7 +169,7 @@ export function CustomerCreateForm() {
           onSubmit={(e) => {
             e.preventDefault();
             e.stopPropagation();
-            form.handleSubmit(handleSubmit)(e);
+            return form.handleSubmit(handleSubmit)(e);
           }}
         >
           <div className="max-w-3xl mx-auto p-8 space-y-8">
@@ -327,87 +301,6 @@ function StageContent({ currentStage }: { currentStage: Stage["key"] }) {
   }
 }
 
-function CustomerDetailsStage() {
-  const formContext = useFormContext<CustomerCreateInput>();
-
-  return (
-    <div>
-      <TypographyH2 className="mb-4">Customer Details</TypographyH2>
-      <div className="space-y-4">
-        <FormField
-          control={formContext.control}
-          name="firstName"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>First Name</FormLabel>
-              <FormControl>
-                <Input type="text" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={formContext.control}
-          name="middleName"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Middle Name</FormLabel>
-              <FormControl>
-                <Input type="text" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={formContext.control}
-          name="lastName"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Last Name</FormLabel>
-              <FormControl>
-                <Input type="text" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={formContext.control}
-          name="email"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Email</FormLabel>
-              <FormControl>
-                <Input type="email" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={formContext.control}
-          name="birthDate"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Date of Birth</FormLabel>
-              <FormControl>
-                <CalendarInput value={field.value} onChange={field.onChange} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-      </div>
-    </div>
-  );
-}
-
 function SecurityStage() {
   const formContext = useFormContext<CustomerCreateInput>();
   const authMode = formContext.watch("authMode");
@@ -460,7 +353,12 @@ function SecurityStage() {
             <FormItem>
               <FormLabel>Password</FormLabel>
               <FormControl>
-                <PasswordInput disabled={authMode} {...field} />
+                <div className="flex flex-col gap-1">
+                  <PasswordInput disabled={authMode} {...field} />
+                  <FormDescription>
+                    You won&apos;t be able to change password afterwards.
+                  </FormDescription>
+                </div>
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -482,288 +380,5 @@ function SecurityStage() {
         />
       </div>
     </div>
-  );
-}
-
-function AddressesStage() {
-  const formContext = useFormContext<CustomerCreateInput>();
-
-  return (
-    <div>
-      <TypographyH2 className="mb-4">Addresses</TypographyH2>
-      <FormField
-        control={formContext.control}
-        name="addresses"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>Addresses</FormLabel>
-            <FormControl>
-              <AddressControl {...field} value={field.value ?? []} />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
-    </div>
-  );
-}
-
-interface AddressControlProps {
-  value: AddressCreateInput[];
-  onChange: (value: AddressCreateInput[]) => void;
-}
-
-function AddressControl({ value, onChange, ...props }: AddressControlProps) {
-  const [isOpen, setIsOpen] = useState(false);
-  const [currentItem, setCurrentItem] = useState<AddressCreateInput | null>(
-    null,
-  );
-
-  const form = useForm<AddressCreateInput>({
-    resolver: zodResolver(addressCreateSchema),
-    defaultValues: {
-      type: "BILLING",
-      street: "",
-      city: "",
-      state: "",
-      postalCode: "",
-      country: "",
-    },
-  });
-
-  const handleSubmit = (data: AddressCreateInput) => {
-    onChange(
-      currentItem
-        ? value.map((item) =>
-            JSON.stringify(item) === JSON.stringify(currentItem) ? data : item,
-          )
-        : [...value, data],
-    );
-
-    resetAndClose();
-  };
-
-  const handleRemove = () => {
-    if (!currentItem) return;
-
-    onChange(
-      value.filter(
-        (item) => JSON.stringify(item) !== JSON.stringify(currentItem),
-      ),
-    );
-    resetAndClose();
-  };
-
-  const resetAndClose = () => {
-    form.reset({});
-    setIsOpen(false);
-    setCurrentItem(null);
-  };
-
-  const handleAddressClick = (item: AddressCreateInput) => {
-    form.reset(item);
-    setCurrentItem(item);
-  };
-
-  const handleSheetOpenChange = (open: boolean) => {
-    form.reset({});
-    setIsOpen(open);
-
-    if (!open) {
-      setCurrentItem(null);
-    }
-  };
-
-  return (
-    <Sheet open={isOpen} onOpenChange={handleSheetOpenChange}>
-      <SheetTrigger asChild>
-        <Button variant="outline" type="button" className="flex">
-          <input className="sr-only" type="button" {...props} />
-          <Plus />
-          Add Address
-        </Button>
-      </SheetTrigger>
-
-      {!value?.length ? (
-        <Text>There are no addresses associated with this customer.</Text>
-      ) : (
-        <AddressTable
-          handleAddressClick={handleAddressClick}
-          addresses={value}
-        />
-      )}
-
-      <SheetContent>
-        <Form {...form}>
-          <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-
-              return form.handleSubmit(handleSubmit)(e);
-            }}
-            className="space-y-4"
-          >
-            <SheetHeader>
-              <SheetTitle>
-                {currentItem ? "Edit address" : "Create an address"}
-              </SheetTitle>
-            </SheetHeader>
-            <FormField
-              control={form.control}
-              name="type"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Type</FormLabel>
-                  <FormControl>
-                    <Select
-                      defaultValue={field.value}
-                      onValueChange={field.onChange}
-                    >
-                      <SelectTrigger className="w-[180px]">
-                        <SelectValue placeholder="Select type" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectGroup>
-                          <SelectItem value="BILLING">Billing</SelectItem>
-                          <SelectItem value="SHIPPING">Shipping</SelectItem>
-                        </SelectGroup>
-                      </SelectContent>
-                    </Select>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="city"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>City</FormLabel>
-                  <FormControl>
-                    <Input type="text" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="state"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>State</FormLabel>
-                  <FormControl>
-                    <Input type="text" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="street"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Street</FormLabel>
-                  <FormControl>
-                    <Input type="text" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="country"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Country</FormLabel>
-                  <FormControl>
-                    <Input type="text" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="postalCode"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Postal code</FormLabel>
-                  <FormControl>
-                    <Input type="text" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <SheetFooter className="flex gap-2">
-              {currentItem && (
-                <Button
-                  type="button"
-                  variant="destructive"
-                  onClick={handleRemove}
-                >
-                  Remove
-                </Button>
-              )}
-              <Button type="submit">
-                {currentItem ? "Update address" : "Save changes"}
-              </Button>
-            </SheetFooter>
-          </form>
-        </Form>
-      </SheetContent>
-    </Sheet>
-  );
-}
-
-function AddressTable({
-  addresses,
-  handleAddressClick,
-}: {
-  addresses: AddressCreateInput[];
-  handleAddressClick: (item: AddressCreateInput) => void;
-}) {
-  return (
-    <Table>
-      <TableHeader>
-        <TableRow>
-          <TableHead>Type</TableHead>
-          <TableHead>Street</TableHead>
-          <TableHead>City</TableHead>
-          <TableHead>State</TableHead>
-          <TableHead>Country</TableHead>
-          <TableHead>Postal code</TableHead>
-        </TableRow>
-      </TableHeader>
-      <TableBody>
-        {addresses.map((address, index) => (
-          <SheetTrigger asChild key={index}>
-            <TableRow
-              aria-label="Edit address"
-              className="cursor-pointer"
-              onClick={() => handleAddressClick(address)}
-            >
-              <TableCell>{address.type}</TableCell>
-              <TableCell>{address.street}</TableCell>
-              <TableCell>{address.city}</TableCell>
-              <TableCell>{address.state}</TableCell>
-              <TableCell>{address.country}</TableCell>
-              <TableCell>{address.postalCode}</TableCell>
-            </TableRow>
-          </SheetTrigger>
-        ))}
-      </TableBody>
-    </Table>
   );
 }

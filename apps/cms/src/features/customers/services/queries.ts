@@ -14,3 +14,10 @@ export const getCustomers = async (input: {
 
   return await executeOperation(() => customersController.getAll(input));
 };
+
+export const getCustomerById = async (id: string) => {
+  "use cache";
+  cacheTag("all", "customer", `customer_${id}`);
+
+  return await executeOperation(() => customersController.getById(id));
+};

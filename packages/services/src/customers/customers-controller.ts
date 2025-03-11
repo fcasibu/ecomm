@@ -6,7 +6,9 @@ import { logger } from "@ecomm/lib/logger";
 import { NotFoundError } from "../errors/not-found-error";
 import {
   customerCreateSchema,
+  customerUpdateSchema,
   type CustomerCreateInput,
+  type CustomerUpdateInput,
 } from "@ecomm/validations/customers/customers-schema";
 import type { CustomerDTO } from "./customer-dto";
 
@@ -49,11 +51,51 @@ export class CustomersController extends BaseController {
     }
   }
 
-  public async update() {}
+  public async update(customerId: string, input: CustomerUpdateInput) {
+    try {
+      logger.info({ customerId, input }, "Updating customer");
+      const result = customerUpdateSchema.safeParse(input);
+
+      if (!result.success) {
+        throw new ValidationError(result.error);
+      }
+
+      const updatedCustomer = CustomersController.mapCustomer(
+        await this.customersService.update(customerId, result.data),
+      );
+      logger.info({ updatedCustomer }, "Customer updated successfully");
+      return updatedCustomer;
+    } catch (error) {
+      this.mapError(error, {
+        message: `Error updating customer`,
+        notFoundMessage: `Error updating customer: Customer ID "${customerId}" not found.`,
+      });
+    }
+  }
 
   public async delete() {}
 
-  public async getById() {}
+  public async getById(id: string) {
+    try {
+      logger.info({ id }, "Fetching customer");
+
+      const customer = CustomersController.mapCustomer(
+        await this.customersService.getById(id),
+      );
+
+      if (!customer) {
+        throw new NotFoundError(`Customer ID "${id}" not found.`);
+      }
+
+      logger.info({ customer }, "Fetched customer");
+
+      return customer;
+    } catch (error) {
+      this.mapError(error, {
+        message: "Error fetching customer",
+      });
+    }
+  }
 
   public async getAll(input: {
     page?: number;
@@ -70,7 +112,7 @@ export class CustomersController extends BaseController {
         .filter((customer): customer is CustomerDTO => Boolean(customer));
 
       logger.info(
-        { categories: transformedCustomers, totalCount },
+        { customers: transformedCustomers, totalCount },
         "Customers fetched successfully",
       );
       return { customers: transformedCustomers, totalCount };
