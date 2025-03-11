@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "npx rimraf ./.next/cache/fetch-cache && next dev",
     "build": "next build",
+    "build:analyze": "ANALYZE=true next build",
     "start": "next start",
     "lint": "next lint --max-warnings 0",
     "check-types": "tsc --noEmit"
@@ -38,14 +39,15 @@
   "devDependencies": {
     "@ecomm/eslint-config": "workspace:*",
     "@ecomm/typescript-config": "workspace:*",
+    "@next/bundle-analyzer": "^15.2.2",
     "@types/node": "^22",
     "@types/react": "19.0.8",
     "@types/react-dom": "19.0.3",
     "eslint": "^9.20.0",
     "postcss": "^8",
-    "tailwindcss-animate": "^1.0.7",
-    "tailwindcss": "^3.4.1",
     "tailwind-merge": "^3.0.1",
+    "tailwindcss": "^3.4.1",
+    "tailwindcss-animate": "^1.0.7",
     "typescript": "5.7.3"
   }
 }
