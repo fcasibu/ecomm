@@ -14,21 +14,23 @@ datasource db {
 }
 
 model Customer {
-  id         String    @id @default(uuid())
-  userId     String?   @unique
-  firstName  String?
-  middleName String?
-  lastName   String?
-  birthDate  DateTime?
-  password   String?
-  email      String    @unique
-  phone      String?
-  addresses  Address[]
-  orders     Order[]
-  cart       Cart[]
-  wishlist   Wishlist?
-  createdAt  DateTime  @default(now())
-  updatedAt  DateTime  @updatedAt
+  id          String    @id @default(uuid())
+  userId      String?   @unique
+  anonymousId String?   @unique
+  firstName   String?
+  middleName  String?
+  lastName    String?
+  birthDate   DateTime?
+  password    String?
+  email       String    @unique
+  phone       String?
+  addresses   Address[]
+  orders      Order[]
+  cart        Cart[]
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@unique([userId, anonymousId])
 }
 
 enum AddressType {
@@ -37,33 +39,33 @@ enum AddressType {
 }
 
 model Address {
-  id         String      @id @default(uuid())
-  customer   Customer    @relation(fields: [customerId], references: [id], onDelete: Cascade)
-  customerId String
-  type       AddressType
-  street     String
-  city       String
-  state      String
-  postalCode String
-  country    String
-  createdAt  DateTime    @default(now())
-  updatedAt  DateTime    @updatedAt
+  id          String      @id @default(uuid())
+  customer    Customer?   @relation(fields: [customerId, anonymousId], references: [userId, anonymousId], onDelete: Cascade)
+  customerId  String?     @unique
+  anonymousId String?     @unique
+  type        AddressType
+  street      String
+  city        String
+  state       String
+  postalCode  String
+  country     String
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
 }
 
 model Product {
-  id            String           @id @default(uuid())
-  sku           String           @unique
-  name          String
-  description   String?
-  features      String[]
-  category      Category?        @relation(fields: [categoryId], references: [id], onDelete: SetNull)
-  categoryId    String?
-  createdAt     DateTime         @default(now())
-  updatedAt     DateTime         @updatedAt
-  orderItems    OrderItem[]
-  wishlistItems WishlistItem[]
-  variants      ProductVariant[]
-  CartItem      CartItem[]
+  id          String           @id @default(uuid())
+  sku         String           @unique
+  name        String
+  description String?
+  features    String[]
+  category    Category?        @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  categoryId  String?
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+  orderItems  OrderItem[]
+  variants    ProductVariant[]
+  CartItem    CartItem[]
 }
 
 model ProductVariant {
@@ -103,8 +105,9 @@ enum CartStatus {
 
 model Cart {
   id          String     @id @default(uuid())
-  customer    Customer?  @relation(fields: [customerId], references: [id])
-  customerId  String?
+  customer    Customer?  @relation(fields: [customerId, anonymousId], references: [userId, anonymousId], onDelete: SetNull)
+  customerId  String?    @unique
+  anonymousId String?    @unique
   items       CartItem[]
   totalAmount Decimal
   status      CartStatus @default(ACTIVE)
@@ -131,8 +134,9 @@ enum OrderStatus {
 
 model Order {
   id          String      @id @default(uuid())
-  customer    Customer    @relation(fields: [customerId], references: [id])
-  customerId  String
+  customer    Customer?   @relation(fields: [customerId, anonymousId], references: [userId, anonymousId], onDelete: SetNull)
+  customerId  String?     @unique
+  anonymousId String?     @unique
   items       OrderItem[]
   totalAmount Decimal
   currency    String
@@ -155,34 +159,26 @@ model OrderItem {
   updatedAt DateTime @updatedAt
 }
 
-model Wishlist {
-  id         String         @id @default(uuid())
-  customer   Customer       @relation(fields: [customerId], references: [id])
-  customerId String         @unique
-  items      WishlistItem[]
-}
-
-model WishlistItem {
-  id         String   @id @default(uuid())
-  wishlist   Wishlist @relation(fields: [wishlistId], references: [id])
-  wishlistId String
-  product    Product  @relation(fields: [productId], references: [id])
-  productId  String
-  addedAt    DateTime @default(now())
-}
-
 enum PaymentStatus {
   PENDING
   COMPLETED
   FAILED
 }
 
+enum PaymentMethodType {
+  CARD
+  APPLE_PAY
+  GOOGLE_PAY
+  PAYPAL
+}
+
 model Payment {
-  id            String        @id @default(uuid())
-  order         Order         @relation(fields: [orderId], references: [id])
-  orderId       String        @unique
+  id            String            @id @default(uuid())
+  order         Order             @relation(fields: [orderId], references: [id])
+  orderId       String            @unique
   transactionId String?
+  paymentMethod PaymentMethodType
   status        PaymentStatus
   amount        Decimal
-  createdAt     DateTime      @default(now())
+  createdAt     DateTime          @default(now())
 }
