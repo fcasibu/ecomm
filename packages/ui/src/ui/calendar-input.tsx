@@ -102,6 +102,7 @@ export function CalendarInput({ value, onChange }: CalendarInputProps) {
 
       {inputValue && (
         <button
+          aria-label="Clear input"
           type="button"
           onClick={clearInput}
           className="absolute right-10 top-1/2 -translate-y-1/2"
