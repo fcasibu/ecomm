@@ -139,6 +139,7 @@ export class CustomersController extends BaseController {
 
     return {
       ...customer,
+      email: customer.email!,
       birthDate: customer.birthDate?.toLocaleDateString() ?? "",
       updatedAt: customer.updatedAt.toLocaleDateString(),
       createdAt: customer.createdAt.toLocaleDateString(),

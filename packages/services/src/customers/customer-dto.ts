@@ -1,4 +1,5 @@
 export interface AddressDTO {
+  id: string;
   type: "BILLING" | "SHIPPING";
   street: string;
   city: string;

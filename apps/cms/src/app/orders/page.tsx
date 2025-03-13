@@ -1,0 +1,31 @@
+import { OrdersTable } from "@/features/orders/components/orders-table";
+import { OrdersTableSkeleton } from "@/features/orders/components/orders-table-skeleton";
+import { Button } from "@ecomm/ui/button";
+import { TypographyH1 } from "@ecomm/ui/typography";
+import Link from "next/link";
+import { Suspense } from "react";
+
+export default async function Page({
+  searchParams,
+}: {
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+}) {
+  return (
+    <div>
+      <TypographyH1 className="mb-8">Orders</TypographyH1>
+      <div>
+        <div className="flex gap-2 flex-wrap">
+          <Button asChild>
+            <Link href="/orders/create" className="mb-4 min-w-[220px]">
+              Create
+            </Link>
+          </Button>
+        </div>
+      </div>
+      <div className="mb-4"></div>
+      <Suspense fallback={<OrdersTableSkeleton />}>
+        <OrdersTable searchParams={searchParams} />
+      </Suspense>
+    </div>
+  );
+}

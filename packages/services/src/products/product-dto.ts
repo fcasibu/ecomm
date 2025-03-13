@@ -1,4 +1,4 @@
-export interface ProductVariant {
+export interface ProductVariantDTO {
   id: string;
   createdAt: string;
   updatedAt: string;
@@ -29,5 +29,5 @@ export interface ProductDTO {
     parentId: string | null;
     tier: number | null;
   } | null;
-  variants: ProductVariant[];
+  variants: ProductVariantDTO[];
 }

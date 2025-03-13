@@ -12,6 +12,10 @@ import {
 } from "./dam/cloudinary-service";
 import { ImageService } from "./image/image-service";
 import { ImageController } from "./image/image-controller";
+import { OrdersService } from "./orders/orders-service";
+import { OrdersController } from "./orders/orders-controller";
+import { CartService } from "./cart/cart-service";
+import { CartController } from "./cart/cart-controller";
 
 Container.register(CloudinaryService, [getCloudinaryConfig]);
 Container.register(ImageService, [Container.resolve(CloudinaryService)]);
@@ -35,3 +39,13 @@ Container.register(CustomersService, [prismaClient]);
 Container.register(CustomersController, [Container.resolve(CustomersService)]);
 
 export const customersController = Container.resolve(CustomersController);
+
+Container.register(OrdersService, [prismaClient]);
+Container.register(OrdersController, [Container.resolve(OrdersService)]);
+
+export const ordersController = Container.resolve(OrdersController);
+
+Container.register(CartService, [prismaClient]);
+Container.register(CartController, [Container.resolve(CartService)]);
+
+export const cartController = Container.resolve(CartController);

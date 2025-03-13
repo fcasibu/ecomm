@@ -7,9 +7,9 @@ import {
   TableRow,
 } from "@ecomm/ui/table";
 import { QueryPagination } from "@/components/query-pagination";
-import { PRODUCTS_PAGE_SIZE } from "@/features/categories/constants";
 import { Skeleton } from "@ecomm/ui/skeleton";
 import { Suspense } from "react";
+import { PRODUCTS_PAGE_SIZE } from "@/lib/constants";
 
 export function ProductsTableSkeleton() {
   const skeletonItems = Array.from({ length: PRODUCTS_PAGE_SIZE }, (_, i) => i);

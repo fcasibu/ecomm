@@ -14,6 +14,8 @@ import {
 import { Popover, PopoverContent, PopoverTrigger } from "@ecomm/ui/popover";
 import { useGetCategories } from "../features/categories/hooks/use-get-categories";
 import { cn } from "@ecomm/ui/lib/utils";
+import { useSearchParams } from "next/navigation";
+import { CATEGORIES_PAGE_SIZE } from "@/lib/constants";
 
 interface CategorySelectProps {
   value: string | undefined;
@@ -21,8 +23,12 @@ interface CategorySelectProps {
 }
 
 export function CategorySelect({ value, onChange }: CategorySelectProps) {
+  const searchParams = useSearchParams();
   const [open, setOpen] = useState(false);
-  const { result } = useGetCategories({});
+  const { result } = useGetCategories({
+    page: Number(searchParams.get("page") || "1"),
+    pageSize: CATEGORIES_PAGE_SIZE,
+  });
 
   const categories = result?.success ? result.data.categories : [];
 

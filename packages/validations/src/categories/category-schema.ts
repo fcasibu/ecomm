@@ -5,7 +5,7 @@ export const categoryCreateSchema = z.object({
   slug: z.string().min(1, "Category slug is required"),
   description: z.string().optional(),
   image: z.string().optional(),
-  parentId: z.string().optional(),
+  parentId: z.string().uuid().optional(),
 });
 
 export const categoryUpdateSchema = z.object({

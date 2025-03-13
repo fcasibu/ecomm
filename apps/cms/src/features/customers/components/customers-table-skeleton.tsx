@@ -1,4 +1,4 @@
-import { CUSTOMERS_PAGE_SIZE } from "@/features/categories/constants";
+import { CUSTOMERS_PAGE_SIZE } from "@/lib/constants";
 import { Skeleton } from "@ecomm/ui/skeleton";
 import {
   Table,

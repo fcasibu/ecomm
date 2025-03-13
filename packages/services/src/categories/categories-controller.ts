@@ -10,7 +10,7 @@ import { NotFoundError } from "../errors/not-found-error";
 import { logger } from "@ecomm/lib/logger";
 import type { CategoryDTO } from "./category-dto";
 import { BaseController } from "../base-controller";
-import type { ProductVariant } from "../products/product-dto";
+import type { ProductVariantDTO } from "../products/product-dto";
 
 export class CategoriesController extends BaseController {
   constructor(private readonly categoriesService: CategoriesService) {
@@ -189,7 +189,7 @@ export class CategoriesController extends BaseController {
           updatedAt: variant.updatedAt.toLocaleDateString(),
           createdAt: variant.createdAt.toLocaleDateString(),
           attributes:
-            variant.attributes?.valueOf() as ProductVariant["attributes"],
+            variant.attributes?.valueOf() as ProductVariantDTO["attributes"],
         })),
       })),
       children: category.children.map((child) => ({

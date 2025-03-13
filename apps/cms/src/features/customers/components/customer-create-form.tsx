@@ -14,7 +14,7 @@ import {
   type CustomerCreateInput,
 } from "@ecomm/validations/customers/customers-schema";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect, useState, useTransition } from "react";
+import { useEffect, useTransition } from "react";
 import { useForm, useFormContext } from "react-hook-form";
 import { createCustomer } from "../services/mutations";
 import { toast } from "@ecomm/ui/hooks/use-toast";
@@ -28,63 +28,15 @@ import { PasswordInput } from "@ecomm/ui/password-input";
 import { Switch } from "@ecomm/ui/switch";
 import { CustomerDetailsStage } from "./customer-details-stage";
 import { AddressesStage } from "./addresses-stage";
+import { useMultiStage } from "@/hooks/use-multi-stage";
 
-interface Stage {
-  title: string;
-  key: "customer-details" | "security" | "addresses";
-}
+type StageKey = "customer-details" | "security" | "addresses";
 
-const stages: Stage[] = [
+const stages = [
   { title: "Customer details", key: "customer-details" },
   { title: "Security", key: "security" },
   { title: "Addresses", key: "addresses" },
-];
-
-function useMultiStage(initialStage: Stage["key"]) {
-  const [currentStage, setCurrentStage] = useState<Stage["key"]>(initialStage);
-
-  const onNext = () => {
-    const currentIndex = stages.findIndex((s) => s.key === currentStage);
-    const newStage = stages[currentIndex + 1]?.key;
-
-    if (currentIndex < stages.length - 1 && newStage) {
-      setCurrentStage(newStage);
-    }
-  };
-
-  const onPrevious = () => {
-    const currentIndex = stages.findIndex((s) => s.key === currentStage);
-    const newStage = stages[currentIndex - 1]?.key;
-
-    if (currentIndex > 0 && newStage) {
-      setCurrentStage(newStage);
-    }
-  };
-
-  const goToStage = (stage: Stage["key"]) => {
-    setCurrentStage(stage);
-  };
-
-  const isStageDisabled = (stageKey: Stage["key"]) => {
-    const currentStageIndex = stages.findIndex(
-      (stage) => stage.key === currentStage,
-    );
-    const disabledStages = stages.filter(
-      (_, index) => index > currentStageIndex,
-    );
-
-    return disabledStages.some((stage) => stage.key === stageKey);
-  };
-
-  return {
-    currentStage,
-    onNext,
-    onPrevious,
-    goToStage,
-    isStageDisabled,
-    isLast: currentStage === "addresses",
-  };
-}
+] as const;
 
 export function CustomerCreateForm() {
   // TODO(fcasibu): useFormContext is not working properly with react compiler
@@ -107,14 +59,8 @@ export function CustomerCreateForm() {
     },
   });
 
-  const {
-    currentStage,
-    onNext,
-    onPrevious,
-    goToStage,
-    isStageDisabled,
-    isLast,
-  } = useMultiStage("customer-details");
+  const { currentStage, onNext, onPrevious, goToStage, isStageDisabled } =
+    useMultiStage(stages, "customer-details");
 
   const [isPending, startTransition] = useTransition();
   const router = useRouter();
@@ -124,7 +70,7 @@ export function CustomerCreateForm() {
   }, [currentStage, form]);
 
   const handleSubmit = (data: CustomerCreateInput) => {
-    if (!isLast) return onNext();
+    if (currentStage !== "addresses") return onNext();
 
     startTransition(async () => {
       const result = await createCustomer(data);
@@ -177,7 +123,6 @@ export function CustomerCreateForm() {
 
             <StageController
               onPrevious={onPrevious}
-              isLast={isLast}
               isPending={isPending}
               currentStage={currentStage}
             />
@@ -189,12 +134,11 @@ export function CustomerCreateForm() {
 }
 
 function StageController(props: {
-  currentStage: Stage["key"];
+  currentStage: StageKey;
   isPending: boolean;
-  isLast: boolean;
   onPrevious: () => void;
 }) {
-  const { currentStage, isPending, isLast, onPrevious } = props;
+  const { currentStage, isPending, onPrevious } = props;
 
   const router = useRouter();
 
@@ -224,7 +168,7 @@ function StageController(props: {
       <Button disabled={isPending} type="submit" className="min-w-[120px]">
         {isPending ? (
           <Loader className="animate-spin" size={16} />
-        ) : isLast ? (
+        ) : currentStage === "addresses" ? (
           "Submit"
         ) : (
           "Next"
@@ -239,9 +183,9 @@ function StageIndicator({
   goToStage,
   isStageDisabled,
 }: {
-  currentStage: Stage["key"];
-  goToStage: (stage: Stage["key"]) => void;
-  isStageDisabled: (stage: Stage["key"]) => boolean;
+  currentStage: StageKey;
+  goToStage: (stage: StageKey) => void;
+  isStageDisabled: (stage: StageKey) => boolean;
 }) {
   return (
     <div className="flex justify-between gap-6 w-full">
@@ -288,7 +232,7 @@ function StageIndicator({
   );
 }
 
-function StageContent({ currentStage }: { currentStage: Stage["key"] }) {
+function StageContent({ currentStage }: { currentStage: StageKey }) {
   switch (currentStage) {
     case "customer-details":
       return <CustomerDetailsStage />;

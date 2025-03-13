@@ -1,0 +1,916 @@
+"use client";
+
+import { useEffect, useState, useTransition } from "react";
+import { useFieldArray, useForm, useFormContext } from "react-hook-form";
+import { useRouter, useSearchParams } from "next/navigation";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Check, ChevronsUpDown, Loader, Trash } from "lucide-react";
+import type { ZodType } from "zod";
+
+import { Button } from "@ecomm/ui/button";
+import { cn } from "@ecomm/ui/lib/utils";
+import { Input } from "@ecomm/ui/input";
+import { Separator } from "@ecomm/ui/separator";
+import { Text, TypographyH1, TypographyH2 } from "@ecomm/ui/typography";
+import { toast } from "@ecomm/ui/hooks/use-toast";
+import { ImageComponent } from "@ecomm/ui/image";
+import { Popover, PopoverContent, PopoverTrigger } from "@ecomm/ui/popover";
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@ecomm/ui/form";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@ecomm/ui/select";
+import {
+  Sheet,
+  SheetTrigger,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+} from "@ecomm/ui/sheet";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@ecomm/ui/table";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@ecomm/ui/command";
+
+import { useMultiStage } from "@/hooks/use-multi-stage";
+import { QueryPagination } from "@/components/query-pagination";
+import { CustomersTableSkeleton } from "@/features/customers/components/customers-table-skeleton";
+import { CustomersTable } from "./customers-table";
+import { useGetCustomers } from "@/features/customers/hooks/use-get-customers";
+import { useGetProducts } from "@/features/products/hooks/use-get-products";
+import { createCart } from "@/features/cart/services/mutations";
+import { createOrder } from "../services/mutations";
+import { formatPrice } from "@ecomm/lib/format-price";
+
+import {
+  orderCreateSchema,
+  type OrderCreateInput,
+} from "@ecomm/validations/orders/orders-schema";
+import {
+  cartCreateSchema,
+  type CartCreateInput,
+} from "@ecomm/validations/cart/cart-schema";
+import type {
+  ProductDTO,
+  ProductVariantDTO,
+} from "@ecomm/services/products/product-dto";
+import { CUSTOMERS_PAGE_SIZE, PRODUCTS_PAGE_SIZE } from "@/lib/constants";
+
+type StageKey = "order-details" | "customer" | "cart";
+
+const stages = [
+  { title: "Order details", key: "order-details" },
+  { title: "Customer", key: "customer" },
+  { title: "Cart", key: "cart" },
+] as const;
+
+const stageAwareSchema = (currentStage: StageKey) => {
+  switch (currentStage) {
+    case "order-details":
+      return orderCreateSchema.pick({ currency: true });
+    case "customer":
+      return orderCreateSchema.pick({
+        customerId: true,
+        shippingAddressId: true,
+        billingAddressId: true,
+      });
+    case "cart":
+      return orderCreateSchema.omit({ cart: true });
+    default:
+      throw new Error("Invalid step");
+  }
+};
+
+export function OrderCreateForm() {
+  "use no memo";
+
+  const { currentStage, onNext, onPrevious, goToStage, isStageDisabled } =
+    useMultiStage(stages, "order-details");
+
+  const [isPending, startTransition] = useTransition();
+  const router = useRouter();
+
+  const form = useForm<OrderCreateInput>({
+    resolver: zodResolver(
+      stageAwareSchema(currentStage) as unknown as ZodType<OrderCreateInput>,
+    ),
+    defaultValues: {
+      currency: "USD",
+      customerId: undefined,
+      billingAddressId: undefined,
+      shippingAddressId: undefined,
+    },
+  });
+
+  const handleSubmit = (data: OrderCreateInput) => {
+    if (currentStage !== "cart") return onNext();
+
+    if (!data.preCart.itemsForDisplay.length) {
+      form.setError("preCart", {
+        message: "Cart must at least have one item",
+      });
+
+      return;
+    }
+
+    startTransition(async () => {
+      const cartResult = await createCart({
+        customerId: data.customerId,
+        items: data.preCart.items,
+      });
+
+      if (!cartResult.success) {
+        toast({
+          title: "Cart creation",
+          description: "There was an issue with creating a cart.",
+        });
+        return;
+      }
+
+      const result = await createOrder({
+        ...data,
+        cart: cartResult.data,
+      });
+
+      if (!result.success) {
+        toast({
+          title: "Order Creation",
+          description: "There was an issue with creating an order.",
+        });
+        return;
+      }
+
+      toast({
+        title: "Order creation",
+        description: "Order was successfully created",
+      });
+
+      router.push("/orders");
+    });
+  };
+
+  return (
+    <div>
+      <TypographyH1>Create an order</TypographyH1>
+      <StageIndicator
+        currentStage={currentStage}
+        goToStage={goToStage}
+        isStageDisabled={isStageDisabled}
+      />
+      <Form {...form}>
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            return form.handleSubmit(handleSubmit)(e);
+          }}
+        >
+          <div className="max-w-3xl mx-auto p-8 space-y-8">
+            <StageContent currentStage={currentStage} />
+            <StageController
+              onPrevious={onPrevious}
+              isPending={isPending}
+              currentStage={currentStage}
+            />
+          </div>
+        </form>
+      </Form>
+    </div>
+  );
+}
+
+interface StageControllerProps {
+  currentStage: StageKey;
+  isPending: boolean;
+  onPrevious: () => void;
+}
+
+function StageController({
+  currentStage,
+  isPending,
+  onPrevious,
+}: StageControllerProps) {
+  const router = useRouter();
+  const isFirstStage = currentStage === "order-details";
+  const isLastStage = currentStage === "cart";
+
+  const buttonText = isPending ? (
+    <Loader className="animate-spin" size={16} />
+  ) : isLastStage ? (
+    "Submit"
+  ) : (
+    "Next"
+  );
+
+  return (
+    <div className="flex justify-end gap-4">
+      <Button
+        variant="outline"
+        type="button"
+        onClick={() => router.push("/orders")}
+      >
+        Cancel
+      </Button>
+
+      {!isFirstStage && (
+        <Button
+          disabled={isPending}
+          type="button"
+          onClick={onPrevious}
+          className="min-w-[120px]"
+        >
+          {isPending ? (
+            <Loader className="animate-spin" size={16} />
+          ) : (
+            "Previous"
+          )}
+        </Button>
+      )}
+
+      <Button disabled={isPending} type="submit" className="min-w-[120px]">
+        {buttonText}
+      </Button>
+    </div>
+  );
+}
+
+interface StageIndicatorProps {
+  currentStage: StageKey;
+  goToStage: (stage: StageKey) => void;
+  isStageDisabled: (stage: StageKey) => boolean;
+}
+
+function StageIndicator({
+  currentStage,
+  goToStage,
+  isStageDisabled,
+}: StageIndicatorProps) {
+  return (
+    <div className="flex justify-between gap-6 w-full">
+      {stages.map((stage, index) => {
+        const isActive = currentStage === stage.key;
+        const isLastStage = index === stages.length - 1;
+
+        return (
+          <div
+            key={stage.key}
+            className={cn("flex items-center flex-1", {
+              "justify-end flex-grow-0": isLastStage,
+            })}
+          >
+            <div className="flex items-center gap-2 w-full">
+              <div className="flex w-[40px] h-[40px] justify-center items-center">
+                <Button
+                  aria-label={`Move to ${stage.title}`}
+                  variant="none"
+                  className={cn(
+                    "w-[40px] h-[40px] rounded-full outline outline-black flex justify-center items-center",
+                    {
+                      "outline-none outline-transparent bg-blue-500 outline-offset-0":
+                        isActive,
+                    },
+                  )}
+                  disabled={isStageDisabled(stage.key)}
+                  onClick={() => goToStage(stage.key)}
+                  size="icon"
+                >
+                  <span
+                    className={cn("text-black pointer-events-none text-lg", {
+                      "text-white": isActive,
+                    })}
+                  >
+                    {index + 1}
+                  </span>
+                </Button>
+              </div>
+              <span className="flex-shrink-0">{stage.title}</span>
+              {!isLastStage && (
+                <Separator className="bg-gray-500 !flex-shrink" />
+              )}
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+interface StageContentProps {
+  currentStage: StageKey;
+}
+
+function StageContent({ currentStage }: StageContentProps) {
+  switch (currentStage) {
+    case "order-details":
+      return <OrderDetailsStage />;
+    case "customer":
+      return <CustomerStage />;
+    case "cart":
+      return <CartStage />;
+    default:
+      throw new Error("Unknown stage");
+  }
+}
+
+function OrderDetailsStage() {
+  const formContext = useFormContext<OrderCreateInput>();
+
+  return (
+    <div>
+      <TypographyH2 className="mb-4">Order Details</TypographyH2>
+      <FormField
+        control={formContext.control}
+        name="currency"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Currency</FormLabel>
+            <FormControl>
+              <div>
+                <Select
+                  defaultValue={field.value}
+                  onValueChange={field.onChange}
+                >
+                  <SelectTrigger className="w-[180px]">
+                    <SelectValue placeholder="Select currency" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectGroup>
+                      <SelectItem value="USD">USD</SelectItem>
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
+                <FormDescription>
+                  You won&apos;t be able to change the currency later
+                </FormDescription>
+              </div>
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+    </div>
+  );
+}
+
+function CustomerStage() {
+  const searchParams = useSearchParams();
+  const page = Number(searchParams.get("page") || "1");
+  const formContext = useFormContext<OrderCreateInput>();
+
+  const { result, isLoading } = useGetCustomers({
+    page,
+    pageSize: CUSTOMERS_PAGE_SIZE,
+  });
+
+  return (
+    <div>
+      <TypographyH2 className="mb-4">Customer</TypographyH2>
+      <div className="space-y-4">
+        {isLoading && <CustomersTableSkeleton />}
+        {!isLoading && result.success && (
+          <FormField
+            control={formContext.control}
+            name="customerId"
+            render={({ field }) => (
+              <FormItem>
+                <FormDescription>
+                  Select a customer from the table below
+                </FormDescription>
+                <FormMessage />
+                <FormControl>
+                  <div>
+                    <CustomersTable
+                      value={field.value}
+                      onChange={field.onChange}
+                      customers={result.data.customers}
+                    />
+                    {!field.value && (
+                      <QueryPagination totalPages={result.data.count} />
+                    )}
+                  </div>
+                </FormControl>
+              </FormItem>
+            )}
+          />
+        )}
+      </div>
+    </div>
+  );
+}
+
+function CartStage() {
+  const [open, setOpen] = useState(false);
+  const [popoverStates, setPopoverStates] = useState<boolean[]>([]);
+  const formContext = useFormContext<OrderCreateInput>();
+  const searchParams = useSearchParams();
+  const page = Number(searchParams.get("page") || "1");
+
+  const { result, isLoading } = useGetProducts({
+    page,
+    pageSize: PRODUCTS_PAGE_SIZE,
+  });
+
+  const products =
+    (!isLoading && result.success ? result.data.products : []) ?? [];
+  const cart = formContext.watch("preCart");
+
+  const form = useForm<CartCreateInput>({
+    resolver: zodResolver(cartCreateSchema),
+    defaultValues: { items: [{ sku: "", productId: "", quantity: 1 }] },
+  });
+
+  const { fields, append, remove } = useFieldArray({
+    control: form.control,
+    name: "items",
+  });
+
+  useEffect(() => {
+    setPopoverStates(Array(fields.length).fill(false));
+  }, [fields.length]);
+
+  const getProductById = (productId: string) => {
+    return products.find((p) => p.id === productId);
+  };
+
+  const handlePopoverToggle = (index: number) => {
+    setPopoverStates((prev) => {
+      const newStates = [...prev];
+      newStates[index] = !newStates[index];
+      return newStates;
+    });
+  };
+
+  const closePopover = (index: number) => {
+    setPopoverStates((prev) => {
+      if (index >= prev.length) return prev;
+      const newStates = [...prev];
+      newStates[index] = false;
+      return newStates;
+    });
+  };
+
+  const mergeProductQuantities = (existingIndex: number, newIndex: number) => {
+    const currentQuantity =
+      form.getValues(`items.${existingIndex}.quantity`) || 0;
+    const newQuantity = form.getValues(`items.${newIndex}.quantity`) || 1;
+    form.setValue(
+      `items.${existingIndex}.quantity`,
+      currentQuantity + newQuantity,
+    );
+  };
+
+  const updateProductSelection = (product: ProductDTO, index: number) => {
+    form.setValue(`items.${index}.productId`, product.id);
+
+    if (product.variants.length === 1) {
+      form.setValue(`items.${index}.sku`, product.variants[0]?.sku || "");
+    } else {
+      form.setValue(`items.${index}.sku`, "");
+    }
+
+    closePopover(index);
+  };
+
+  const handleSelectProduct = (product: ProductDTO, index: number) => {
+    if (index >= fields.length) return;
+
+    const existingIndex = fields.findIndex(
+      (_, i) =>
+        i !== index && form.getValues(`items.${i}.productId`) === product.id,
+    );
+
+    if (existingIndex >= 0) {
+      mergeProductQuantities(existingIndex, index);
+      remove(index);
+
+      toast({
+        title: "Products merged",
+        description: `Combined quantities for ${product.name}`,
+      });
+    } else {
+      updateProductSelection(product, index);
+    }
+  };
+
+  const handleSelectVariant = (index: number, variant: ProductVariantDTO) => {
+    form.setValue(`items.${index}.sku`, variant.sku);
+
+    const existingIndex = fields.findIndex(
+      (_, i) =>
+        i !== index &&
+        form.getValues(`items.${i}.productId`) ===
+          form.getValues(`items.${index}.productId`) &&
+        form.getValues(`items.${i}.sku`) === variant.sku,
+    );
+
+    if (existingIndex >= 0) {
+      mergeProductQuantities(existingIndex, index);
+      remove(index);
+
+      const product = products.find(
+        (p) => p.id === form.getValues(`items.${existingIndex}.productId`),
+      );
+
+      toast({
+        title: "Products merged",
+        description: `Combined quantities for ${product?.name || "selected product"}`,
+      });
+    }
+  };
+
+  const handleSubmit = (data: CartCreateInput) => {
+    const cartItemsForDisplay = data.items.map((item) => {
+      const product = products.find(
+        (product) => product.id === item.productId,
+      )!;
+      const variant = product.variants.find(
+        (variant) => variant.sku === item.sku,
+      )!;
+
+      return {
+        ...item,
+        image: variant.image,
+        name: product.name,
+        price: variant.price,
+        stock: variant.stock,
+        currencyCode: variant.currencyCode,
+      };
+    });
+
+    formContext.setValue("preCart", {
+      itemsForDisplay: cartItemsForDisplay,
+      ...data,
+    });
+
+    setOpen(false);
+  };
+
+  const renderVariantStock = (stock: number) => {
+    if (stock <= 0) return "Out of stock";
+    if (stock < 5) return `Low stock: ${stock} remaining`;
+
+    return `In stock: ${stock} available`;
+  };
+
+  const getStockTextColor = (stock: number) => {
+    if (stock <= 0) return "text-red-500";
+    if (stock < 5) return "text-amber-500";
+
+    return "text-green-500";
+  };
+
+  return (
+    <Sheet open={open} onOpenChange={setOpen}>
+      <div>
+        <SheetTrigger asChild>
+          <Button variant="outline">+ Add custom cart item</Button>
+        </SheetTrigger>
+
+        {formContext.formState.errors.preCart && (
+          <FormMessage>
+            {formContext.formState.errors.preCart.message}
+          </FormMessage>
+        )}
+
+        {cart && cart.itemsForDisplay.length > 0 && (
+          <CartDetails cart={cart} formContext={formContext} />
+        )}
+      </div>
+
+      <SheetContent side="right" className="w-[500px] sm:w-[540px]">
+        <Form {...form}>
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+
+              return form.handleSubmit(handleSubmit)(e);
+            }}
+            className="space-y-4 overflow-y-auto h-full"
+          >
+            <div>
+              <SheetHeader>
+                <SheetTitle>Add Items to Cart</SheetTitle>
+              </SheetHeader>
+              {form.formState.errors.items && (
+                <FormMessage>
+                  {form.formState.errors.items.message ||
+                    form.formState.errors.items.root?.message}
+                </FormMessage>
+              )}
+            </div>
+
+            {fields.map((rootField, index) => (
+              <div key={rootField.id} className="space-y-2 border p-4 rounded">
+                <FormField
+                  control={form.control}
+                  name={`items.${index}.productId`}
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Product</FormLabel>
+                      <FormControl>
+                        <Popover
+                          open={popoverStates[index]}
+                          onOpenChange={() => handlePopoverToggle(index)}
+                        >
+                          <PopoverTrigger asChild>
+                            <Button
+                              variant="outline"
+                              role="combobox"
+                              aria-expanded={popoverStates[index]}
+                              className="w-full justify-between"
+                            >
+                              {products.find((p) => p.id === field.value)
+                                ?.name ?? "Search by SKU or Variant Key"}
+                              <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                            </Button>
+                          </PopoverTrigger>
+                          <PopoverContent className="w-full p-0">
+                            <Command>
+                              <CommandInput placeholder="Search by SKU or Variant Key..." />
+                              <CommandList>
+                                <CommandEmpty>No products found.</CommandEmpty>
+                                <CommandGroup>
+                                  {products.map((product) => (
+                                    <CommandItem
+                                      key={`${product.id}-${rootField.id}`}
+                                      onSelect={() => {
+                                        handleSelectProduct(product, index);
+                                        field.onChange(product.id);
+                                      }}
+                                    >
+                                      <Check
+                                        className={cn(
+                                          "mr-2 h-4 w-4",
+                                          field.value === product.id
+                                            ? "opacity-100"
+                                            : "opacity-0",
+                                        )}
+                                      />
+                                      {product.name}
+                                    </CommandItem>
+                                  ))}
+                                </CommandGroup>
+                              </CommandList>
+                            </Command>
+                          </PopoverContent>
+                        </Popover>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                {form.getValues(`items.${index}.productId`) && (
+                  <FormField
+                    control={form.control}
+                    name={`items.${index}.sku`}
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Variant</FormLabel>
+                        <div className="space-y-3">
+                          {getProductById(
+                            form.getValues(`items.${index}.productId`),
+                          )?.variants.map((variant) => {
+                            const isSelected = field.value === variant.sku;
+                            const isOutOfStock = variant.stock <= 0;
+
+                            return (
+                              <div
+                                key={variant.sku}
+                                className={cn(
+                                  "border rounded p-3 cursor-pointer flex items-start",
+                                  isSelected
+                                    ? "border-primary bg-primary/5"
+                                    : "border-gray-200",
+                                  isOutOfStock ? "opacity-50" : "",
+                                )}
+                                onClick={() => {
+                                  if (!isOutOfStock) {
+                                    field.onChange(variant.sku);
+                                    handleSelectVariant(index, variant);
+                                  }
+                                }}
+                              >
+                                <div className="flex-shrink-0 mr-3">
+                                  {variant.image && (
+                                    <div className="rounded overflow-hidden bg-gray-100 border">
+                                      <ImageComponent
+                                        src={variant.image}
+                                        alt="Product Variant"
+                                        width={64}
+                                        height={64}
+                                        className="aspect-square object-cover"
+                                      />
+                                    </div>
+                                  )}
+                                </div>
+                                <div className="flex-1">
+                                  <div className="flex justify-between mb-1">
+                                    <div className="font-medium">
+                                      {variant.sku}
+                                    </div>
+                                    <div className="font-semibold">
+                                      {formatPrice(
+                                        variant.price,
+                                        variant.currencyCode,
+                                      )}
+                                    </div>
+                                  </div>
+
+                                  {variant.attributes && (
+                                    <div className="text-sm text-gray-500 mb-1">
+                                      {variant.attributes.title}:{" "}
+                                      {variant.attributes.value}
+                                    </div>
+                                  )}
+
+                                  <div
+                                    className={cn(
+                                      "text-sm",
+                                      getStockTextColor(variant.stock),
+                                    )}
+                                  >
+                                    {renderVariantStock(variant.stock)}
+                                  </div>
+
+                                  {isOutOfStock && (
+                                    <div className="text-xs text-red-500 mt-1">
+                                      This variant cannot be selected
+                                    </div>
+                                  )}
+
+                                  {isSelected && (
+                                    <div className="absolute top-2 right-2">
+                                      <Check className="h-4 w-4 text-primary" />
+                                    </div>
+                                  )}
+                                </div>
+                              </div>
+                            );
+                          })}
+                        </div>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                )}
+
+                <FormField
+                  control={form.control}
+                  name={`items.${index}.quantity`}
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Quantity</FormLabel>
+                      <FormControl>
+                        <Input
+                          type="number"
+                          min="1"
+                          {...field}
+                          onChange={(e) =>
+                            field.onChange(e.target.valueAsNumber)
+                          }
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <Button
+                  type="button"
+                  onClick={() => remove(index)}
+                  variant="outline"
+                  className="w-full"
+                >
+                  Remove Item
+                </Button>
+              </div>
+            ))}
+
+            <div className="flex space-x-4">
+              <Button
+                type="button"
+                onClick={() => append({ sku: "", productId: "", quantity: 1 })}
+                variant="outline"
+              >
+                Add Another Item
+              </Button>
+              <Button type="submit">Add to Cart</Button>
+            </div>
+          </form>
+        </Form>
+      </SheetContent>
+    </Sheet>
+  );
+}
+
+interface CartDetailsProps {
+  cart: OrderCreateInput["preCart"];
+  formContext: ReturnType<typeof useFormContext<OrderCreateInput>>;
+}
+
+function CartDetails({ cart, formContext }: CartDetailsProps) {
+  const total = cart.itemsForDisplay.reduce(
+    (sum, item) => sum + item.price * item.quantity,
+    0,
+  );
+
+  const currencyCode = cart.itemsForDisplay[0]?.currencyCode || "USD";
+
+  const removeItem = (itemSku: string) => {
+    const updatedItems = cart.itemsForDisplay.filter(
+      (item) => item.sku !== itemSku,
+    );
+    formContext.setValue("preCart.itemsForDisplay", updatedItems);
+  };
+
+  return (
+    <div className="space-y-4">
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead>Product</TableHead>
+            <TableHead className="text-right">Unit Price</TableHead>
+            <TableHead className="text-right">Qty</TableHead>
+            <TableHead className="text-right">Total</TableHead>
+            <TableHead />
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {cart.itemsForDisplay.map((item) => (
+            <TableRow key={item.sku}>
+              <TableCell className="flex gap-2">
+                <ImageComponent
+                  src={item.image}
+                  alt={item.name}
+                  width={50}
+                  height={50}
+                  className="inline-block mr-2 aspect-square"
+                />
+                <div>
+                  <Text size="sm" className="mb-0">
+                    {item.name}
+                  </Text>
+                  <Text className="text-gray-500 my-0 text-[10px]">
+                    {item.sku}
+                  </Text>
+                </div>
+              </TableCell>
+              <TableCell className="text-right">
+                {item.price.toFixed(2)}
+              </TableCell>
+              <TableCell className="text-right">{item.quantity}</TableCell>
+              <TableCell className="text-right">
+                {(item.price * item.quantity).toFixed(2)}
+              </TableCell>
+              <TableCell>
+                <Button
+                  variant="outline"
+                  size="icon"
+                  className="ml-2"
+                  type="button"
+                  onClick={() => removeItem(item.sku)}
+                  aria-label={`Remove ${item.name} from cart`}
+                >
+                  <Trash className="h-4 w-4" />
+                </Button>
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+      <div className="flex justify-end">
+        <div className="space-y-2">
+          <p className="font-semibold">
+            Total: {formatPrice(total, currencyCode)}
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+}

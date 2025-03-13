@@ -1,3 +1,5 @@
+"use client";
+
 import useSWR from "swr";
 import type { Result } from "@ecomm/lib/execute-operation";
 import { createQueryString } from "@ecomm/lib/create-query-string";

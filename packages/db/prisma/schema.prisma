@@ -22,15 +22,13 @@ model Customer {
   lastName    String?
   birthDate   DateTime?
   password    String?
-  email       String    @unique
+  email       String?   @unique
   phone       String?
   addresses   Address[]
   orders      Order[]
   cart        Cart[]
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
-
-  @@unique([userId, anonymousId])
 }
 
 enum AddressType {
@@ -40,9 +38,10 @@ enum AddressType {
 
 model Address {
   id          String      @id @default(uuid())
-  customer    Customer?   @relation(fields: [customerId, anonymousId], references: [userId, anonymousId], onDelete: Cascade)
-  customerId  String?     @unique
-  anonymousId String?     @unique
+  customer    Customer?   @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  customerId  String?
+  userId      String?
+  anonymousId String?
   type        AddressType
   street      String
   city        String
@@ -63,9 +62,8 @@ model Product {
   categoryId  String?
   createdAt   DateTime         @default(now())
   updatedAt   DateTime         @updatedAt
-  orderItems  OrderItem[]
   variants    ProductVariant[]
-  CartItem    CartItem[]
+  cartItems   CartItem[]
 }
 
 model ProductVariant {
@@ -105,9 +103,10 @@ enum CartStatus {
 
 model Cart {
   id          String     @id @default(uuid())
-  customer    Customer?  @relation(fields: [customerId, anonymousId], references: [userId, anonymousId], onDelete: SetNull)
-  customerId  String?    @unique
-  anonymousId String?    @unique
+  customer    Customer?  @relation(fields: [customerId], references: [id], onDelete: SetNull)
+  customerId  String?
+  userId      String?
+  anonymousId String?
   items       CartItem[]
   totalAmount Decimal
   status      CartStatus @default(ACTIVE)
@@ -119,6 +118,7 @@ model CartItem {
   id        String   @id @default(uuid())
   product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
   productId String
+  sku       String
   quantity  Int
   cart      Cart     @relation(fields: [cartId], references: [id], onDelete: Cascade)
   cartId    String
@@ -133,30 +133,35 @@ enum OrderStatus {
 }
 
 model Order {
-  id          String      @id @default(uuid())
-  customer    Customer?   @relation(fields: [customerId, anonymousId], references: [userId, anonymousId], onDelete: SetNull)
-  customerId  String?     @unique
-  anonymousId String?     @unique
-  items       OrderItem[]
-  totalAmount Decimal
-  currency    String
-  status      OrderStatus
-  paymentId   String?
-  createdAt   DateTime    @default(now())
-  updatedAt   DateTime    @updatedAt
-  payment     Payment?
+  id                String      @id @default(uuid())
+  customer          Customer?   @relation(fields: [customerId], references: [id], onDelete: SetNull)
+  customerId        String?
+  userId            String?
+  anonymousId       String?
+  shippingAddressId String
+  billingAddressId  String
+  items             OrderItem[]
+  totalAmount       Decimal
+  currency          String
+  status            OrderStatus @default(PENDING)
+  paymentId         String?
+  createdAt         DateTime    @default(now())
+  updatedAt         DateTime    @updatedAt
+  payment           Payment?
 }
 
 model OrderItem {
-  id        String   @id @default(uuid())
-  order     Order    @relation(fields: [orderId], references: [id])
-  orderId   String
-  product   Product  @relation(fields: [productId], references: [id])
-  productId String
-  quantity  Int
-  price     Decimal
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id           String   @id @default(uuid())
+  order        Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  orderId      String
+  sku          String
+  image        String
+  name         String
+  quantity     Int
+  currencyCode String
+  price        Decimal
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 }
 
 enum PaymentStatus {

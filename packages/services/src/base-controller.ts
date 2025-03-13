@@ -11,25 +11,29 @@ export interface ErrorOptions {
 }
 
 export class BaseController {
-  protected mapError(
-    error: unknown,
-    options?: ErrorOptions,
-  ): never {
-    const prismaError = error as { code?: string; meta?: { target?: string[] } };
-    
+  protected mapError(error: unknown, options?: ErrorOptions): never {
+    const prismaError = error as {
+      code?: string;
+      meta?: { target?: string[] };
+    };
+
     switch (prismaError?.code) {
       case "P2025": {
         logger.error({ error }, options?.notFoundMessage);
-        throw new NotFoundError(options?.notFoundMessage ?? "Resource not found");
+        throw new NotFoundError(
+          options?.notFoundMessage ?? "Resource not found",
+        );
       }
       case "P2002": {
         const target = prismaError.meta?.target?.join(", ") ?? "";
-        const message = options?.duplicateMessage ?? `Duplicate entry for ${target}`;
+        const message =
+          options?.duplicateMessage ?? `Duplicate entry for ${target}`;
         logger.error({ error }, message);
         throw new DuplicateError(message);
       }
       case "P2003": {
-        const message = options?.constraintMessage ?? "Operation violates constraints";
+        const message =
+          options?.constraintMessage ?? "Operation violates constraints";
         logger.error({ error }, message);
         throw new ConstraintError(message);
       }

@@ -1,8 +1,8 @@
-import { CUSTOMERS_PAGE_SIZE } from "@/features/categories/constants";
 import { TypographyH2 } from "@ecomm/ui/typography";
 import { QueryPagination } from "@/components/query-pagination";
 import { CustomersTableClient } from "./customers-table-client";
 import { getCustomers } from "../services/queries";
+import { CUSTOMERS_PAGE_SIZE } from "@/lib/constants";
 
 export async function CustomersTable({
   searchParams,

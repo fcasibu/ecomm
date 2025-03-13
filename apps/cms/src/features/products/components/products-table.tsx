@@ -1,8 +1,8 @@
 import { getProducts } from "../services/queries";
-import { PRODUCTS_PAGE_SIZE } from "@/features/categories/constants";
 import { TypographyH2 } from "@ecomm/ui/typography";
 import { QueryPagination } from "@/components/query-pagination";
 import { ProductsTableClient } from "./products-table-client";
+import { PRODUCTS_PAGE_SIZE } from "@/lib/constants";
 
 export async function ProductsTable({
   searchParams,

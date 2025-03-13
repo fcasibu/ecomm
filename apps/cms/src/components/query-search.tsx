@@ -24,6 +24,8 @@ export function QuerySearch({ label = "Search" }: { label?: string }) {
       className="flex gap-2"
       onSubmit={(e) => {
         e.preventDefault();
+        e.stopPropagation();
+
         startTransition(async () => {
           await setPage("1");
           hasSearched.current = true;

@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 export const addressSchema = z.object({
-  id: z.string().optional(),
+  id: z.string().uuid().optional(),
   type: z.enum(["BILLING", "SHIPPING"]),
   street: z.string().min(1, "Street is required"),
   city: z.string().min(1, "City is required"),

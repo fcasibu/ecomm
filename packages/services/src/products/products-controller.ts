@@ -8,7 +8,7 @@ import type { Product, ProductsService } from "./products-service";
 import { ValidationError } from "../errors/validation-error";
 import { BaseController } from "../base-controller";
 import { logger } from "@ecomm/lib/logger";
-import type { ProductDTO, ProductVariant } from "./product-dto";
+import type { ProductDTO, ProductVariantDTO } from "./product-dto";
 import { NotFoundError } from "../errors/not-found-error";
 
 export class ProductsController extends BaseController {
@@ -147,7 +147,7 @@ export class ProductsController extends BaseController {
         updatedAt: variant.updatedAt.toLocaleDateString(),
         price: variant.price.toNumber(),
         attributes:
-          variant.attributes?.valueOf() as ProductVariant["attributes"],
+          variant.attributes?.valueOf() as ProductVariantDTO["attributes"],
       })),
       ...(product.category
         ? {

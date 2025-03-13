@@ -10,8 +10,8 @@ import {
 } from "@ecomm/ui/card";
 import Link from "next/link";
 import { ChevronRightIcon, LayersIcon } from "lucide-react";
-import { CATEGORIES_PAGE_SIZE } from "../constants";
 import { QueryPagination } from "@/components/query-pagination";
+import { CATEGORIES_PAGE_SIZE } from "@/lib/constants";
 
 export async function CategoriesCards({
   searchParams,

@@ -22,16 +22,14 @@ export function ImageComponent({ src, loader, ...props }: CustomImageProps) {
       : undefined);
 
   return (
-    <div className="relative w-full h-full">
-      <NextImage
-        {...props}
-        src={src || PLACEHOLDER_SRC}
-        loader={resolvedLoader}
-        blurDataURL={BLUR_DATA_URL}
-        placeholder="blur"
-        decoding={props.loading === "eager" ? "sync" : "async"}
-      />
-    </div>
+    <NextImage
+      {...props}
+      src={src || PLACEHOLDER_SRC}
+      loader={resolvedLoader}
+      blurDataURL={BLUR_DATA_URL}
+      placeholder="blur"
+      decoding={props.loading === "eager" ? "sync" : "async"}
+    />
   );
 }
 
