@@ -20,7 +20,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader, Plus } from "lucide-react";
 import { useForm } from "react-hook-form";
 import type { z } from "zod";
-import { useState, useTransition } from "react";
+import { Suspense, useState, useTransition } from "react";
 import { createProduct } from "../services/mutations";
 import { toast } from "@ecomm/ui/hooks/use-toast";
 import { useRouter } from "next/navigation";
@@ -35,6 +35,7 @@ import {
 } from "@ecomm/ui/sheet";
 import { ImageUpload } from "@/components/image-upload";
 import { ImageComponent } from "@ecomm/ui/image";
+import { CategorySelectSkeleton } from "@/components/category-select-skeleton";
 
 export function ProductCreateForm() {
   const form = useForm<z.infer<typeof productCreateSchema>>({
@@ -141,10 +142,12 @@ export function ProductCreateForm() {
               <FormItem>
                 <FormLabel>Category</FormLabel>
                 <FormControl>
-                  <CategorySelect
-                    value={field.value}
-                    onChange={(categories) => field.onChange(categories)}
-                  />
+                  <Suspense fallback={<CategorySelectSkeleton />}>
+                    <CategorySelect
+                      value={field.value}
+                      onChange={(categories) => field.onChange(categories)}
+                    />
+                  </Suspense>
                 </FormControl>
                 <FormMessage />
               </FormItem>

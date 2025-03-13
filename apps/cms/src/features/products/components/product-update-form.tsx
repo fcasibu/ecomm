@@ -21,7 +21,7 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader, Plus } from "lucide-react";
 import { useForm } from "react-hook-form";
-import { useState, useTransition } from "react";
+import { Suspense, useState, useTransition } from "react";
 import { toast } from "@ecomm/ui/hooks/use-toast";
 import { useRouter } from "next/navigation";
 import { TypographyH1 } from "@ecomm/ui/typography";
@@ -37,6 +37,7 @@ import { ImageUpload } from "@/components/image-upload";
 import type { ProductDTO } from "@ecomm/services/products/product-dto";
 import { deleteProductById, updateProductById } from "../services/mutations";
 import { ImageComponent } from "@ecomm/ui/image";
+import { CategorySelectSkeleton } from "@/components/category-select-skeleton";
 
 export function ProductUpdateForm({ product }: { product: ProductDTO }) {
   const form = useForm<ProductUpdateInput>({
@@ -158,10 +159,12 @@ export function ProductUpdateForm({ product }: { product: ProductDTO }) {
               <FormItem>
                 <FormLabel>Category</FormLabel>
                 <FormControl>
-                  <CategorySelect
-                    value={field.value}
-                    onChange={(categories) => field.onChange(categories)}
-                  />
+                  <Suspense fallback={<CategorySelectSkeleton />}>
+                    <CategorySelect
+                      value={field.value}
+                      onChange={(categories) => field.onChange(categories)}
+                    />
+                  </Suspense>
                 </FormControl>
                 <FormMessage />
               </FormItem>

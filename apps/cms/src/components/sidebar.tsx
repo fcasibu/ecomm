@@ -11,8 +11,6 @@ import {
   Package,
   Users,
   ShoppingCart,
-  Heart,
-  CreditCard,
   List,
 } from "lucide-react";
 import { cn } from "@ecomm/ui/lib/utils";

@@ -17,12 +17,13 @@ import type { z } from "zod";
 import { slugify } from "@ecomm/ui/lib/utils";
 import { createCategory } from "@/features/categories/services/mutations";
 import { toast } from "@ecomm/ui/hooks/use-toast";
-import { useTransition } from "react";
+import { Suspense, useTransition } from "react";
 import { Loader } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { TypographyH1 } from "@ecomm/ui/typography";
 import { CategorySelect } from "@/components/category-select";
 import { ImageUpload } from "@/components/image-upload";
+import { CategorySelectSkeleton } from "@/components/category-select-skeleton";
 
 export function CategoryCreateForm() {
   const form = useForm<z.infer<typeof categoryCreateSchema>>({
@@ -144,10 +145,12 @@ export function CategoryCreateForm() {
               <FormItem>
                 <FormLabel>Parent category</FormLabel>
                 <FormControl>
-                  <CategorySelect
-                    value={field.value}
-                    onChange={(categories) => field.onChange(categories)}
-                  />
+                  <Suspense fallback={<CategorySelectSkeleton />}>
+                    <CategorySelect
+                      value={field.value}
+                      onChange={(categories) => field.onChange(categories)}
+                    />
+                  </Suspense>
                 </FormControl>
                 <FormMessage />
               </FormItem>

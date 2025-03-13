@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useTransition } from "react";
+import { Suspense, useEffect, useState, useTransition } from "react";
 import { useFieldArray, useForm, useFormContext } from "react-hook-form";
 import { useRouter, useSearchParams } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -330,7 +330,17 @@ function StageContent({ currentStage }: StageContentProps) {
     case "customer":
       return <CustomerStage />;
     case "cart":
-      return <CartStage />;
+      return (
+        <Suspense
+          fallback={
+            <div className="max-w-4xl mx-auto p-8 space-y-8 flex justify-center items-center h-full">
+              <Loader className="animate-spin" />
+            </div>
+          }
+        >
+          <CartStage />
+        </Suspense>
+      );
     default:
       throw new Error("Unknown stage");
   }
