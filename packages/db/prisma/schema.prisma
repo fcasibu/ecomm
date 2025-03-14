@@ -73,8 +73,9 @@ model ProductVariant {
   sku          String   @unique
   price        Decimal
   currencyCode String
-  stock        Int
-  image        String
+  stock        Int      @default(0)
+  reserved     Int      @default(0)
+  images       String[]
   attributes   Json?
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
