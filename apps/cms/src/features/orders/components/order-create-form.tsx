@@ -731,10 +731,10 @@ function CartStage() {
                                 }}
                               >
                                 <div className="flex-shrink-0 mr-3">
-                                  {variant.image && (
+                                  {variant.images && (
                                     <div className="rounded overflow-hidden bg-gray-100 border">
                                       <ImageComponent
-                                        src={variant.image}
+                                        src={variant.images[0]}
                                         alt="Product Variant"
                                         width={64}
                                         height={64}

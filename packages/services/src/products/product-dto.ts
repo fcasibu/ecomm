@@ -2,7 +2,7 @@ export interface ProductVariantDTO {
   id: string;
   createdAt: string;
   updatedAt: string;
-  image: string;
+  images: string[];
   sku: string;
   price: number;
   currencyCode: string;
