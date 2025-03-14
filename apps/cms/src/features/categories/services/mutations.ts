@@ -5,7 +5,7 @@ import { categoriesController } from "@ecomm/services/registry";
 import type {
   CategoryCreateInput,
   CategoryUpdateInput,
-} from "@ecomm/validations/categories/category-schema";
+} from "@ecomm/validations/cms/categories/category-schema";
 import { executeOperation } from "@ecomm/lib/execute-operation";
 import { revalidateTag } from "next/cache";
 

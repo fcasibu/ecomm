@@ -3,7 +3,7 @@ import type { Prisma } from "@ecomm/db";
 import type {
   ProductCreateInput,
   ProductUpdateInput,
-} from "@ecomm/validations/products/product-schema";
+} from "@ecomm/validations/cms/products/product-schema";
 import type { SearchOptions } from "../base-service";
 import { BaseService } from "../base-service";
 import { generateSku, generateVariantSku } from "../utils/generate-sku";

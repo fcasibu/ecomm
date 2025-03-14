@@ -5,7 +5,7 @@ import { productsController } from "@ecomm/services/registry";
 import type {
   ProductCreateInput,
   ProductUpdateInput,
-} from "@ecomm/validations/products/product-schema";
+} from "@ecomm/validations/cms/products/product-schema";
 import { revalidateTag } from "next/cache";
 import "server-only";
 

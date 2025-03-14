@@ -27,7 +27,7 @@ import {
   BreadcrumbSeparator,
 } from "@ecomm/ui/breadcrumb";
 import { Input } from "@ecomm/ui/input";
-import { categoryUpdateSchema } from "@ecomm/validations/categories/category-schema";
+import { categoryUpdateSchema } from "@ecomm/validations/cms/categories/category-schema";
 import { useForm } from "react-hook-form";
 import type { z } from "zod";
 import { slugify } from "@ecomm/ui/lib/utils";

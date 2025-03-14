@@ -9,7 +9,7 @@ import {
   orderUpdateSchema,
   type OrderCreateInput,
   type OrderUpdateInput,
-} from "@ecomm/validations/orders/orders-schema";
+} from "@ecomm/validations/cms/orders/orders-schema";
 
 export class OrdersController extends BaseController {
   constructor(private readonly ordersService: OrdersService) {

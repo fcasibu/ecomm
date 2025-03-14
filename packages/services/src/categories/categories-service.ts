@@ -3,7 +3,7 @@ import type { Prisma } from "@ecomm/db";
 import type {
   CategoryCreateInput,
   CategoryUpdateInput,
-} from "@ecomm/validations/categories/category-schema";
+} from "@ecomm/validations/cms/categories/category-schema";
 import type { SearchOptions } from "../base-service";
 import { BaseService } from "../base-service";
 import { MaxTierReachedError } from "../errors/max-tier-reached-error";

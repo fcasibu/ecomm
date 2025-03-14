@@ -27,7 +27,7 @@ import {
 } from "@ecomm/ui/table";
 import { Minus } from "lucide-react";
 import { useFormContext } from "react-hook-form";
-import type { OrderCreateInput } from "@ecomm/validations/orders/orders-schema";
+import type { OrderCreateInput } from "@ecomm/validations/cms/orders/orders-schema";
 import { toast } from "@ecomm/ui/hooks/use-toast";
 import { Heading, Text } from "@ecomm/ui/typography";
 

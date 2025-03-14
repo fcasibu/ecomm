@@ -5,7 +5,7 @@ import { Heading, Text } from "@ecomm/ui/typography";
 import {
   orderUpdateSchema,
   type OrderUpdateInput,
-} from "@ecomm/validations/orders/orders-schema";
+} from "@ecomm/validations/cms/orders/orders-schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { Button } from "@ecomm/ui/button";

@@ -3,7 +3,7 @@ import {
   productUpdateSchema,
   type ProductCreateInput,
   type ProductUpdateInput,
-} from "@ecomm/validations/products/product-schema";
+} from "@ecomm/validations/cms/products/product-schema";
 import type { Product, ProductsService } from "./products-service";
 import { ValidationError } from "../errors/validation-error";
 import { BaseController } from "../base-controller";

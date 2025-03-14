@@ -6,7 +6,7 @@ import { ordersController } from "@ecomm/services/registry";
 import type {
   OrderCreateInput,
   OrderUpdateInput,
-} from "@ecomm/validations/orders/orders-schema";
+} from "@ecomm/validations/cms/orders/orders-schema";
 import { revalidateTag } from "next/cache";
 
 export const createOrder = async (input: OrderCreateInput) => {

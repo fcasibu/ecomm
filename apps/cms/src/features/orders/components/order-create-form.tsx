@@ -69,11 +69,11 @@ import { formatPrice } from "@ecomm/lib/format-price";
 import {
   orderCreateSchema,
   type OrderCreateInput,
-} from "@ecomm/validations/orders/orders-schema";
+} from "@ecomm/validations/cms/orders/orders-schema";
 import {
   cartCreateSchema,
   type CartCreateInput,
-} from "@ecomm/validations/cart/cart-schema";
+} from "@ecomm/validations/cms/cart/cart-schema";
 import type {
   ProductDTO,
   ProductVariantDTO,

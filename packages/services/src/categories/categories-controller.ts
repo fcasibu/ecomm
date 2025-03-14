@@ -5,7 +5,7 @@ import {
   categoryCreateSchema,
   type CategoryUpdateInput,
   categoryUpdateSchema,
-} from "@ecomm/validations/categories/category-schema";
+} from "@ecomm/validations/cms/categories/category-schema";
 import { NotFoundError } from "../errors/not-found-error";
 import { logger } from "@ecomm/lib/logger";
 import type { CategoryDTO } from "./category-dto";

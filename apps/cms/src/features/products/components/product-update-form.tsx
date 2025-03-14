@@ -17,7 +17,7 @@ import {
   productUpdateVariantSchema,
   type ProductUpdateInput,
   type ProductVariantUpdateInput,
-} from "@ecomm/validations/products/product-schema";
+} from "@ecomm/validations/cms/products/product-schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader, Plus } from "lucide-react";
 import { useForm } from "react-hook-form";
