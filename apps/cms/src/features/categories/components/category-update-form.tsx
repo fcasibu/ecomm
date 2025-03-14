@@ -58,6 +58,8 @@ export function CategoryUpdateForm({
     Result<{ id: string; name: string; slug: string }[]>
   >;
 }) {
+  "use no memo";
+
   const form = useForm<z.infer<typeof categoryUpdateSchema>>({
     resolver: zodResolver(categoryUpdateSchema),
     defaultValues: {
@@ -81,9 +83,9 @@ export function CategoryUpdateForm({
             toast({
               title: "Category update",
               description: (
-                <p>
+                <Text>
                   Category with the slug <b>{data.slug}</b> already exists.
-                </p>
+                </Text>
               ),
             });
             break;
@@ -333,9 +335,9 @@ function SubCategories({
                   </div>
 
                   {category.description && (
-                    <p className="text-sm text-gray-500 line-clamp-2">
+                    <Text className="text-gray-500 line-clamp-2">
                       {category.description}
-                    </p>
+                    </Text>
                   )}
                 </div>
 

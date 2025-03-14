@@ -20,12 +20,14 @@ import { toast } from "@ecomm/ui/hooks/use-toast";
 import { Suspense, useTransition } from "react";
 import { Loader } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { Heading } from "@ecomm/ui/typography";
+import { Heading, Text } from "@ecomm/ui/typography";
 import { CategorySelect } from "@/components/category-select";
 import { ImageUpload } from "@/components/image-upload";
 import { CategorySelectSkeleton } from "@/components/category-select-skeleton";
 
 export function CategoryCreateForm() {
+  "use no memo";
+
   const form = useForm<z.infer<typeof categoryCreateSchema>>({
     resolver: zodResolver(categoryCreateSchema),
     defaultValues: {
@@ -49,9 +51,9 @@ export function CategoryCreateForm() {
           toast({
             title: "Category creation",
             description: (
-              <p>
+              <Text>
                 Category with the slug <b>{data.slug}</b> already exists.
-              </p>
+              </Text>
             ),
           });
         } else {

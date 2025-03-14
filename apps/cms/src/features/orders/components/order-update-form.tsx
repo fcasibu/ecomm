@@ -1,7 +1,7 @@
 "use client";
 
 import { Form } from "@ecomm/ui/form";
-import { Heading } from "@ecomm/ui/typography";
+import { Heading, Text } from "@ecomm/ui/typography";
 import {
   orderUpdateSchema,
   type OrderUpdateInput,
@@ -93,11 +93,11 @@ export function OrderUpdateForm({ order }: { order: OrderDTO }) {
 
     return (
       <div className="text-sm">
-        <p>{address.street}</p>
-        <p>
+        <Text>{address.street}</Text>
+        <Text>
           {address.city}, {address.state} {address.postalCode}
-        </p>
-        <p>{address.country}</p>
+        </Text>
+        <Text>{address.country}</Text>
       </div>
     );
   };
@@ -155,18 +155,18 @@ export function OrderUpdateForm({ order }: { order: OrderDTO }) {
             </CardHeader>
             <CardContent className="space-y-4">
               <div>
-                <p className="text-sm font-medium mb-1">Email</p>
-                <p>{order.customer.email}</p>
+                <Text className="font-medium mb-1">Email</Text>
+                <Text size="sm">{order.customer.email}</Text>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <p className="text-sm font-medium mb-1">Billing Address</p>
-                  {formatAddress(getBillingAddress())}
+                  <Text className="font-medium mb-1">Billing Address</Text>
+                  <Text size="sm">{formatAddress(getBillingAddress())}</Text>
                 </div>
                 <div>
-                  <p className="text-sm font-medium mb-1">Shipping Address</p>
-                  {formatAddress(getShippingAddress())}
+                  <Text className="font-medium mb-1">Shipping Address</Text>
+                  <Text size="sm">{formatAddress(getShippingAddress())}</Text>
                 </div>
               </div>
             </CardContent>

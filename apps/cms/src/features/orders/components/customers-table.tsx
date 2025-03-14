@@ -29,7 +29,7 @@ import { Minus } from "lucide-react";
 import { useFormContext } from "react-hook-form";
 import type { OrderCreateInput } from "@ecomm/validations/orders/orders-schema";
 import { toast } from "@ecomm/ui/hooks/use-toast";
-import { Heading } from "@ecomm/ui/typography";
+import { Heading, Text } from "@ecomm/ui/typography";
 
 export function CustomersTable({
   customers,
@@ -186,13 +186,13 @@ export const CustomerAddressSelect = ({
           <CardContent>
             {selectedShippingAddress ? (
               <div className="space-y-4">
-                <p className="text-sm">
+                <Text size="sm">
                   {selectedShippingAddress.street},{" "}
                   {selectedShippingAddress.city},{" "}
                   {selectedShippingAddress.state}{" "}
                   {selectedShippingAddress.postalCode},{" "}
                   {selectedShippingAddress.country}
-                </p>
+                </Text>
                 <FormField
                   control={formContext.control}
                   name="shippingAddressId"
@@ -222,9 +222,9 @@ export const CustomerAddressSelect = ({
                 />
               </div>
             ) : (
-              <p className="text-sm text-gray-500">
+              <Text size="sm" className="text-gray-500">
                 No shipping addresses available.
-              </p>
+              </Text>
             )}
           </CardContent>
         </Card>
@@ -236,12 +236,12 @@ export const CustomerAddressSelect = ({
           <CardContent>
             {selectedBillingAddress ? (
               <div className="space-y-4">
-                <p className="text-sm">
+                <Text size="sm">
                   {selectedBillingAddress.street}, {selectedBillingAddress.city}
                   , {selectedBillingAddress.state}{" "}
                   {selectedBillingAddress.postalCode},{" "}
                   {selectedBillingAddress.country}
-                </p>
+                </Text>
                 <FormField
                   control={formContext.control}
                   name="billingAddressId"
@@ -271,9 +271,9 @@ export const CustomerAddressSelect = ({
                 />
               </div>
             ) : (
-              <p className="text-sm text-gray-500">
+              <Text size="sm" className="text-gray-500">
                 No billing addresses available.
-              </p>
+              </Text>
             )}
           </CardContent>
         </Card>

@@ -920,9 +920,9 @@ function CartDetails({ cart, formContext }: CartDetailsProps) {
       </Table>
       <div className="flex justify-end">
         <div className="space-y-2">
-          <p className="font-semibold">
+          <Text className="font-semibold">
             Total: {formatPrice(total, currencyCode)}
-          </p>
+          </Text>
         </div>
       </div>
     </div>

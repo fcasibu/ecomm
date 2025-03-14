@@ -38,6 +38,8 @@ import { ImageComponent } from "@ecomm/ui/image";
 import { CategorySelectSkeleton } from "@/components/category-select-skeleton";
 
 export function ProductCreateForm() {
+  "use no memo";
+
   const form = useForm<z.infer<typeof productCreateSchema>>({
     resolver: zodResolver(productCreateSchema),
     defaultValues: {

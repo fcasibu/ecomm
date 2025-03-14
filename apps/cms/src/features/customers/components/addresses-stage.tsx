@@ -78,6 +78,8 @@ export function AddressControl({
   onChange,
   ...props
 }: AddressControlProps) {
+  "use no memo";
+
   const [isOpen, setIsOpen] = useState(false);
   const [currentItem, setCurrentItem] = useState<AddressInput | null>(null);
 
