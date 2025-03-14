@@ -21,15 +21,17 @@ export function Heading<T extends Headings>({
   className,
   as: Tag,
   children,
+  asChild,
   ...props
 }: React.ComponentProps<T> & {
   as: Headings;
   asChild?: boolean;
 }) {
+  const Comp = asChild ? Slot : Tag;
   return (
-    <Slot {...props} className={heading({ as: Tag, className })}>
-      <Tag>{children}</Tag>
-    </Slot>
+    <Comp {...props} className={heading({ as: Tag, className })}>
+      {children}
+    </Comp>
   );
 }
 
@@ -46,7 +48,7 @@ const text = cva("m-0 font-normal leading-[1.5] last:m-0", {
 interface TextProps
   extends React.ComponentProps<"p">,
     VariantProps<typeof text> {
-  as?: "p" | "span" | "label";
+  as?: "p" | "span";
   asChild?: boolean;
 }
 
@@ -55,11 +57,14 @@ export function Text({
   as: Tag = "p",
   children,
   size = "sm",
+  asChild,
   ...props
 }: TextProps) {
+  const Comp = asChild ? Slot : Tag;
+
   return (
-    <Slot {...props} className={text({ size, className })}>
-      <Tag>{children}</Tag>
-    </Slot>
+    <Comp {...props} className={text({ size, className })}>
+      {children}
+    </Comp>
   );
 }
