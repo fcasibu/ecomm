@@ -7,7 +7,7 @@ import {
   FormMessage,
 } from "@ecomm/ui/form";
 import { Input } from "@ecomm/ui/input";
-import { TypographyH2 } from "@ecomm/ui/typography";
+import { Heading } from "@ecomm/ui/typography";
 import type { CustomerCreateInput } from "@ecomm/validations/customers/customers-schema";
 import { useFormContext } from "react-hook-form";
 
@@ -16,7 +16,9 @@ export function CustomerDetailsStage() {
 
   return (
     <div>
-      <TypographyH2 className="mb-4">Customer Details</TypographyH2>
+      <Heading as="h2" className="mb-4">
+        Customer Details
+      </Heading>
       <div className="space-y-4">
         <FormField
           control={formContext.control}

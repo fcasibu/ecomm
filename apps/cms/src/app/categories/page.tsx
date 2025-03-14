@@ -3,7 +3,7 @@ import { CategoriesCardsSkeleton } from "@/features/categories/components/catego
 import { QuerySearch } from "@/components/query-search";
 import { QuerySearchSkeleton } from "@/components/query-search-skeleton";
 import { Button } from "@ecomm/ui/button";
-import { TypographyH1 } from "@ecomm/ui/typography";
+import { Heading } from "@ecomm/ui/typography";
 import Link from "next/link";
 import { Suspense } from "react";
 
@@ -14,7 +14,9 @@ export default async function Page({
 }) {
   return (
     <div>
-      <TypographyH1 className="mb-8">Categories</TypographyH1>
+      <Heading as="h1" className="mb-8">
+        Categories
+      </Heading>
       <div>
         <div className="flex gap-2 flex-wrap">
           <Button asChild>

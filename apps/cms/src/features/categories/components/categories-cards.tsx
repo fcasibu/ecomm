@@ -1,5 +1,5 @@
 import { getCategories } from "@/features/categories/services/queries";
-import { TypographyH2 } from "@ecomm/ui/typography";
+import { Heading } from "@ecomm/ui/typography";
 import {
   Card,
   CardHeader,
@@ -31,14 +31,14 @@ export async function CategoriesCards({
 
   if (!result.success) {
     return (
-      <TypographyH2>
+      <Heading as="h2">
         Failed to load categories. Please try again later.
-      </TypographyH2>
+      </Heading>
     );
   }
 
   if (!result.data.totalCount) {
-    return <TypographyH2>No categories found.</TypographyH2>;
+    return <Heading as="h2">No categories found.</Heading>;
   }
 
   const { categories, totalCount } = result.data;

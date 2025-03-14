@@ -1,7 +1,7 @@
 import { OrdersTable } from "@/features/orders/components/orders-table";
 import { OrdersTableSkeleton } from "@/features/orders/components/orders-table-skeleton";
 import { Button } from "@ecomm/ui/button";
-import { TypographyH1 } from "@ecomm/ui/typography";
+import { Heading } from "@ecomm/ui/typography";
 import Link from "next/link";
 import { Suspense } from "react";
 
@@ -12,7 +12,9 @@ export default async function Page({
 }) {
   return (
     <div>
-      <TypographyH1 className="mb-8">Orders</TypographyH1>
+      <Heading as="h1" className="mb-8">
+        Orders
+      </Heading>
       <div>
         <div className="flex gap-2 flex-wrap">
           <Button asChild>

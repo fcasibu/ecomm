@@ -19,7 +19,7 @@ import { useForm, useFormContext } from "react-hook-form";
 import { createCustomer } from "../services/mutations";
 import { toast } from "@ecomm/ui/hooks/use-toast";
 import { useRouter } from "next/navigation";
-import { TypographyH1, TypographyH2 } from "@ecomm/ui/typography";
+import { Heading } from "@ecomm/ui/typography";
 import { Separator } from "@ecomm/ui/separator";
 import { Loader } from "lucide-react";
 import { cn } from "@ecomm/ui/lib/utils";
@@ -104,7 +104,7 @@ export function CustomerCreateForm() {
 
   return (
     <div>
-      <TypographyH1>Create a customer</TypographyH1>
+      <Heading as="h1">Create a customer</Heading>
       <StageIndicator
         currentStage={currentStage}
         goToStage={goToStage}
@@ -251,7 +251,9 @@ function SecurityStage() {
 
   return (
     <div>
-      <TypographyH2 className="mb-4">Security</TypographyH2>
+      <Heading as="h2" className="mb-4">
+        Security
+      </Heading>
       <div className="space-y-4">
         <FormField
           control={formContext.control}

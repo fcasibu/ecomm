@@ -38,7 +38,7 @@ import {
 import { toast } from "@ecomm/ui/hooks/use-toast";
 import { useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { Text, TypographyH1, TypographyH2 } from "@ecomm/ui/typography";
+import { Text, Heading } from "@ecomm/ui/typography";
 import { ImageIcon, Loader, Package, Tag } from "lucide-react";
 import { Card, CardContent } from "@ecomm/ui/card";
 import { Badge } from "@ecomm/ui/badge";
@@ -128,7 +128,7 @@ export function CategoryUpdateForm({
 
   return (
     <div className="max-w-4xl mx-auto p-8 space-y-8">
-      <TypographyH1>Update Category</TypographyH1>
+      <Heading as="h1">Update Category</Heading>
       <Suspense fallback={<CategoryPathBreadcrumbSkeleton />}>
         <CategoryPathBreadcrumb
           categoriesPathResultPromise={categoriesPathResultPromise}
@@ -301,7 +301,7 @@ function SubCategories({
 
   return (
     <div>
-      <TypographyH2>Subcategories</TypographyH2>
+      <Heading as="h2">Subcategories</Heading>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
         {subCategories.map((category) => (
           <Link

@@ -24,7 +24,7 @@ import { Suspense, useState, useTransition } from "react";
 import { createProduct } from "../services/mutations";
 import { toast } from "@ecomm/ui/hooks/use-toast";
 import { useRouter } from "next/navigation";
-import { TypographyH1 } from "@ecomm/ui/typography";
+import { Heading } from "@ecomm/ui/typography";
 import {
   Sheet,
   SheetContent,
@@ -76,7 +76,7 @@ export function ProductCreateForm() {
 
   return (
     <div className="max-w-4xl mx-auto p-8 space-y-8">
-      <TypographyH1>Create a new product</TypographyH1>
+      <Heading as="h1">Create a new product</Heading>
       <Form {...form}>
         <form
           onSubmit={(e) => {

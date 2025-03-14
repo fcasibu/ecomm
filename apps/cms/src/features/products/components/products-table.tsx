@@ -1,5 +1,5 @@
 import { getProducts } from "../services/queries";
-import { TypographyH2 } from "@ecomm/ui/typography";
+import { Heading } from "@ecomm/ui/typography";
 import { QueryPagination } from "@/components/query-pagination";
 import { ProductsTableClient } from "./products-table-client";
 import { PRODUCTS_PAGE_SIZE } from "@/lib/constants";
@@ -23,14 +23,14 @@ export async function ProductsTable({
 
   if (!result.success) {
     return (
-      <TypographyH2>
+      <Heading as="h2">
         Failed to load products. Please try again later.
-      </TypographyH2>
+      </Heading>
     );
   }
 
   if (!result.data.totalCount) {
-    return <TypographyH2>No products found.</TypographyH2>;
+    return <Heading as="h2">No products found.</Heading>;
   }
 
   const { products, totalCount } = result.data;

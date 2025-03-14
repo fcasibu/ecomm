@@ -1,4 +1,4 @@
-import { TypographyH2 } from "@ecomm/ui/typography";
+import { Heading } from "@ecomm/ui/typography";
 import { QueryPagination } from "@/components/query-pagination";
 import { ORDERS_PAGE_SIZE } from "@/lib/constants";
 import { getOrders } from "../services/queries";
@@ -19,14 +19,12 @@ export async function OrdersTable({
 
   if (!result.success) {
     return (
-      <TypographyH2>
-        Failed to load orders. Please try again later.
-      </TypographyH2>
+      <Heading as="h2">Failed to load orders. Please try again later.</Heading>
     );
   }
 
   if (!result.data.totalCount) {
-    return <TypographyH2>No orders found.</TypographyH2>;
+    return <Heading as="h2">No orders found.</Heading>;
   }
 
   const { orders, totalCount } = result.data;

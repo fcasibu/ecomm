@@ -20,7 +20,7 @@ import { toast } from "@ecomm/ui/hooks/use-toast";
 import { Suspense, useTransition } from "react";
 import { Loader } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { TypographyH1 } from "@ecomm/ui/typography";
+import { Heading } from "@ecomm/ui/typography";
 import { CategorySelect } from "@/components/category-select";
 import { ImageUpload } from "@/components/image-upload";
 import { CategorySelectSkeleton } from "@/components/category-select-skeleton";
@@ -74,7 +74,7 @@ export function CategoryCreateForm() {
 
   return (
     <div className="max-w-4xl mx-auto p-8 space-y-8">
-      <TypographyH1>Create a new category</TypographyH1>
+      <Heading as="h1">Create a new category</Heading>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
           <FormField

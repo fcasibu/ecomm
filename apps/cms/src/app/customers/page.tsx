@@ -3,7 +3,7 @@ import { QuerySearchSkeleton } from "@/components/query-search-skeleton";
 import { CustomersTable } from "@/features/customers/components/customers-table";
 import { CustomersTableSkeleton } from "@/features/customers/components/customers-table-skeleton";
 import { Button } from "@ecomm/ui/button";
-import { TypographyH1 } from "@ecomm/ui/typography";
+import { Heading } from "@ecomm/ui/typography";
 import Link from "next/link";
 import { Suspense } from "react";
 
@@ -14,7 +14,9 @@ export default async function Page({
 }) {
   return (
     <div>
-      <TypographyH1 className="mb-8">Customers</TypographyH1>
+      <Heading as="h1" className="mb-8">
+        Customers
+      </Heading>
       <div>
         <div className="flex gap-2 flex-wrap">
           <Button asChild>

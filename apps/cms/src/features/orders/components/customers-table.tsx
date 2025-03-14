@@ -29,7 +29,7 @@ import { Minus } from "lucide-react";
 import { useFormContext } from "react-hook-form";
 import type { OrderCreateInput } from "@ecomm/validations/orders/orders-schema";
 import { toast } from "@ecomm/ui/hooks/use-toast";
-import { TypographyH3 } from "@ecomm/ui/typography";
+import { Heading } from "@ecomm/ui/typography";
 
 export function CustomersTable({
   customers,
@@ -172,7 +172,7 @@ export const CustomerAddressSelect = ({
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
-        <TypographyH3>Customer Addresses</TypographyH3>
+        <Heading as="h1">Customer Addresses</Heading>
         <Button variant="outline" onClick={onChangeCustomer}>
           Change Customer
         </Button>

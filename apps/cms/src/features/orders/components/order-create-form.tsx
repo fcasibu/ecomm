@@ -11,7 +11,7 @@ import { Button } from "@ecomm/ui/button";
 import { cn } from "@ecomm/ui/lib/utils";
 import { Input } from "@ecomm/ui/input";
 import { Separator } from "@ecomm/ui/separator";
-import { Text, TypographyH1, TypographyH2 } from "@ecomm/ui/typography";
+import { Text, Heading } from "@ecomm/ui/typography";
 import { toast } from "@ecomm/ui/hooks/use-toast";
 import { ImageComponent } from "@ecomm/ui/image";
 import { Popover, PopoverContent, PopoverTrigger } from "@ecomm/ui/popover";
@@ -175,7 +175,7 @@ export function OrderCreateForm() {
 
   return (
     <div>
-      <TypographyH1>Create an order</TypographyH1>
+      <Heading as="h1">Create an order</Heading>
       <StageIndicator
         currentStage={currentStage}
         goToStage={goToStage}
@@ -351,7 +351,9 @@ function OrderDetailsStage() {
 
   return (
     <div>
-      <TypographyH2 className="mb-4">Order Details</TypographyH2>
+      <Heading as="h2" className="mb-4">
+        Order Details
+      </Heading>
       <FormField
         control={formContext.control}
         name="currency"
@@ -398,7 +400,9 @@ function CustomerStage() {
 
   return (
     <div>
-      <TypographyH2 className="mb-4">Customer</TypographyH2>
+      <Heading as="h2" className="mb-4">
+        Customer
+      </Heading>
       <div className="space-y-4">
         {isLoading && <CustomersTableSkeleton />}
         {!isLoading && result.success && (

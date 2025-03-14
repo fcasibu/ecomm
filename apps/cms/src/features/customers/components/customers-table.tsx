@@ -1,4 +1,4 @@
-import { TypographyH2 } from "@ecomm/ui/typography";
+import { Heading } from "@ecomm/ui/typography";
 import { QueryPagination } from "@/components/query-pagination";
 import { CustomersTableClient } from "./customers-table-client";
 import { getCustomers } from "../services/queries";
@@ -23,14 +23,14 @@ export async function CustomersTable({
 
   if (!result.success) {
     return (
-      <TypographyH2>
+      <Heading as="h2">
         Failed to load customers. Please try again later.
-      </TypographyH2>
+      </Heading>
     );
   }
 
   if (!result.data.totalCount) {
-    return <TypographyH2>No customers found.</TypographyH2>;
+    return <Heading as="h2">No customers found.</Heading>;
   }
 
   const { customers, totalCount } = result.data;

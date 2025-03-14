@@ -32,7 +32,7 @@ import {
   TableBody,
   TableCell,
 } from "@ecomm/ui/table";
-import { Text, TypographyH2 } from "@ecomm/ui/typography";
+import { Text, Heading } from "@ecomm/ui/typography";
 import {
   type CustomerCreateInput,
   type AddressInput,
@@ -48,7 +48,9 @@ export function AddressesStage() {
 
   return (
     <div>
-      <TypographyH2 className="mb-4">Addresses</TypographyH2>
+      <Heading as="h2" className="mb-4">
+        Addresses
+      </Heading>
       <FormField
         control={formContext.control}
         name="addresses"

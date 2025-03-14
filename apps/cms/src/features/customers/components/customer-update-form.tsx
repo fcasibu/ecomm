@@ -2,7 +2,7 @@
 
 import type { CustomerDTO } from "@ecomm/services/customers/customer-dto";
 import { Form } from "@ecomm/ui/form";
-import { TypographyH1 } from "@ecomm/ui/typography";
+import { Heading } from "@ecomm/ui/typography";
 import {
   customerUpdateSchema,
   type CustomerUpdateInput,
@@ -84,7 +84,7 @@ export function CustomerUpdateForm({
 
   return (
     <div className="max-w-4xl mx-auto p-8 space-y-8">
-      <TypographyH1>Update customer</TypographyH1>
+      <Heading as="h2">Update customer</Heading>
       <Form {...form}>
         <form
           onSubmit={(e) => {

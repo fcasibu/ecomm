@@ -1,7 +1,7 @@
 "use client";
 
 import { Form } from "@ecomm/ui/form";
-import { TypographyH1 } from "@ecomm/ui/typography";
+import { Heading } from "@ecomm/ui/typography";
 import {
   orderUpdateSchema,
   type OrderUpdateInput,
@@ -104,7 +104,7 @@ export function OrderUpdateForm({ order }: { order: OrderDTO }) {
 
   return (
     <div className="max-w-4xl mx-auto p-8 space-y-8">
-      <TypographyH1>Update order</TypographyH1>
+      <Heading as="h1">Update order</Heading>
       <Form {...form}>
         <form
           onSubmit={(e) => {
