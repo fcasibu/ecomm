@@ -5,12 +5,12 @@ export const productCreateVariantSchema = z.object({
   currencyCode: z.string().min(1, "Currency code is required"),
   stock: z.number(),
   image: z.string().min(1, "Variant image is required"),
-  attributes: z
-    .object({
+  attributes: z.array(
+    z.object({
       title: z.string(),
       value: z.string(),
-    })
-    .optional(),
+    }),
+  ),
 });
 
 export const productUpdateVariantSchema = z.object({
@@ -19,12 +19,12 @@ export const productUpdateVariantSchema = z.object({
   currencyCode: z.string().min(1, "Currency code is required"),
   stock: z.number(),
   image: z.string().min(1, "Variant image is required"),
-  attributes: z
-    .object({
+  attributes: z.array(
+    z.object({
       title: z.string(),
       value: z.string(),
-    })
-    .optional(),
+    }),
+  ),
 });
 
 export const productCreateSchema = z.object({
