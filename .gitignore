@@ -39,3 +39,5 @@ yarn-error.log*
 
 todo.md
 backlog.md
+
+tsconfig.tsbuildinfo
