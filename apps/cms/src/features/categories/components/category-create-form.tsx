@@ -11,7 +11,7 @@ import {
   FormMessage,
 } from "@ecomm/ui/form";
 import { Input } from "@ecomm/ui/input";
-import { categoryCreateSchema } from "@ecomm/validations/categories/category-schema";
+import { categoryCreateSchema } from "@ecomm/validations/cms/categories/category-schema";
 import { useForm } from "react-hook-form";
 import type { z } from "zod";
 import { slugify } from "@ecomm/ui/lib/utils";
@@ -134,7 +134,7 @@ export function CategoryCreateForm() {
               <FormItem>
                 <FormLabel>Image</FormLabel>
                 <FormControl>
-                  <ImageUpload value={field.value} onChange={field.onChange} />
+                  <ImageUpload value={field.value} onUpload={field.onChange} />
                 </FormControl>
                 <FormMessage />
               </FormItem>

@@ -3,7 +3,7 @@ import {
   cartUpdateSchema,
   type CartCreateInput,
   type CartUpdateInput,
-} from "@ecomm/validations/cart/cart-schema";
+} from "@ecomm/validations/cms/cart/cart-schema";
 import { BaseController } from "../base-controller";
 import type { Cart, CartService } from "./cart-service";
 import { logger } from "@ecomm/lib/logger";
@@ -120,6 +120,10 @@ export class CartController extends BaseController {
         const variant = getVariant(item.product, item.sku);
 
         assert(variant, "variant should always be defined");
+        assert(
+          variant.images[0],
+          "variant should always have an image defined",
+        );
 
         return {
           id: item.id,
@@ -128,7 +132,7 @@ export class CartController extends BaseController {
           price: variant.price.toNumber(),
           stock: variant.stock,
           currencyCode: variant.currencyCode,
-          image: variant.image,
+          image: variant.images[0],
           name: item.product.name,
           updatedAt: item.updatedAt.toLocaleDateString(),
           createdAt: item.createdAt.toLocaleDateString(),

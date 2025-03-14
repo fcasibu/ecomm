@@ -33,9 +33,9 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@ecomm/ui/sheet";
-import { ImageUpload } from "@/components/image-upload";
 import { ImageComponent } from "@ecomm/ui/image";
 import { CategorySelectSkeleton } from "@/components/category-select-skeleton";
+import { MultiImageUpload } from "@/components/multi-image-upload";
 
 export function ProductCreateForm() {
   "use no memo";
@@ -274,7 +274,7 @@ function ProductVariantsControl({
             >
               <div className="w-24 h-24 aspect-square border border-black flex justify-center items-center cursor-pointer">
                 <ImageComponent
-                  src={item.image}
+                  src={item.images[0]}
                   className="object-cover aspect-square"
                   alt={`Product variant ${index + 1}`}
                   width={96}
@@ -357,12 +357,12 @@ function ProductVariantsControl({
             />
             <FormField
               control={form.control}
-              name="image"
+              name="images"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Image</FormLabel>
                   <FormControl>
-                    <ImageUpload
+                    <MultiImageUpload
                       value={field.value}
                       onChange={field.onChange}
                     />

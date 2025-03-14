@@ -4,7 +4,10 @@ export const productCreateVariantSchema = z.object({
   price: z.number(),
   currencyCode: z.string().min(1, "Currency code is required"),
   stock: z.number(),
-  image: z.string().min(1, "Variant image is required"),
+  images: z
+    .array(z.string().min(1, "Variant image is required"))
+    .nonempty({ message: "Please provide an image" })
+    .max(5, "You can only upload up to 5 images"),
   attributes: z.array(
     z.object({
       title: z.string(),
@@ -18,7 +21,10 @@ export const productUpdateVariantSchema = z.object({
   price: z.number(),
   currencyCode: z.string().min(1, "Currency code is required"),
   stock: z.number(),
-  image: z.string().min(1, "Variant image is required"),
+  images: z
+    .array(z.string().min(1, "Variant image is required"))
+    .nonempty({ message: "Please provide an image" })
+    .max(5, "You can only upload up to 5 images"),
   attributes: z.array(
     z.object({
       title: z.string(),

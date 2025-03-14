@@ -6,7 +6,7 @@ import { cartController } from "@ecomm/services/registry";
 import type {
   CartCreateInput,
   CartUpdateInput,
-} from "@ecomm/validations/cart/cart-schema";
+} from "@ecomm/validations/cms/cart/cart-schema";
 import { revalidateTag } from "next/cache";
 
 export const createCart = async (input: CartCreateInput) => {

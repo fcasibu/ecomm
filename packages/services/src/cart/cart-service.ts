@@ -3,7 +3,7 @@ import type { Prisma, ProductVariant } from "@ecomm/db";
 import type {
   CartCreateInput,
   CartUpdateInput,
-} from "@ecomm/validations/cart/cart-schema";
+} from "@ecomm/validations/cms/cart/cart-schema";
 import { BaseService } from "../base-service";
 import { randomUUID } from "node:crypto";
 

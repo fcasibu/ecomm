@@ -12,7 +12,7 @@ import {
 import {
   customerCreateSchema,
   type CustomerCreateInput,
-} from "@ecomm/validations/customers/customers-schema";
+} from "@ecomm/validations/cms/customers/customers-schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useTransition } from "react";
 import { useForm, useFormContext } from "react-hook-form";

@@ -193,7 +193,7 @@ export function CategoryUpdateForm({
               <FormItem>
                 <FormLabel>Image</FormLabel>
                 <FormControl>
-                  <ImageUpload value={field.value} onChange={field.onChange} />
+                  <ImageUpload value={field.value} onUpload={field.onChange} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -442,10 +442,10 @@ function Products({ products }: { products: CategoryDTO["products"] }) {
             >
               <Card className="overflow-hidden transition-all hover:shadow-md flex flex-col h-full">
                 <div className="relative">
-                  {variant?.image ? (
+                  {variant?.images.length ? (
                     <div className="h-40 bg-gray-100 w-full">
                       <img
-                        src={variant.image}
+                        src={variant.images[0]}
                         alt={product.name}
                         className="w-full h-full object-cover"
                       />
@@ -479,7 +479,7 @@ function Products({ products }: { products: CategoryDTO["products"] }) {
 
                 <CardContent className="p-4 flex flex-col flex-grow">
                   <div>
-                    <Text size="lg" className="mb-1 font-semibold truncate">
+                    <Text size="sm" className="mb-1 font-semibold truncate">
                       {product.name}
                     </Text>
                     <Text size="xs" className="mb-2 text-slate-500">

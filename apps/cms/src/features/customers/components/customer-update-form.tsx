@@ -6,7 +6,7 @@ import { Heading } from "@ecomm/ui/typography";
 import {
   customerUpdateSchema,
   type CustomerUpdateInput,
-} from "@ecomm/validations/customers/customers-schema";
+} from "@ecomm/validations/cms/customers/customers-schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@ecomm/ui/tabs";

@@ -7,7 +7,7 @@ import { customersController } from "@ecomm/services/registry";
 import type {
   CustomerCreateInput,
   CustomerUpdateInput,
-} from "@ecomm/validations/customers/customers-schema";
+} from "@ecomm/validations/cms/customers/customers-schema";
 import { revalidateTag } from "next/cache";
 
 export const createCustomer = async (input: CustomerCreateInput) => {

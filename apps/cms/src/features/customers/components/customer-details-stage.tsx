@@ -8,7 +8,7 @@ import {
 } from "@ecomm/ui/form";
 import { Input } from "@ecomm/ui/input";
 import { Heading } from "@ecomm/ui/typography";
-import type { CustomerCreateInput } from "@ecomm/validations/customers/customers-schema";
+import type { CustomerCreateInput } from "@ecomm/validations/cms/customers/customers-schema";
 import { useFormContext } from "react-hook-form";
 
 export function CustomerDetailsStage() {

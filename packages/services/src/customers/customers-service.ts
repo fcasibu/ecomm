@@ -3,7 +3,7 @@ import type { Prisma } from "@ecomm/db";
 import type {
   CustomerCreateInput,
   CustomerUpdateInput,
-} from "@ecomm/validations/customers/customers-schema";
+} from "@ecomm/validations/cms/customers/customers-schema";
 import type { SearchOptions } from "../base-service";
 import { BaseService } from "../base-service";
 import { hashPassword } from "../utils/password";

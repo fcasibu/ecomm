@@ -1,3 +1,8 @@
+export interface ProductAttribute {
+  value?: string;
+  title?: string;
+}
+
 export interface ProductVariantDTO {
   id: string;
   createdAt: string;
@@ -7,7 +12,7 @@ export interface ProductVariantDTO {
   price: number;
   currencyCode: string;
   stock: number;
-  attributes: { value?: string; title?: string } | undefined;
+  attributes: ProductAttribute[] | undefined;
 }
 
 export interface ProductDTO {

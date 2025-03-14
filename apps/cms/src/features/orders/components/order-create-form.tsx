@@ -567,7 +567,7 @@ function CartStage() {
 
       return {
         ...item,
-        image: variant.image,
+        image: variant.images[0] ?? "",
         name: product.name,
         price: variant.price,
         stock: variant.stock,
@@ -756,12 +756,16 @@ function CartStage() {
                                     </div>
                                   </div>
 
-                                  {variant.attributes && (
-                                    <div className="text-sm text-gray-500 mb-1">
-                                      {variant.attributes.title}:{" "}
-                                      {variant.attributes.value}
-                                    </div>
-                                  )}
+                                  {variant.attributes &&
+                                    Boolean(variant.attributes.length) &&
+                                    variant.attributes.map((attribute) => (
+                                      <div
+                                        className="text-sm text-gray-500 mb-1"
+                                        key={`${attribute.title}-${attribute.value}`}
+                                      >
+                                        {attribute.title}: {attribute.value}
+                                      </div>
+                                    ))}
 
                                   <div
                                     className={cn(

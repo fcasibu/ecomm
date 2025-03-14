@@ -8,7 +8,7 @@ import {
   customerUpdateSchema,
   type CustomerCreateInput,
   type CustomerUpdateInput,
-} from "@ecomm/validations/customers/customers-schema";
+} from "@ecomm/validations/cms/customers/customers-schema";
 import type { CustomerDTO } from "./customer-dto";
 
 export class CustomersController extends BaseController {

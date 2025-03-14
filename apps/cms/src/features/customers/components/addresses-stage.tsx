@@ -37,7 +37,7 @@ import {
   type CustomerCreateInput,
   type AddressInput,
   addressSchema,
-} from "@ecomm/validations/customers/customers-schema";
+} from "@ecomm/validations/cms/customers/customers-schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Plus } from "lucide-react";
 import { useState } from "react";

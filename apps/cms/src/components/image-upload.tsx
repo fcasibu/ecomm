@@ -2,17 +2,19 @@
 
 import type React from "react";
 
-import { useTransition } from "react";
+import { useId, useTransition } from "react";
 import { Button } from "@ecomm/ui/button";
 import { Input } from "@ecomm/ui/input";
 import { toast } from "@ecomm/ui/hooks/use-toast";
 import { uploadImage } from "@/features/image/services/mutations";
 import { ImageComponent } from "@ecomm/ui/image";
+import { X } from "lucide-react";
 
 interface ImageUploadProps
   extends Omit<React.ComponentProps<"input">, "onChange" | "value"> {
-  value: string | undefined;
-  onChange: (value: string) => void;
+  value?: string | string[] | undefined;
+  onUpload: (value: string) => void;
+  onRemove?: (value: string) => void;
 }
 
 const readFileAsDataURL = (file: File): Promise<string> => {
@@ -41,8 +43,14 @@ const readFileAsDataURL = (file: File): Promise<string> => {
   });
 };
 
-export function ImageUpload({ value, onChange, ...props }: ImageUploadProps) {
+export function ImageUpload({
+  value,
+  onUpload,
+  onRemove,
+  ...props
+}: ImageUploadProps) {
   const [isPending, startTransition] = useTransition();
+  const id = useId();
 
   const handleUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     startTransition(async () => {
@@ -87,26 +95,52 @@ export function ImageUpload({ value, onChange, ...props }: ImageUploadProps) {
         description: "Image uploaded successfully",
       });
 
-      onChange(result.data);
+      onUpload(result.data);
     });
   };
 
   return (
     <div>
       <div className="flex flex-wrap gap-2 mb-2">
-        {value && (
+        {value &&
+          Array.isArray(value) &&
+          value.map((image, index) => (
+            <div key={`${image}-${index}`} className="relative">
+              <ImageComponent
+                src={image}
+                alt={`Uploaded image ${index}`}
+                className="object-cover rounded aspect-square"
+                width={100}
+                height={100}
+                quality={50}
+              />
+              {onRemove && (
+                <Button
+                  aria-label="Remove image"
+                  className="absolute top-2 right-2 p-0"
+                  onClick={() => onRemove(image)}
+                  variant="none"
+                >
+                  <X aria-hidden />
+                </Button>
+              )}
+            </div>
+          ))}
+        {value && !Array.isArray(value) && (
           <ImageComponent
             src={value}
             alt="Uploaded image"
             className="object-cover rounded aspect-square"
             width={100}
             height={100}
+            quality={50}
           />
         )}
       </div>
       <div className="flex items-center gap-2">
         <Input
           {...props}
+          id={props.id || id}
           type="file"
           accept="image/*"
           onChange={handleUpload}
@@ -114,7 +148,7 @@ export function ImageUpload({ value, onChange, ...props }: ImageUploadProps) {
         />
         <Button
           type="button"
-          onClick={() => document.getElementById(props.id!)?.click()}
+          onClick={() => document.getElementById(props.id || id)?.click()}
           disabled={isPending}
         >
           {isPending ? "Uploading..." : "Upload"}
