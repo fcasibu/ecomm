@@ -94,7 +94,7 @@ export class CustomersService extends BaseService {
   }
 
   public async update(customerId: string, input: CustomerUpdateInput) {
-    return await this.executeTransaction(async () => {
+    return await this.executeTransaction(async (tx) => {
       const existingAddressIds = input.addresses
         .map((address) => address.id)
         .filter((id): id is string => Boolean(id));
@@ -104,7 +104,7 @@ export class CustomersService extends BaseService {
         (address) => !address.id,
       );
 
-      return await this.prismaClient.customer.update({
+      return await tx.customer.update({
         where: { id: customerId },
         include: CUSTOMER_INCLUDE,
         omit: CUSTOMER_OMIT,

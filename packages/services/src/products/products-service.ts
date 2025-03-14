@@ -92,12 +92,12 @@ export class ProductsService extends BaseService {
   }
 
   public async update(productId: string, input: ProductUpdateInput) {
-    const product = await this.prismaClient.product.findUniqueOrThrow({
-      where: { id: productId },
-      select: { sku: true },
-    });
+    return await this.executeTransaction(async (tx) => {
+      const product = await tx.product.findUniqueOrThrow({
+        where: { id: productId },
+        select: { sku: true },
+      });
 
-    return await this.executeTransaction(async () => {
       const existingVariantSkus = input.variants
         .map((variant) => variant.sku)
         .filter((sku): sku is string => Boolean(sku));
@@ -105,7 +105,7 @@ export class ProductsService extends BaseService {
       const variantsToUpdate = input.variants.filter((variant) => variant.sku);
       const variantsToCreate = input.variants.filter((variant) => !variant.sku);
 
-      return await this.prismaClient.product.update({
+      return await tx.product.update({
         where: { id: productId },
         data: {
           features: input.features,

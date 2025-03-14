@@ -39,10 +39,10 @@ export class CartService extends BaseService {
   }
 
   public async create(input: CartCreateInput) {
-    return this.executeTransaction(async () => {
+    return this.executeTransaction(async (tx) => {
       const isGuestUser = !input.customerId;
 
-      const productVariants = await this.prismaClient.productVariant.findMany({
+      const productVariants = await tx.productVariant.findMany({
         where: {
           AND: [
             {
@@ -59,7 +59,7 @@ export class CartService extends BaseService {
         },
       });
 
-      return await this.prismaClient.cart.create({
+      return await tx.cart.create({
         include: CART_INCLUDE,
         data: {
           totalAmount: CartService.calculateItemsTotalAmount(
@@ -88,8 +88,8 @@ export class CartService extends BaseService {
   }
 
   public async update(cartId: string, input: CartUpdateInput) {
-    return this.executeTransaction(async () => {
-      const productVariants = await this.prismaClient.productVariant.findMany({
+    return this.executeTransaction(async (tx) => {
+      const productVariants = await tx.productVariant.findMany({
         where: {
           AND: [
             {
@@ -113,7 +113,7 @@ export class CartService extends BaseService {
       const itemsToUpdate = input.items.filter((item) => item.id);
       const itemsToCreate = input.items.filter((item) => !item.id);
 
-      return await this.prismaClient.cart.update({
+      return await tx.cart.update({
         where: { id: cartId },
         include: CART_INCLUDE,
         data: {

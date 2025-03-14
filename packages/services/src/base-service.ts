@@ -1,4 +1,4 @@
-import { PrismaClient } from "@ecomm/db";
+import { Prisma, PrismaClient } from "@ecomm/db";
 
 export interface PaginationOptions {
   page?: number;
@@ -52,10 +52,10 @@ export abstract class BaseService {
   }
 
   protected async executeTransaction<T>(
-    operations: () => Promise<T>,
+    operation: (tx: Prisma.TransactionClient) => Promise<T>,
   ): Promise<T> {
-    return await this.prismaClient.$transaction(async () => {
-      return await operations();
+    return await this.prismaClient.$transaction(async (tx) => {
+      return await operation(tx);
     });
   }
 }
