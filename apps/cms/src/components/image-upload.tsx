@@ -117,7 +117,7 @@ export function ImageUpload({
               {onRemove && (
                 <Button
                   aria-label="Remove image"
-                  className="absolute top-2 right-2 p-0"
+                  className="absolute top-0 right-2 p-0"
                   onClick={() => onRemove(image)}
                   variant="none"
                 >

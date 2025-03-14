@@ -8,7 +8,7 @@ import type { Product, ProductsService } from "./products-service";
 import { ValidationError } from "../errors/validation-error";
 import { BaseController } from "../base-controller";
 import { logger } from "@ecomm/lib/logger";
-import type { ProductDTO, ProductVariantDTO } from "./product-dto";
+import type { ProductAttribute, ProductDTO } from "./product-dto";
 import { NotFoundError } from "../errors/not-found-error";
 
 export class ProductsController extends BaseController {
@@ -141,14 +141,25 @@ export class ProductsController extends BaseController {
       ...product,
       createdAt: product.createdAt.toLocaleDateString(),
       updatedAt: product.updatedAt.toLocaleDateString(),
-      variants: product.variants.map((variant) => ({
-        ...variant,
-        createdAt: variant.createdAt.toLocaleDateString(),
-        updatedAt: variant.updatedAt.toLocaleDateString(),
-        price: variant.price.toNumber(),
-        attributes:
-          variant.attributes?.valueOf() as ProductVariantDTO["attributes"],
-      })),
+      variants: product.variants.map((variant) => {
+        const attributes = variant.attributes as ProductAttribute[];
+
+        return {
+          id: variant.id,
+          images: variant.images,
+          sku: variant.sku,
+          currencyCode: variant.currencyCode,
+          createdAt: variant.createdAt.toLocaleDateString(),
+          updatedAt: variant.updatedAt.toLocaleDateString(),
+          price: variant.price.toNumber(),
+          ...Object.fromEntries(
+            attributes?.map((attribute) => [
+              attribute.title,
+              attribute.value,
+            ]) ?? [],
+          ),
+        };
+      }),
       ...(product.category
         ? {
             category: {

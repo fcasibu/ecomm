@@ -1,3 +1,8 @@
+export const productAttributes = [
+  { key: "color", title: "Color" },
+  { key: "size", title: "Size" },
+] as const;
+
 export interface ProductAttribute {
   value?: string;
   title?: string;
@@ -12,7 +17,10 @@ export interface ProductVariantDTO {
   price: number;
   currencyCode: string;
   stock: number;
-  attributes: ProductAttribute[] | undefined;
+
+  // attributes
+  size: string;
+  color: string;
 }
 
 export interface ProductDTO {
