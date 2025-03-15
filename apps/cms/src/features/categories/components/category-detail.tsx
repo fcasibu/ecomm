@@ -3,6 +3,7 @@ import {
   getCategoriesPath,
   getCategoryById,
 } from "@/features/categories/services/queries";
+import { getCookieCurrentLocale } from "@/lib/get-cookie-current-locale";
 import { notFound } from "next/navigation";
 
 export async function CategoryDetail({
@@ -11,8 +12,9 @@ export async function CategoryDetail({
   categoryId: Promise<string>;
 }) {
   const id = await categoryId;
-  const result = await getCategoryById(id);
-  const categoriesPathResultPromise = getCategoriesPath(id);
+  const locale = await getCookieCurrentLocale();
+  const result = await getCategoryById(locale, id);
+  const categoriesPathResultPromise = getCategoriesPath(locale, id);
 
   if (!result.success) return notFound();
 

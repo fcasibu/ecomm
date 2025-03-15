@@ -18,7 +18,7 @@ export class CartController extends BaseController {
     super();
   }
 
-  public async create(input: CartCreateInput) {
+  public async create(locale: string, input: CartCreateInput) {
     try {
       logger.info({ input }, "Creating a new cart");
       const result = cartCreateSchema.safeParse(input);
@@ -26,7 +26,7 @@ export class CartController extends BaseController {
       if (!result.success) throw new ValidationError(result.error);
 
       const cart = this.transformer.toDTO(
-        await this.cartService.create(result.data),
+        await this.cartService.create(locale, result.data),
       );
 
       if (!cart) {
@@ -43,7 +43,7 @@ export class CartController extends BaseController {
     }
   }
 
-  public async update(cartId: string, input: CartUpdateInput) {
+  public async update(locale: string, cartId: string, input: CartUpdateInput) {
     try {
       logger.info({ cartId, input }, "Updating cart");
       const result = cartUpdateSchema.safeParse(input);
@@ -53,7 +53,7 @@ export class CartController extends BaseController {
       }
 
       const updatedCart = this.transformer.toDTO(
-        await this.cartService.update(cartId, result.data),
+        await this.cartService.update(locale, cartId, result.data),
       );
       if (!updatedCart) {
         throw new NotFoundError(`Cart ID "${cartId}" not found.`);
@@ -70,11 +70,11 @@ export class CartController extends BaseController {
     }
   }
 
-  public async delete(cartId: string) {
+  public async delete(locale: string, cartId: string) {
     logger.info({ cartId }, "Deleting customer");
 
     try {
-      await this.cartService.delete(cartId);
+      await this.cartService.delete(locale, cartId);
       logger.info({ cartId }, "Cart deleted successfully");
 
       return { success: true };
@@ -85,11 +85,13 @@ export class CartController extends BaseController {
     }
   }
 
-  public async getById(id: string) {
+  public async getById(locale: string, id: string) {
     try {
       logger.info({ id }, "Fetching cart");
 
-      const cart = this.transformer.toDTO(await this.cartService.getById(id));
+      const cart = this.transformer.toDTO(
+        await this.cartService.getById(locale, id),
+      );
 
       if (!cart) {
         throw new NotFoundError(`Cart ID "${id}" not found.`);

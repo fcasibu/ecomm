@@ -1,4 +1,5 @@
 import { getCategories } from "@/features/categories/services/queries";
+import { STORE_CURRENT_LOCALE_COOKIE_KEY } from "@/features/store/constants";
 import { mapErrorToAppError } from "@ecomm/lib/execute-operation";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -10,8 +11,10 @@ export const GET = async (req: NextRequest) => {
     const page = Number(searchParams.get("page"));
     const query = searchParams.get("query") ?? "";
     const pageSize = Number(searchParams.get("pageSize"));
+    const locale = req.cookies.get(STORE_CURRENT_LOCALE_COOKIE_KEY)
+      ?.value as string;
 
-    const result = await getCategories({
+    const result = await getCategories(locale, {
       page,
       query,
       pageSize,

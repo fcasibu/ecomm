@@ -19,7 +19,7 @@ export class OrdersController extends BaseController {
     super();
   }
 
-  public async create(input: OrderCreateInput) {
+  public async create(locale: string, input: OrderCreateInput) {
     try {
       logger.info({ input }, "Creating a new order");
       const result = orderCreateSchema.safeParse(input);
@@ -27,7 +27,7 @@ export class OrdersController extends BaseController {
       if (!result.success) throw new ValidationError(result.error);
 
       const order = this.transformer.toDTO(
-        await this.ordersService.create(result.data),
+        await this.ordersService.create(locale, result.data),
       );
 
       if (!order) {
@@ -44,7 +44,11 @@ export class OrdersController extends BaseController {
     }
   }
 
-  public async update(orderId: string, input: OrderUpdateInput) {
+  public async update(
+    locale: string,
+    orderId: string,
+    input: OrderUpdateInput,
+  ) {
     try {
       logger.info({ orderId, input }, "Updating order");
       const result = orderUpdateSchema.safeParse(input);
@@ -54,7 +58,7 @@ export class OrdersController extends BaseController {
       }
 
       const updatedOrder = this.transformer.toDTO(
-        await this.ordersService.update(orderId, result.data),
+        await this.ordersService.update(locale, orderId, result.data),
       );
 
       if (!updatedOrder) {
@@ -71,12 +75,12 @@ export class OrdersController extends BaseController {
     }
   }
 
-  public async getById(id: string) {
+  public async getById(locale: string, id: string) {
     try {
       logger.info({ id }, "Fetching order");
 
       const order = this.transformer.toDTO(
-        await this.ordersService.getById(id),
+        await this.ordersService.getById(locale, id),
       );
 
       if (!order) {
@@ -93,11 +97,14 @@ export class OrdersController extends BaseController {
     }
   }
 
-  public async getAll(input: { page?: number; pageSize?: number }) {
+  public async getAll(
+    locale: string,
+    input: { page?: number; pageSize?: number },
+  ) {
     logger.info({ input }, "Fetching all orders");
 
     try {
-      const result = await this.ordersService.getAll(input);
+      const result = await this.ordersService.getAll(locale, input);
 
       const transformedOrders = result.items
         .map((item) => this.transformer.toDTO(item))

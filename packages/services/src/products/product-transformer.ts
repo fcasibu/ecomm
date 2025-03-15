@@ -8,7 +8,7 @@ import type { Product } from "./products-service";
 
 export class ProductTransformer extends BaseTransformer {
   public toDTO(product: Product | null | undefined): ProductDTO | null {
-    if (!product) return product ?? null;
+    if (!product) return null;
 
     return {
       id: product.id,
@@ -35,7 +35,6 @@ export class ProductTransformer extends BaseTransformer {
       images: variant.images,
       sku: variant.sku,
       stock: variant.stock,
-      currencyCode: variant.currencyCode,
       createdAt: this.formatDateToISO(variant.createdAt),
       updatedAt: this.formatDateToISO(variant.updatedAt),
       price: variant.price.toNumber(),

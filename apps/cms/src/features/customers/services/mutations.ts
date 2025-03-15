@@ -10,9 +10,12 @@ import type {
 } from "@ecomm/validations/cms/customers/customers-schema";
 import { revalidateTag } from "next/cache";
 
-export const createCustomer = async (input: CustomerCreateInput) => {
+export const createCustomer = async (
+  locale: string,
+  input: CustomerCreateInput,
+) => {
   const result = await executeOperation(() =>
-    customersController.create(input),
+    customersController.create(locale, input),
   );
 
   if (result.success) {
@@ -23,11 +26,12 @@ export const createCustomer = async (input: CustomerCreateInput) => {
 };
 
 export const updateCustomerById = async (
+  locale: string,
   id: string,
   input: CustomerUpdateInput,
 ) => {
   const result = await executeOperation(() =>
-    customersController.update(id, input),
+    customersController.update(locale, id, input),
   );
 
   if (result.success) {
@@ -38,8 +42,10 @@ export const updateCustomerById = async (
   return result;
 };
 
-export const deleteCustomerById = async (id: string) => {
-  const result = await executeOperation(() => customersController.delete(id));
+export const deleteCustomerById = async (locale: string, id: string) => {
+  const result = await executeOperation(() =>
+    customersController.delete(locale, id),
+  );
 
   if (result.success) {
     revalidateTag("customers");

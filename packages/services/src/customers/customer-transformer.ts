@@ -4,7 +4,7 @@ import type { Customer } from "./customers-service";
 
 export class CustomerTransformer extends BaseTransformer {
   public toDTO(customer: Customer | null | undefined): CustomerDTO | null {
-    if (!customer) return customer ?? null;
+    if (!customer) return null;
 
     return {
       id: customer.id,

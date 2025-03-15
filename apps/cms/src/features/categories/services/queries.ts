@@ -3,36 +3,43 @@ import { categoriesController } from "@ecomm/services/registry";
 import { executeOperation } from "@ecomm/lib/execute-operation";
 import { unstable_cacheTag as cacheTag } from "next/cache";
 
-export const getCategoriesPath = async (categoryId: string) => {
+export const getCategoriesPath = async (locale: string, categoryId: string) => {
   "use cache";
-  cacheTag("all", "categories_path");
+  cacheTag("all", "categories_path", `store_${locale}`);
 
   return await executeOperation(() =>
-    categoriesController.getCategoriesPath(categoryId),
+    categoriesController.getCategoriesPath(locale, categoryId),
   );
 };
 
-export const getCategories = async (input: {
-  page?: number;
-  query?: string;
-  pageSize?: number;
-}) => {
+export const getCategories = async (
+  locale: string,
+  input: {
+    page?: number;
+    query?: string;
+    pageSize?: number;
+  },
+) => {
   "use cache";
-  cacheTag("all", "categories");
+  cacheTag("all", "categories", `store_${locale}`);
 
-  return await executeOperation(() => categoriesController.getAll(input));
+  return await executeOperation(() =>
+    categoriesController.getAll(locale, input),
+  );
 };
 
-export const getRootCategories = async () => {
+export const getRootCategories = async (locale: string) => {
   "use cache";
-  cacheTag("all", "root_categories");
+  cacheTag("all", "root_categories", `store_${locale}`);
 
-  return await executeOperation(() => categoriesController.getRootCategories());
+  return await executeOperation(() =>
+    categoriesController.getRootCategories(locale),
+  );
 };
 
-export const getCategoryById = async (id: string) => {
+export const getCategoryById = async (locale: string, id: string) => {
   "use cache";
-  cacheTag("all", "category", `category_${id}`);
+  cacheTag("all", "category", `category_${id}`, `store_${locale}`);
 
-  return await executeOperation(() => categoriesController.getById(id));
+  return await executeOperation(() => categoriesController.getById(locale, id));
 };

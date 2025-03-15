@@ -12,18 +12,20 @@ import Link from "next/link";
 import { ChevronRightIcon, LayersIcon } from "lucide-react";
 import { QueryPagination } from "@/components/query-pagination";
 import { CATEGORIES_PAGE_SIZE } from "@/lib/constants";
+import { getCookieCurrentLocale } from "@/lib/get-cookie-current-locale";
 
 export async function CategoriesCards({
   searchParams,
 }: {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
+  const locale = await getCookieCurrentLocale();
   const where = searchParams.then((sp) => ({
     page: Number(sp.page || "1"),
     query: (sp.q as string) ?? "",
   }));
   const { page = 1, query = "" } = await where;
-  const result = await getCategories({
+  const result = await getCategories(locale, {
     page,
     query: query.toLowerCase(),
     pageSize: CATEGORIES_PAGE_SIZE,

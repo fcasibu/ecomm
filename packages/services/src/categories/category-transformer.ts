@@ -5,7 +5,7 @@ import type { CategoryDTO } from "./category-dto";
 
 export class CategoryTransformer extends BaseTransformer {
   public toDTO(category: Category | null | undefined): CategoryDTO | null {
-    if (!category) return category ?? null;
+    if (!category) return null;
 
     return {
       id: category.id,
@@ -68,7 +68,6 @@ export class CategoryTransformer extends BaseTransformer {
       images: variant.images,
       sku: variant.sku,
       stock: variant.stock,
-      currencyCode: variant.currencyCode,
       createdAt: this.formatDateToISO(variant.createdAt),
       updatedAt: this.formatDateToISO(variant.updatedAt),
       price: variant.price.toNumber(),

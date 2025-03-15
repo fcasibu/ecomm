@@ -2,17 +2,20 @@ import { getCategories } from "@/features/categories/services/queries";
 import { getCustomers } from "@/features/customers/services/queries";
 import { getOrders } from "@/features/orders/services/queries";
 import { getProducts } from "@/features/products/services/queries";
+import { getCookieCurrentLocale } from "@/lib/get-cookie-current-locale";
 import type { Result } from "@ecomm/lib/execute-operation";
 import { Card, CardHeader, CardTitle, CardContent } from "@ecomm/ui/card";
 import { Package, Users, ShoppingCart, List } from "lucide-react";
 
 const getDashboardData = async () => {
+  const locale = await getCookieCurrentLocale();
+
   const [categoriesResult, productsResult, ordersResult, customersResult] =
     await Promise.allSettled([
-      getCategories({ page: 1, pageSize: 20 }),
-      getProducts({ page: 1, pageSize: 20 }),
-      getOrders({ page: 1, pageSize: 20 }),
-      getCustomers({ page: 1, pageSize: 20 }),
+      getCategories(locale, { page: 1, pageSize: 20 }),
+      getProducts(locale, { page: 1, pageSize: 20 }),
+      getOrders(locale, { page: 1, pageSize: 20 }),
+      getCustomers(locale, { page: 1, pageSize: 20 }),
     ]);
 
   const extractCount = (

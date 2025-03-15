@@ -29,6 +29,7 @@ import { Switch } from "@ecomm/ui/switch";
 import { CustomerDetailsStage } from "./customer-details-stage";
 import { AddressesStage } from "./addresses-stage";
 import { useMultiStage } from "@/hooks/use-multi-stage";
+import { useStore } from "@/features/store/providers/store-provider";
 
 type StageKey = "customer-details" | "security" | "addresses";
 
@@ -42,6 +43,7 @@ export function CustomerCreateForm() {
   // TODO(fcasibu): useFormContext is not working properly with react compiler
   "use no memo";
 
+  const store = useStore();
   const form = useForm<CustomerCreateInput>({
     resolver: zodResolver(customerCreateSchema),
     defaultValues: {
@@ -73,7 +75,7 @@ export function CustomerCreateForm() {
     if (currentStage !== "addresses") return onNext();
 
     startTransition(async () => {
-      const result = await createCustomer(data);
+      const result = await createCustomer(store.locale, data);
 
       if (!result.success) {
         switch (result.error.code) {

@@ -3,6 +3,7 @@ import { Heading } from "@ecomm/ui/typography";
 import { QueryPagination } from "@/components/query-pagination";
 import { ProductsTableClient } from "./products-table-client";
 import { PRODUCTS_PAGE_SIZE } from "@/lib/constants";
+import { getCookieCurrentLocale } from "@/lib/get-cookie-current-locale";
 
 export async function ProductsTable({
   searchParams,
@@ -15,7 +16,8 @@ export async function ProductsTable({
   }));
   const { page = 1, query = "" } = await where;
 
-  const result = await getProducts({
+  const locale = await getCookieCurrentLocale();
+  const result = await getProducts(locale, {
     page,
     query: query.toLowerCase(),
     pageSize: PRODUCTS_PAGE_SIZE,

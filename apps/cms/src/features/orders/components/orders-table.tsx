@@ -3,6 +3,7 @@ import { QueryPagination } from "@/components/query-pagination";
 import { ORDERS_PAGE_SIZE } from "@/lib/constants";
 import { getOrders } from "../services/queries";
 import { OrdersTableClient } from "./orders-table-client";
+import { getCookieCurrentLocale } from "@/lib/get-cookie-current-locale";
 
 export async function OrdersTable({
   searchParams,
@@ -12,7 +13,8 @@ export async function OrdersTable({
   const where = searchParams.then((sp) => Number(sp.page || "1"));
   const page = await where;
 
-  const result = await getOrders({
+  const locale = await getCookieCurrentLocale();
+  const result = await getOrders(locale, {
     page,
     pageSize: ORDERS_PAGE_SIZE,
   });

@@ -10,13 +10,6 @@ import { MaxTierReachedError } from "../errors/max-tier-reached-error";
 import { MaxCategoryChildrenCountError } from "../errors/max-children-count-error";
 import { createTextSearchCondition } from "../utils/prisma-helpers";
 
-const CATEGORY_INCLUDE = {
-  children: true,
-  products: {
-    include: { variants: true },
-  },
-} as const satisfies Prisma.CategoryInclude;
-
 export type Category = Prisma.CategoryGetPayload<{
   include: {
     children: true;
@@ -26,6 +19,13 @@ export type Category = Prisma.CategoryGetPayload<{
   };
 }>;
 
+const CATEGORY_INCLUDE = {
+  children: true,
+  products: {
+    include: { variants: true },
+  },
+} as const satisfies Prisma.CategoryInclude;
+
 export class CategoriesService extends BaseService {
   private readonly MAX_HIERARCHY = 3;
   private readonly MAX_CHILDREN_COUNT = 12;
@@ -34,10 +34,13 @@ export class CategoriesService extends BaseService {
     super(prismaClient);
   }
 
-  public async create(input: CategoryCreateInput) {
+  public async create(locale: string, input: CategoryCreateInput) {
     let tier = 1;
     if (input.parentId) {
-      const metadata = await this.validateAndGetParentMetadata(input.parentId);
+      const metadata = await this.validateAndGetParentMetadata(
+        locale,
+        input.parentId,
+      );
       tier = metadata.tier;
     }
 
@@ -48,31 +51,40 @@ export class CategoriesService extends BaseService {
         slug: input.slug,
         image: input.image,
         description: input.description,
-        parentId: input.parentId,
         tier,
+        ...(input.parentId
+          ? {
+              parent: {
+                connect: { id: input.parentId },
+              },
+            }
+          : {}),
+        store: {
+          connect: { id: locale },
+        },
       },
     });
   }
 
-  public async getById(categoryId: string) {
+  public async getById(locale: string, categoryId: string) {
     return await this.prismaClient.category.findUnique({
-      where: { id: categoryId },
+      where: { id: categoryId, locale },
       include: CATEGORY_INCLUDE,
     });
   }
 
-  public async getBySlug(slug: string) {
+  public async getBySlug(locale: string, slug: string) {
     return await this.prismaClient.category.findUnique({
-      where: { slug },
+      where: { slug, locale },
       include: CATEGORY_INCLUDE,
     });
   }
 
-  public async getAll(options: SearchOptions) {
+  public async getAll(locale: string, options: SearchOptions) {
     const { query, page = 1, pageSize = 20 } = options;
     const pagination = this.buildPagination({ page, pageSize });
 
-    let whereCondition = {};
+    let whereCondition: Prisma.CategoryWhereInput = { locale };
 
     if (query) {
       whereCondition = createTextSearchCondition(query, ["name", "slug"]);
@@ -91,18 +103,23 @@ export class CategoriesService extends BaseService {
     return this.formatPaginatedResponse(categories, totalCount, options);
   }
 
-  public async getRootCategories() {
+  public async getRootCategories(locale: string) {
     return await this.prismaClient.category.findMany({
       where: {
         parentId: null,
+        locale,
       },
       include: CATEGORY_INCLUDE,
     });
   }
 
-  public async update(categoryId: string, input: CategoryUpdateInput) {
+  public async update(
+    locale: string,
+    categoryId: string,
+    input: CategoryUpdateInput,
+  ) {
     return await this.prismaClient.category.update({
-      where: { id: categoryId },
+      where: { id: categoryId, locale },
       include: CATEGORY_INCLUDE,
       data: {
         name: input.name,
@@ -113,14 +130,14 @@ export class CategoriesService extends BaseService {
     });
   }
 
-  public async delete(categoryId: string) {
+  public async delete(locale: string, categoryId: string) {
     return await this.prismaClient.category.delete({
-      where: { id: categoryId },
+      where: { id: categoryId, locale },
       include: CATEGORY_INCLUDE,
     });
   }
 
-  public async getCategoriesPath(categoryId: string) {
+  public async getCategoriesPath(locale: string, categoryId: string) {
     const path: {
       id: string;
       name: string;
@@ -128,7 +145,7 @@ export class CategoriesService extends BaseService {
     }[] = [];
     const fetchCategoryData = async (id: string) => {
       const category = await this.prismaClient.category.findUnique({
-        where: { id },
+        where: { id, locale },
         select: {
           id: true,
           name: true,
@@ -154,9 +171,9 @@ export class CategoriesService extends BaseService {
     return path;
   }
 
-  private async validateAndGetParentMetadata(parentId: string) {
+  private async validateAndGetParentMetadata(locale: string, parentId: string) {
     const parentData = await this.prismaClient.category.findUniqueOrThrow({
-      where: { id: parentId },
+      where: { id: parentId, locale },
       select: {
         tier: true,
         _count: { select: { children: true } },

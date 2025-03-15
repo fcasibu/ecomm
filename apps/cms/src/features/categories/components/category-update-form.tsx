@@ -48,6 +48,7 @@ import { formatPrice } from "@ecomm/lib/format-price";
 import type { Result } from "@ecomm/lib/execute-operation";
 import { Skeleton } from "@ecomm/ui/skeleton";
 import { ImageUpload } from "@/components/image-upload";
+import { useStore } from "@/features/store/providers/store-provider";
 
 export function CategoryUpdateForm({
   category,
@@ -60,6 +61,7 @@ export function CategoryUpdateForm({
 }) {
   "use no memo";
 
+  const store = useStore();
   const form = useForm<z.infer<typeof categoryUpdateSchema>>({
     resolver: zodResolver(categoryUpdateSchema),
     defaultValues: {
@@ -75,7 +77,7 @@ export function CategoryUpdateForm({
 
   const handleSubmit = (data: z.infer<typeof categoryUpdateSchema>) => {
     startTransition(async () => {
-      const result = await updateCategoryById(category.id, data);
+      const result = await updateCategoryById(store.locale, category.id, data);
 
       if (!result.success) {
         switch (result.error.code) {
@@ -111,7 +113,7 @@ export function CategoryUpdateForm({
 
   const handleDelete = () => {
     startTransition(async () => {
-      const result = await deleteCategoryById(category.id);
+      const result = await deleteCategoryById(store.locale, category.id);
 
       if (!result.success) {
         if (result.error.code === "CONSTRAINT_ERROR") {
@@ -360,6 +362,7 @@ const TOTAL_PAGE_NUMBERS = 5;
 
 function Products({ products }: { products: CategoryDTO["products"] }) {
   const [currentPage, setCurrentPage] = useState(1);
+  const store = useStore();
 
   if (!products.length) return null;
 
@@ -460,8 +463,7 @@ function Products({ products }: { products: CategoryDTO["products"] }) {
                     <Badge className="bg-white text-slate-800">
                       <Tag className="mr-1 h-3 w-3" />
                       {variant?.price &&
-                        variant.currencyCode &&
-                        formatPrice(variant.price, variant.currencyCode)}
+                        formatPrice(variant.price, store.currency)}
                     </Badge>
 
                     {variant?.stock && (

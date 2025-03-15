@@ -12,6 +12,7 @@ import {
   Users,
   ShoppingCart,
   List,
+  Settings,
 } from "lucide-react";
 import { cn } from "@ecomm/ui/lib/utils";
 import { useWindowInfo } from "@faceless-ui/window-info";
@@ -22,6 +23,7 @@ const navItems = [
   { name: "Categories", href: "/categories", icon: List },
   { name: "Customers", href: "/customers", icon: Users },
   { name: "Orders", href: "/orders", icon: ShoppingCart },
+  { name: "Settings", href: "/settings", icon: Settings },
 ];
 
 export function Sidebar() {

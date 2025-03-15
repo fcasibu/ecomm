@@ -19,7 +19,7 @@ export class ProductsController extends BaseController {
     super();
   }
 
-  public async create(input: ProductCreateInput) {
+  public async create(locale: string, input: ProductCreateInput) {
     try {
       logger.info({ input }, "Creating a new product");
       const result = productCreateSchema.safeParse(input);
@@ -27,7 +27,7 @@ export class ProductsController extends BaseController {
       if (!result.success) throw new ValidationError(result.error);
 
       const product = this.transformer.toDTO(
-        await this.productsService.create(result.data),
+        await this.productsService.create(locale, result.data),
       );
 
       if (!product) {
@@ -44,7 +44,11 @@ export class ProductsController extends BaseController {
     }
   }
 
-  public async update(productId: string, input: ProductUpdateInput) {
+  public async update(
+    locale: string,
+    productId: string,
+    input: ProductUpdateInput,
+  ) {
     try {
       logger.info({ productId, input }, "Updating product");
       const result = productUpdateSchema.safeParse(input);
@@ -54,7 +58,7 @@ export class ProductsController extends BaseController {
       }
 
       const updatedProduct = this.transformer.toDTO(
-        await this.productsService.update(productId, result.data),
+        await this.productsService.update(locale, productId, result.data),
       );
 
       if (!updatedProduct) {
@@ -74,11 +78,11 @@ export class ProductsController extends BaseController {
     }
   }
 
-  public async delete(productId: string) {
+  public async delete(locale: string, productId: string) {
     logger.info({ productId }, "Deleting product");
 
     try {
-      await this.productsService.delete(productId);
+      await this.productsService.delete(locale, productId);
       logger.info({ productId }, "Product deleted successfully");
 
       return { success: true };
@@ -89,12 +93,12 @@ export class ProductsController extends BaseController {
     }
   }
 
-  public async getById(id: string) {
+  public async getById(locale: string, id: string) {
     try {
       logger.info({ id }, "Fetching product");
 
       const product = this.transformer.toDTO(
-        await this.productsService.getById(id),
+        await this.productsService.getById(locale, id),
       );
 
       if (!product) {
@@ -111,15 +115,18 @@ export class ProductsController extends BaseController {
     }
   }
 
-  public async getAll(input: {
-    page?: number;
-    query?: string;
-    pageSize?: number;
-  }) {
+  public async getAll(
+    locale: string,
+    input: {
+      page?: number;
+      query?: string;
+      pageSize?: number;
+    },
+  ) {
     logger.info({ input }, "Fetching all products");
 
     try {
-      const result = await this.productsService.getAll(input);
+      const result = await this.productsService.getAll(locale, input);
 
       const transformedProducts = result.items
         .map((item) => this.transformer.toDTO(item))

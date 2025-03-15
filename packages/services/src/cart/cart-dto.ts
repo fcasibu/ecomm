@@ -8,7 +8,6 @@ export interface CartItemDTO {
   quantity: number;
   price: number;
   stock: number;
-  currencyCode: string;
   createdAt: string;
   updatedAt: string;
 }

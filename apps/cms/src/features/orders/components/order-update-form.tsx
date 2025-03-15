@@ -42,10 +42,12 @@ import type { OrderDTO } from "@ecomm/services/orders/order-dto";
 import type { AddressDTO } from "@ecomm/services/customers/customer-dto";
 import { formatPrice } from "@ecomm/lib/format-price";
 import { ImageComponent } from "@ecomm/ui/image";
+import { useStore } from "@/features/store/providers/store-provider";
 
 export function OrderUpdateForm({ order }: { order: OrderDTO }) {
   "use no memo";
 
+  const store = useStore();
   const form = useForm<OrderUpdateInput>({
     resolver: zodResolver(orderUpdateSchema),
     defaultValues: {
@@ -58,7 +60,7 @@ export function OrderUpdateForm({ order }: { order: OrderDTO }) {
 
   const handleSubmit = (data: OrderUpdateInput) => {
     startTransition(async () => {
-      const result = await updateOrderById(order.id, data);
+      const result = await updateOrderById(store.locale, order.id, data);
 
       if (!result.success) {
         toast({

@@ -24,10 +24,12 @@ import { Heading, Text } from "@ecomm/ui/typography";
 import { CategorySelect } from "@/components/category-select";
 import { ImageUpload } from "@/components/image-upload";
 import { CategorySelectSkeleton } from "@/components/category-select-skeleton";
+import { useStore } from "@/features/store/providers/store-provider";
 
 export function CategoryCreateForm() {
   "use no memo";
 
+  const store = useStore();
   const form = useForm<z.infer<typeof categoryCreateSchema>>({
     resolver: zodResolver(categoryCreateSchema),
     defaultValues: {
@@ -44,7 +46,7 @@ export function CategoryCreateForm() {
 
   const handleSubmit = (data: z.infer<typeof categoryCreateSchema>) => {
     startTransition(async () => {
-      const result = await createCategory(data);
+      const result = await createCategory(store.locale, data);
 
       if (!result.success) {
         if (result.error.code === "DUPLICATE_ERROR") {

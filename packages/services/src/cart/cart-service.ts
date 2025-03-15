@@ -38,7 +38,7 @@ export class CartService extends BaseService {
     super(prismaClient);
   }
 
-  public async create(input: CartCreateInput) {
+  public async create(locale: string, input: CartCreateInput) {
     return this.executeTransaction(async (tx) => {
       const isGuestUser = !input.customerId;
 
@@ -67,27 +67,32 @@ export class CartService extends BaseService {
             productVariants,
           ),
           anonymousId: isGuestUser
-            ? (await this.createAnonymousCustomer()).anonymousId
+            ? (await this.createAnonymousCustomer(locale)).anonymousId
             : undefined,
-          customerId: !isGuestUser ? input.customerId : undefined,
+          customer: {
+            connect: {
+              id: !isGuestUser ? input.customerId : undefined,
+            },
+          },
           items: {
             createMany: {
               data: input.items,
             },
           },
+          store: { connect: { locale } },
         },
       });
     });
   }
 
-  public async getById(cartId: string) {
+  public async getById(locale: string, cartId: string) {
     return await this.prismaClient.cart.findUnique({
-      where: { id: cartId },
+      where: { id: cartId, locale },
       include: CART_INCLUDE,
     });
   }
 
-  public async update(cartId: string, input: CartUpdateInput) {
+  public async update(locale: string, cartId: string, input: CartUpdateInput) {
     return this.executeTransaction(async (tx) => {
       const productVariants = await tx.productVariant.findMany({
         where: {
@@ -114,7 +119,7 @@ export class CartService extends BaseService {
       const itemsToCreate = input.items.filter((item) => !item.id);
 
       return await tx.cart.update({
-        where: { id: cartId },
+        where: { id: cartId, locale },
         include: CART_INCLUDE,
         data: {
           totalAmount: CartService.calculateItemsTotalAmount(
@@ -139,18 +144,19 @@ export class CartService extends BaseService {
     });
   }
 
-  public async delete(cartId: string) {
+  public async delete(locale: string, cartId: string) {
     return await this.prismaClient.cart.delete({
-      where: { id: cartId },
+      where: { id: cartId, locale },
       include: CART_INCLUDE,
     });
   }
 
-  private async createAnonymousCustomer() {
+  private async createAnonymousCustomer(locale: string) {
     const anonymousId = randomUUID();
     return await this.prismaClient.customer.create({
       data: {
         anonymousId,
+        store: { connect: { locale } },
       },
       select: { anonymousId: true },
     });

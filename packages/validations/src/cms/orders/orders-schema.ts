@@ -9,7 +9,6 @@ const cartItemSchema = z.object({
   quantity: z.number(),
   price: z.number(),
   stock: z.number(),
-  currencyCode: z.string(),
 });
 
 export const orderCreateSchema = z.object({

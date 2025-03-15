@@ -5,7 +5,7 @@ import type { Cart } from "./cart-service";
 
 export class CartTransformer extends BaseTransformer {
   public toDTO(cart: Cart | null | undefined): CartDTO | null {
-    if (!cart) return cart ?? null;
+    if (!cart) return null;
 
     return {
       id: cart.id,
@@ -33,7 +33,6 @@ export class CartTransformer extends BaseTransformer {
       quantity: item.quantity,
       price: variant.price.toNumber(),
       stock: variant.stock,
-      currencyCode: variant.currencyCode,
       image: variant.images[0],
       name: item.product.name,
       createdAt: this.formatDateToISO(item.createdAt),

@@ -34,7 +34,6 @@ const variantAttributeSchema = z.array(
 
 export const productCreateVariantSchema = z.object({
   price: z.number(),
-  currencyCode: z.string().min(1, "Currency code is required"),
   stock: z.number(),
   images: z
     .array(z.string().min(1, "Variant image is required"))
@@ -46,7 +45,6 @@ export const productCreateVariantSchema = z.object({
 export const productUpdateVariantSchema = z.object({
   sku: z.string().optional(),
   price: z.number(),
-  currencyCode: z.string().min(1, "Currency code is required"),
   stock: z.number(),
   images: z
     .array(z.string().min(1, "Variant image is required"))

@@ -5,7 +5,7 @@ import type { Order } from "./orders-service";
 
 export class OrderTransformer extends BaseTransformer {
   public toDTO(order: Order | null | undefined): OrderDTO | null {
-    if (!order) return order ?? null;
+    if (!order) return null;
 
     return {
       id: order.id,
@@ -32,7 +32,6 @@ export class OrderTransformer extends BaseTransformer {
       image: item.image,
       name: item.name,
       quantity: item.quantity,
-      currencyCode: item.currencyCode,
       price: item.price.toNumber(),
       createdAt: this.formatDateToISO(item.createdAt),
       updatedAt: this.formatDateToISO(item.updatedAt),

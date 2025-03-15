@@ -37,10 +37,12 @@ import {
 import { ImageComponent } from "@ecomm/ui/image";
 import { CategorySelectSkeleton } from "@/components/category-select-skeleton";
 import { MultiImageUpload } from "@/components/multi-image-upload";
+import { useStore } from "@/features/store/providers/store-provider";
 
 export function ProductCreateForm() {
   "use no memo";
 
+  const store = useStore();
   const form = useForm<z.infer<typeof productCreateSchema>>({
     resolver: zodResolver(productCreateSchema),
     defaultValues: {
@@ -57,7 +59,7 @@ export function ProductCreateForm() {
 
   const handleSubmit = (data: z.infer<typeof productCreateSchema>) => {
     startTransition(async () => {
-      const result = await createProduct(data);
+      const result = await createProduct(store.locale, data);
 
       if (!result.success) {
         toast({
@@ -322,19 +324,6 @@ function ProductVariantsControl({
                       value={field.value ?? 0}
                       onChange={(e) => field.onChange(e.target.valueAsNumber)}
                     />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="currencyCode"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Currency Code</FormLabel>
-                  <FormControl>
-                    <Input type="text" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

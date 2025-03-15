@@ -19,7 +19,7 @@ export class CustomersController extends BaseController {
     super();
   }
 
-  public async create(input: CustomerCreateInput) {
+  public async create(locale: string, input: CustomerCreateInput) {
     try {
       logger.info({ input }, "Creating a new customer");
       const result = customerCreateSchema.safeParse(input);
@@ -27,7 +27,7 @@ export class CustomersController extends BaseController {
       if (!result.success) throw new ValidationError(result.error);
 
       const customer = this.transformer.toDTO(
-        await this.customersService.create(result.data),
+        await this.customersService.create(locale, result.data),
       );
 
       if (!customer) {
@@ -44,7 +44,11 @@ export class CustomersController extends BaseController {
     }
   }
 
-  public async update(customerId: string, input: CustomerUpdateInput) {
+  public async update(
+    locale: string,
+    customerId: string,
+    input: CustomerUpdateInput,
+  ) {
     try {
       logger.info({ customerId, input }, "Updating customer");
       const result = customerUpdateSchema.safeParse(input);
@@ -54,7 +58,7 @@ export class CustomersController extends BaseController {
       }
 
       const updatedCustomer = this.transformer.toDTO(
-        await this.customersService.update(customerId, result.data),
+        await this.customersService.update(locale, customerId, result.data),
       );
       if (!updatedCustomer) {
         throw new NotFoundError(`Customer ID "${customerId}" not found.`);
@@ -73,11 +77,11 @@ export class CustomersController extends BaseController {
     }
   }
 
-  public async delete(customerId: string) {
+  public async delete(locale: string, customerId: string) {
     logger.info({ customerId }, "Deleting customer");
 
     try {
-      await this.customersService.delete(customerId);
+      await this.customersService.delete(locale, customerId);
       logger.info({ customerId }, "Customer deleted successfully");
 
       return { success: true };
@@ -88,12 +92,12 @@ export class CustomersController extends BaseController {
     }
   }
 
-  public async getById(id: string) {
+  public async getById(locale: string, id: string) {
     try {
       logger.info({ id }, "Fetching customer");
 
       const customer = this.transformer.toDTO(
-        await this.customersService.getById(id),
+        await this.customersService.getById(locale, id),
       );
 
       if (!customer) {
@@ -110,15 +114,18 @@ export class CustomersController extends BaseController {
     }
   }
 
-  public async getAll(input: {
-    page?: number;
-    query?: string;
-    pageSize?: number;
-  }) {
+  public async getAll(
+    locale: string,
+    input: {
+      page?: number;
+      query?: string;
+      pageSize?: number;
+    },
+  ) {
     logger.info({ input }, "Fetching all customers");
 
     try {
-      const result = await this.customersService.getAll(input);
+      const result = await this.customersService.getAll(locale, input);
 
       const transformedCustomers = result.items
         .map((item) => this.transformer.toDTO(item))

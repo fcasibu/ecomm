@@ -3,6 +3,7 @@ import { QueryPagination } from "@/components/query-pagination";
 import { CustomersTableClient } from "./customers-table-client";
 import { getCustomers } from "../services/queries";
 import { CUSTOMERS_PAGE_SIZE } from "@/lib/constants";
+import { getCookieCurrentLocale } from "@/lib/get-cookie-current-locale";
 
 export async function CustomersTable({
   searchParams,
@@ -15,7 +16,8 @@ export async function CustomersTable({
   }));
   const { query = "", page = 1 } = await where;
 
-  const result = await getCustomers({
+  const locale = await getCookieCurrentLocale();
+  const result = await getCustomers(locale, {
     page,
     query: query.toLowerCase(),
     pageSize: CUSTOMERS_PAGE_SIZE,

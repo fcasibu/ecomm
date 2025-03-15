@@ -19,6 +19,7 @@ import { AddressesStage } from "./addresses-stage";
 import { deleteCustomerById, updateCustomerById } from "../services/mutations";
 import { toast } from "@ecomm/ui/hooks/use-toast";
 import Link from "next/link";
+import { useStore } from "@/features/store/providers/store-provider";
 
 export function CustomerUpdateForm({
   customer,
@@ -29,6 +30,7 @@ export function CustomerUpdateForm({
 }) {
   "use no memo";
 
+  const store = useStore();
   const form = useForm<CustomerUpdateInput>({
     resolver: zodResolver(customerUpdateSchema),
     defaultValues: {
@@ -47,7 +49,7 @@ export function CustomerUpdateForm({
 
   const handleSubmit = (data: CustomerUpdateInput) => {
     startTransition(async () => {
-      const result = await updateCustomerById(customer.id, data);
+      const result = await updateCustomerById(store.locale, customer.id, data);
 
       if (!result.success) {
         toast({
@@ -67,7 +69,7 @@ export function CustomerUpdateForm({
 
   const handleDelete = () => {
     startTransition(async () => {
-      const result = await deleteCustomerById(customer.id);
+      const result = await deleteCustomerById(store.locale, customer.id);
 
       if (!result.success) {
         toast({

@@ -19,7 +19,7 @@ export class CategoriesController extends BaseController {
     super();
   }
 
-  public async create(input: CategoryCreateInput) {
+  public async create(locale: string, input: CategoryCreateInput) {
     try {
       logger.info({ input }, "Creating a new category");
       const result = categoryCreateSchema.safeParse(input);
@@ -29,7 +29,7 @@ export class CategoriesController extends BaseController {
       }
 
       const category = this.transformer.toDTO(
-        await this.categoriesService.create(result.data),
+        await this.categoriesService.create(locale, result.data),
       );
 
       if (!category) {
@@ -46,7 +46,11 @@ export class CategoriesController extends BaseController {
     }
   }
 
-  public async update(categoryId: string, input: CategoryUpdateInput) {
+  public async update(
+    locale: string,
+    categoryId: string,
+    input: CategoryUpdateInput,
+  ) {
     try {
       logger.info({ categoryId, input }, "Updating category");
       const result = categoryUpdateSchema.safeParse(input);
@@ -56,7 +60,7 @@ export class CategoriesController extends BaseController {
       }
 
       const updatedCategory = this.transformer.toDTO(
-        await this.categoriesService.update(categoryId, result.data),
+        await this.categoriesService.update(locale, categoryId, result.data),
       );
       if (!updatedCategory) {
         throw new NotFoundError(`Category ID "${categoryId}" not found.`);
@@ -76,11 +80,11 @@ export class CategoriesController extends BaseController {
     }
   }
 
-  public async delete(categoryId: string) {
+  public async delete(locale: string, categoryId: string) {
     logger.info({ categoryId }, "Deleting category");
 
     try {
-      await this.categoriesService.delete(categoryId);
+      await this.categoriesService.delete(locale, categoryId);
       logger.info({ categoryId }, "Category deleted successfully");
 
       return { success: true };
@@ -92,12 +96,12 @@ export class CategoriesController extends BaseController {
     }
   }
 
-  public async getById(id: string) {
+  public async getById(locale: string, id: string) {
     logger.info({ id }, "Fetching category by id");
 
     try {
       const category = this.transformer.toDTO(
-        await this.categoriesService.getById(id),
+        await this.categoriesService.getById(locale, id),
       );
 
       if (!category) {
@@ -116,12 +120,12 @@ export class CategoriesController extends BaseController {
     }
   }
 
-  public async getBySlug(slug: string) {
+  public async getBySlug(locale: string, slug: string) {
     logger.info({ slug }, "Fetching category by slug");
 
     try {
       const category = this.transformer.toDTO(
-        await this.categoriesService.getBySlug(slug),
+        await this.categoriesService.getBySlug(locale, slug),
       );
 
       if (!category) {
@@ -140,15 +144,18 @@ export class CategoriesController extends BaseController {
     }
   }
 
-  public async getAll(input: {
-    page?: number;
-    query?: string;
-    pageSize?: number;
-  }) {
+  public async getAll(
+    locale: string,
+    input: {
+      page?: number;
+      query?: string;
+      pageSize?: number;
+    },
+  ) {
     logger.info({ input }, "Fetching all categories");
 
     try {
-      const result = await this.categoriesService.getAll(input);
+      const result = await this.categoriesService.getAll(locale, input);
 
       const transformedCategories = result.items
         .map((item) => this.transformer.toDTO(item))
@@ -180,13 +187,14 @@ export class CategoriesController extends BaseController {
     }
   }
 
-  public async getRootCategories() {
+  public async getRootCategories(locale: string) {
     logger.info("Fetching all root categories");
 
     try {
-      const categories = (await this.categoriesService.getRootCategories()).map(
-        this.transformer.toDTO,
-      );
+      const categories = (
+        await this.categoriesService.getRootCategories(locale)
+      ).map((category) => this.transformer.toDTO(category));
+
       logger.info({ categories }, "Root categories fetched successfully");
       return categories;
     } catch (error) {
@@ -196,7 +204,7 @@ export class CategoriesController extends BaseController {
     }
   }
 
-  public async getCategoriesPath(categoryId: string) {
-    return await this.categoriesService.getCategoriesPath(categoryId);
+  public async getCategoriesPath(locale: string, categoryId: string) {
+    return await this.categoriesService.getCategoriesPath(locale, categoryId);
   }
 }

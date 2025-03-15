@@ -79,6 +79,7 @@ import type {
   ProductVariantDTO,
 } from "@ecomm/services/products/product-dto";
 import { CUSTOMERS_PAGE_SIZE, PRODUCTS_PAGE_SIZE } from "@/lib/constants";
+import { useStore } from "@/features/store/providers/store-provider";
 
 type StageKey = "order-details" | "customer" | "cart";
 
@@ -108,6 +109,7 @@ const stageAwareSchema = (currentStage: StageKey) => {
 export function OrderCreateForm() {
   "use no memo";
 
+  const store = useStore();
   const { currentStage, onNext, onPrevious, goToStage, isStageDisabled } =
     useMultiStage(stages, "order-details");
 
@@ -138,7 +140,7 @@ export function OrderCreateForm() {
     }
 
     startTransition(async () => {
-      const cartResult = await createCart({
+      const cartResult = await createCart(store.locale, {
         customerId: data.customerId,
         items: data.preCart.items,
       });
@@ -151,7 +153,7 @@ export function OrderCreateForm() {
         return;
       }
 
-      const result = await createOrder({
+      const result = await createOrder(store.locale, {
         ...data,
         cart: cartResult.data,
       });
@@ -442,6 +444,7 @@ function CartStage() {
   const formContext = useFormContext<OrderCreateInput>();
   const searchParams = useSearchParams();
   const page = Number(searchParams.get("page") || "1");
+  const store = useStore();
 
   const { result, isLoading } = useGetProducts({
     page,
@@ -571,7 +574,6 @@ function CartStage() {
         name: product.name,
         price: variant.price,
         stock: variant.stock,
-        currencyCode: variant.currencyCode,
       };
     });
 
@@ -751,21 +753,22 @@ function CartStage() {
                                     <div className="font-semibold">
                                       {formatPrice(
                                         variant.price,
-                                        variant.currencyCode,
+                                        store.currency,
                                       )}
                                     </div>
                                   </div>
 
                                   {variant.attributes &&
-                                    Boolean(variant.attributes.length) &&
-                                    variant.attributes.map((attribute) => (
-                                      <div
-                                        className="text-sm text-gray-500 mb-1"
-                                        key={`${attribute.title}-${attribute.value}`}
-                                      >
-                                        {attribute.title}: {attribute.value}
-                                      </div>
-                                    ))}
+                                    Object.entries(variant.attributes).map(
+                                      ([key, value]) => (
+                                        <div
+                                          className="text-sm text-gray-500 mb-1"
+                                          key={`${key}-${value}`}
+                                        >
+                                          {key}: {value}
+                                        </div>
+                                      ),
+                                    )}
 
                                   <div
                                     className={cn(
@@ -853,12 +856,11 @@ interface CartDetailsProps {
 }
 
 function CartDetails({ cart, formContext }: CartDetailsProps) {
+  const store = useStore();
   const total = cart.itemsForDisplay.reduce(
     (sum, item) => sum + item.price * item.quantity,
     0,
   );
-
-  const currencyCode = cart.itemsForDisplay[0]?.currencyCode || "USD";
 
   const removeItem = (itemSku: string) => {
     const updatedItems = cart.itemsForDisplay.filter(
@@ -925,7 +927,7 @@ function CartDetails({ cart, formContext }: CartDetailsProps) {
       <div className="flex justify-end">
         <div className="space-y-2">
           <Text className="font-semibold">
-            Total: {formatPrice(total, currencyCode)}
+            Total: {formatPrice(total, store.currency)}
           </Text>
         </div>
       </div>

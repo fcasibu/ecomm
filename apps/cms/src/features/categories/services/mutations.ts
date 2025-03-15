@@ -9,9 +9,12 @@ import type {
 import { executeOperation } from "@ecomm/lib/execute-operation";
 import { revalidateTag } from "next/cache";
 
-export const createCategory = async (input: CategoryCreateInput) => {
+export const createCategory = async (
+  locale: string,
+  input: CategoryCreateInput,
+) => {
   const result = await executeOperation(() =>
-    categoriesController.create(input),
+    categoriesController.create(locale, input),
   );
 
   if (result.success) {
@@ -26,9 +29,12 @@ export const createCategory = async (input: CategoryCreateInput) => {
   return result;
 };
 
-export const deleteCategoryById = async (categoryId: string) => {
+export const deleteCategoryById = async (
+  locale: string,
+  categoryId: string,
+) => {
   const result = await executeOperation(() =>
-    categoriesController.delete(categoryId),
+    categoriesController.delete(locale, categoryId),
   );
 
   if (result.success) {
@@ -44,11 +50,12 @@ export const deleteCategoryById = async (categoryId: string) => {
 };
 
 export const updateCategoryById = async (
+  locale: string,
   categoryId: string,
   input: CategoryUpdateInput,
 ) => {
   const result = await executeOperation(() =>
-    categoriesController.update(categoryId, input),
+    categoriesController.update(locale, categoryId, input),
   );
 
   if (result.success) {

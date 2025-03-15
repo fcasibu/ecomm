@@ -7,7 +7,6 @@ export interface OrderItemDTO {
   image: string;
   name: string;
   quantity: number;
-  currencyCode: string;
   price: number;
   createdAt: string;
   updatedAt: string;

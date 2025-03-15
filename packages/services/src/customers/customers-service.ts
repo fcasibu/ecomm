@@ -31,7 +31,7 @@ export class CustomersService extends BaseService {
     super(prismaClient);
   }
 
-  public async create(input: CustomerCreateInput) {
+  public async create(locale: string, input: CustomerCreateInput) {
     const hashedPassword = input.password
       ? await hashPassword(input.password)
       : undefined;
@@ -52,23 +52,24 @@ export class CustomersService extends BaseService {
             data: input.addresses,
           },
         },
+        store: { connect: { locale } },
       },
     });
   }
 
-  public async getById(customerId: string) {
+  public async getById(locale: string, customerId: string) {
     return await this.prismaClient.customer.findUnique({
-      where: { id: customerId },
+      where: { id: customerId, locale },
       include: CUSTOMER_INCLUDE,
       omit: CUSTOMER_OMIT,
     });
   }
 
-  public async getAll(options: SearchOptions) {
+  public async getAll(locale: string, options: SearchOptions) {
     const { query, page = 1, pageSize = 20 } = options;
     const pagination = this.buildPagination({ page, pageSize });
 
-    let whereCondition = {};
+    let whereCondition: Prisma.CustomerWhereInput = { locale };
 
     if (query) {
       whereCondition = createTextSearchCondition(query, [
@@ -93,7 +94,11 @@ export class CustomersService extends BaseService {
     return this.formatPaginatedResponse(customers, totalCount, options);
   }
 
-  public async update(customerId: string, input: CustomerUpdateInput) {
+  public async update(
+    locale: string,
+    customerId: string,
+    input: CustomerUpdateInput,
+  ) {
     return await this.executeTransaction(async (tx) => {
       const existingAddressIds = input.addresses
         .map((address) => address.id)
@@ -105,7 +110,7 @@ export class CustomersService extends BaseService {
       );
 
       return await tx.customer.update({
-        where: { id: customerId },
+        where: { id: customerId, locale },
         include: CUSTOMER_INCLUDE,
         omit: CUSTOMER_OMIT,
         data: {
@@ -133,9 +138,9 @@ export class CustomersService extends BaseService {
     });
   }
 
-  public async delete(customerId: string) {
+  public async delete(locale: string, customerId: string) {
     return await this.prismaClient.customer.delete({
-      where: { id: customerId },
+      where: { id: customerId, locale },
       include: CUSTOMER_INCLUDE,
       omit: CUSTOMER_OMIT,
     });

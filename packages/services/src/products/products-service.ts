@@ -30,7 +30,7 @@ export class ProductsService extends BaseService {
     super(prismaClient);
   }
 
-  public async create(input: ProductCreateInput) {
+  public async create(locale: string, input: ProductCreateInput) {
     const sku = generateSku(input.name);
 
     return await this.prismaClient.product.create({
@@ -51,23 +51,24 @@ export class ProductsService extends BaseService {
         ...(input.categoryId
           ? { category: { connect: { id: input.categoryId } } }
           : {}),
+        store: { connect: { locale } },
       },
       include: PRODUCT_INCLUDE,
     });
   }
 
-  public async getById(productId: string) {
+  public async getById(locale: string, productId: string) {
     return await this.prismaClient.product.findUnique({
-      where: { id: productId },
+      where: { id: productId, locale },
       include: PRODUCT_INCLUDE,
     });
   }
 
-  public async getAll(options: SearchOptions) {
+  public async getAll(locale: string, options: SearchOptions) {
     const { query, page = 1, pageSize = 20 } = options;
     const pagination = this.buildPagination({ page, pageSize });
 
-    let whereCondition = {};
+    let whereCondition: Prisma.ProductWhereInput = { locale };
 
     if (query) {
       const directSearch = createTextSearchCondition(query, ["name", "sku"]);
@@ -91,10 +92,14 @@ export class ProductsService extends BaseService {
     return this.formatPaginatedResponse(products, totalCount, options);
   }
 
-  public async update(productId: string, input: ProductUpdateInput) {
+  public async update(
+    locale: string,
+    productId: string,
+    input: ProductUpdateInput,
+  ) {
     return await this.executeTransaction(async (tx) => {
       const product = await tx.product.findUniqueOrThrow({
-        where: { id: productId },
+        where: { id: productId, locale },
         select: { sku: true },
       });
 
@@ -106,7 +111,7 @@ export class ProductsService extends BaseService {
       const variantsToCreate = input.variants.filter((variant) => !variant.sku);
 
       return await tx.product.update({
-        where: { id: productId },
+        where: { id: productId, locale },
         data: {
           features: input.features,
           name: input.name,
@@ -136,9 +141,9 @@ export class ProductsService extends BaseService {
     });
   }
 
-  public async delete(productId: string) {
+  public async delete(locale: string, productId: string) {
     return await this.prismaClient.product.delete({
-      where: { id: productId },
+      where: { id: productId, locale },
       include: PRODUCT_INCLUDE,
     });
   }

@@ -16,6 +16,13 @@ import { OrdersService } from "./orders/orders-service";
 import { OrdersController } from "./orders/orders-controller";
 import { CartService } from "./cart/cart-service";
 import { CartController } from "./cart/cart-controller";
+import { StoreService } from "./store/store-service";
+import { StoreController } from "./store/store-controller";
+
+Container.register(StoreService, [prismaClient]);
+Container.register(StoreController, [Container.resolve(StoreService)]);
+
+export const storeController = Container.resolve(StoreController);
 
 Container.register(CloudinaryService, [getCloudinaryConfig]);
 Container.register(ImageService, [Container.resolve(CloudinaryService)]);

@@ -34,11 +34,10 @@ export class OrdersService extends BaseService {
     super(prismaClient);
   }
 
-  public async create(input: OrderCreateInput) {
+  public async create(locale: string, input: OrderCreateInput) {
     return await this.prismaClient.order.create({
       include: ORDER_INCLUDE,
       data: {
-        customerId: input.customerId,
         totalAmount: input.cart.totalAmount,
         currency: input.currency,
         billingAddressId: input.billingAddressId,
@@ -50,28 +49,29 @@ export class OrdersService extends BaseService {
               image: item.image,
               name: item.name,
               quantity: item.quantity,
-              currencyCode: item.currencyCode,
               price: item.price,
             })),
           },
         },
+        store: { connect: { locale } },
       },
     });
   }
 
-  public async getById(orderId: string) {
+  public async getById(locale: string, orderId: string) {
     return await this.prismaClient.order.findUnique({
-      where: { id: orderId },
+      where: { id: orderId, locale },
       include: ORDER_INCLUDE,
     });
   }
 
-  public async getAll(options: SearchOptions) {
+  public async getAll(locale: string, options: SearchOptions) {
     const { page = 1, pageSize = 20 } = options;
     const pagination = this.buildPagination({ page, pageSize });
 
     const [customers, totalCount] = await this.prismaClient.$transaction([
       this.prismaClient.order.findMany({
+        where: { locale },
         include: ORDER_INCLUDE,
         orderBy: { updatedAt: "desc" },
         ...pagination,
@@ -82,9 +82,13 @@ export class OrdersService extends BaseService {
     return this.formatPaginatedResponse(customers, totalCount, options);
   }
 
-  public async update(orderId: string, input: OrderUpdateInput) {
+  public async update(
+    locale: string,
+    orderId: string,
+    input: OrderUpdateInput,
+  ) {
     return await this.prismaClient.order.update({
-      where: { id: orderId },
+      where: { id: orderId, locale },
       include: ORDER_INCLUDE,
       data: {
         status: input.orderStatus,

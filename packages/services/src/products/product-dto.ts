@@ -10,7 +10,6 @@ export interface ProductVariantDTO {
   images: string[];
   sku: string;
   price: number;
-  currencyCode: string;
   stock: number;
   attributes: {
     size: string;

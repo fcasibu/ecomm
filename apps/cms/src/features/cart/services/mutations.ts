@@ -9,18 +9,21 @@ import type {
 } from "@ecomm/validations/cms/cart/cart-schema";
 import { revalidateTag } from "next/cache";
 
-export const createCart = async (input: CartCreateInput) => {
-  const result = await executeOperation(() => cartController.create(input));
+export const createCart = async (locale: string, input: CartCreateInput) => {
+  const result = await executeOperation(() =>
+    cartController.create(locale, input),
+  );
 
   return result;
 };
 
 export const updateCartById = async (
+  locale: string,
   cartId: string,
   input: CartUpdateInput,
 ) => {
   const result = await executeOperation(() =>
-    cartController.update(cartId, input),
+    cartController.update(locale, cartId, input),
   );
 
   if (result.success) {

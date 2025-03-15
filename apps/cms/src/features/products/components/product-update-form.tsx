@@ -40,8 +40,10 @@ import { ImageComponent } from "@ecomm/ui/image";
 import { CategorySelectSkeleton } from "@/components/category-select-skeleton";
 import { MultiImageUpload } from "@/components/multi-image-upload";
 import type { z } from "zod";
+import { useStore } from "@/features/store/providers/store-provider";
 
 export function ProductUpdateForm({ product }: { product: ProductDTO }) {
+  const store = useStore();
   const form = useForm<ProductUpdateInput>({
     resolver: zodResolver(productUpdateSchema),
     defaultValues: {
@@ -64,7 +66,7 @@ export function ProductUpdateForm({ product }: { product: ProductDTO }) {
 
   const handleSubmit = (data: ProductUpdateInput) => {
     startTransition(async () => {
-      const result = await updateProductById(product.id, data);
+      const result = await updateProductById(store.locale, product.id, data);
 
       if (!result.success) {
         toast({
@@ -84,7 +86,7 @@ export function ProductUpdateForm({ product }: { product: ProductDTO }) {
 
   const handleDelete = () => {
     startTransition(async () => {
-      const result = await deleteProductById(product.id);
+      const result = await deleteProductById(store.locale, product.id);
 
       if (!result.success) {
         toast({
@@ -356,19 +358,6 @@ function ProductVariantsControl({
                       {...field}
                       onChange={(e) => field.onChange(e.target.valueAsNumber)}
                     />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="currencyCode"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Currency Code</FormLabel>
-                  <FormControl>
-                    <Input type="text" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
