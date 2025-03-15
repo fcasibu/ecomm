@@ -60,7 +60,7 @@ export class CategoriesService extends BaseService {
             }
           : {}),
         store: {
-          connect: { id: locale },
+          connect: { locale },
         },
       },
     });
