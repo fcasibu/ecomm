@@ -1,23 +1,23 @@
-import { Container } from "@ecomm/lib/container";
-import { ProductsService } from "./products/products-service";
-import { prismaClient } from "@ecomm/db";
-import { ProductsController } from "./products/products-controller";
-import { CategoriesService } from "./categories/categories-service";
-import { CategoriesController } from "./categories/categories-controller";
-import { CustomersService } from "./customers/customers-service";
-import { CustomersController } from "./customers/customers-controller";
+import { Container } from '@ecomm/lib/container';
+import { ProductsService } from './products/products-service';
+import { prismaClient } from '@ecomm/db';
+import { ProductsController } from './products/products-controller';
+import { CategoriesService } from './categories/categories-service';
+import { CategoriesController } from './categories/categories-controller';
+import { CustomersService } from './customers/customers-service';
+import { CustomersController } from './customers/customers-controller';
 import {
   CloudinaryService,
   getCloudinaryConfig,
-} from "./dam/cloudinary-service";
-import { ImageService } from "./image/image-service";
-import { ImageController } from "./image/image-controller";
-import { OrdersService } from "./orders/orders-service";
-import { OrdersController } from "./orders/orders-controller";
-import { CartService } from "./cart/cart-service";
-import { CartController } from "./cart/cart-controller";
-import { StoreService } from "./store/store-service";
-import { StoreController } from "./store/store-controller";
+} from './dam/cloudinary-service';
+import { ImageService } from './image/image-service';
+import { ImageController } from './image/image-controller';
+import { OrdersService } from './orders/orders-service';
+import { OrdersController } from './orders/orders-controller';
+import { CartService } from './cart/cart-service';
+import { CartController } from './cart/cart-controller';
+import { StoreService } from './store/store-service';
+import { StoreController } from './store/store-controller';
 
 Container.register(StoreService, [prismaClient]);
 Container.register(StoreController, [Container.resolve(StoreService)]);

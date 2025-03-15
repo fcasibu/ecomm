@@ -1,8 +1,8 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import { Check, ChevronsUpDown } from "lucide-react";
-import { Button } from "@ecomm/ui/button";
+import { useState } from 'react';
+import { Check, ChevronsUpDown } from 'lucide-react';
+import { Button } from '@ecomm/ui/button';
 import {
   Command,
   CommandEmpty,
@@ -10,12 +10,12 @@ import {
   CommandInput,
   CommandItem,
   CommandList,
-} from "@ecomm/ui/command";
-import { Popover, PopoverContent, PopoverTrigger } from "@ecomm/ui/popover";
-import { useGetCategories } from "../features/categories/hooks/use-get-categories";
-import { cn } from "@ecomm/ui/lib/utils";
-import { useSearchParams } from "next/navigation";
-import { CATEGORIES_PAGE_SIZE } from "@/lib/constants";
+} from '@ecomm/ui/command';
+import { Popover, PopoverContent, PopoverTrigger } from '@ecomm/ui/popover';
+import { useGetCategories } from '../features/categories/hooks/use-get-categories';
+import { cn } from '@ecomm/ui/lib/utils';
+import { useSearchParams } from 'next/navigation';
+import { CATEGORIES_PAGE_SIZE } from '@/lib/constants';
 
 interface CategorySelectProps {
   value: string | undefined;
@@ -26,7 +26,7 @@ export function CategorySelect({ value, onChange }: CategorySelectProps) {
   const searchParams = useSearchParams();
   const [open, setOpen] = useState(false);
   const { result } = useGetCategories({
-    page: Number(searchParams.get("page") || "1"),
+    page: Number(searchParams.get('page') || '1'),
     pageSize: CATEGORIES_PAGE_SIZE,
   });
 
@@ -43,7 +43,7 @@ export function CategorySelect({ value, onChange }: CategorySelectProps) {
           aria-expanded={open}
           className="w-full justify-between"
         >
-          {category ? `${category?.id} - ${category?.name}` : "Select category"}
+          {category ? `${category?.id} - ${category?.name}` : 'Select category'}
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
@@ -61,7 +61,7 @@ export function CategorySelect({ value, onChange }: CategorySelectProps) {
                   <CommandItem
                     onSelect={() => {
                       if (value && category.id === value) {
-                        onChange("");
+                        onChange('');
                         return;
                       }
 
@@ -70,8 +70,8 @@ export function CategorySelect({ value, onChange }: CategorySelectProps) {
                   >
                     <Check
                       className={cn(
-                        "mr-2 h-4 w-4",
-                        value === category.id ? "opacity-100" : "opacity-0",
+                        'mr-2 h-4 w-4',
+                        value === category.id ? 'opacity-100' : 'opacity-0',
                       )}
                     />
                     {`${category.name} - ${category.slug}`}

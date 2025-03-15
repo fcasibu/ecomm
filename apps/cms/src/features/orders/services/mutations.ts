@@ -1,13 +1,13 @@
-"use server";
+'use server';
 
-import "server-only";
-import { executeOperation } from "@ecomm/lib/execute-operation";
-import { ordersController } from "@ecomm/services/registry";
+import 'server-only';
+import { executeOperation } from '@ecomm/lib/execute-operation';
+import { ordersController } from '@ecomm/services/registry';
 import type {
   OrderCreateInput,
   OrderUpdateInput,
-} from "@ecomm/validations/cms/orders/orders-schema";
-import { revalidateTag } from "next/cache";
+} from '@ecomm/validations/cms/orders/orders-schema';
+import { revalidateTag } from 'next/cache';
 
 export const createOrder = async (locale: string, input: OrderCreateInput) => {
   const result = await executeOperation(() =>
@@ -15,8 +15,8 @@ export const createOrder = async (locale: string, input: OrderCreateInput) => {
   );
 
   if (result.success) {
-    revalidateTag("orders");
-    revalidateTag("order");
+    revalidateTag('orders');
+    revalidateTag('order');
   }
 
   return result;
@@ -32,8 +32,8 @@ export const updateOrderById = async (
   );
 
   if (result.success) {
-    revalidateTag("orders");
-    revalidateTag("order");
+    revalidateTag('orders');
+    revalidateTag('order');
   }
 
   return result;

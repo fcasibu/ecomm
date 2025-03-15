@@ -1,18 +1,18 @@
-import { z } from "zod";
+import { z } from 'zod';
 
 export const AttributeKey = {
-  COLOR: "color",
-  SIZE: "size",
+  COLOR: 'color',
+  SIZE: 'size',
 } as const;
 
 export const productAttributes = {
   [AttributeKey.COLOR]: {
-    title: "Color",
-    validation: z.string().min(1, "Color is required"),
+    title: 'Color',
+    validation: z.string().min(1, 'Color is required'),
   },
   [AttributeKey.SIZE]: {
-    title: "Size",
-    validation: z.string().min(1, "Size is required"),
+    title: 'Size',
+    validation: z.string().min(1, 'Size is required'),
   },
 } as const;
 
@@ -36,9 +36,9 @@ export const productCreateVariantSchema = z.object({
   price: z.number(),
   stock: z.number(),
   images: z
-    .array(z.string().min(1, "Variant image is required"))
-    .nonempty({ message: "Please provide an image" })
-    .max(5, "You can only upload up to 5 images"),
+    .array(z.string().min(1, 'Variant image is required'))
+    .nonempty({ message: 'Please provide an image' })
+    .max(5, 'You can only upload up to 5 images'),
   attributes: variantAttributeSchema,
 });
 
@@ -47,30 +47,30 @@ export const productUpdateVariantSchema = z.object({
   price: z.number(),
   stock: z.number(),
   images: z
-    .array(z.string().min(1, "Variant image is required"))
-    .nonempty({ message: "Please provide an image" })
-    .max(5, "You can only upload up to 5 images"),
+    .array(z.string().min(1, 'Variant image is required'))
+    .nonempty({ message: 'Please provide an image' })
+    .max(5, 'You can only upload up to 5 images'),
   attributes: variantAttributeSchema,
 });
 
 export const productCreateSchema = z.object({
-  name: z.string().min(1, "Product name is required"),
+  name: z.string().min(1, 'Product name is required'),
   description: z.string().optional(),
   categoryId: z.string().optional(),
   features: z.array(z.string()),
   variants: z
     .array(productCreateVariantSchema)
-    .min(1, "A product must have a variant"),
+    .min(1, 'A product must have a variant'),
 });
 
 export const productUpdateSchema = z.object({
-  name: z.string().min(1, "Product name is required"),
+  name: z.string().min(1, 'Product name is required'),
   description: z.string().optional(),
   categoryId: z.string().optional(),
   features: z.array(z.string()),
   variants: z
     .array(productUpdateVariantSchema)
-    .min(1, "A product must have a variant"),
+    .min(1, 'A product must have a variant'),
 });
 
 export type ProductCreateInput = z.infer<typeof productCreateSchema>;

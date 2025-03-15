@@ -1,25 +1,25 @@
-"use client";
+'use client';
 
-import type { CustomerDTO } from "@ecomm/services/customers/customer-dto";
-import { Form } from "@ecomm/ui/form";
-import { Heading } from "@ecomm/ui/typography";
+import type { CustomerDTO } from '@ecomm/services/customers/customer-dto';
+import { Form } from '@ecomm/ui/form';
+import { Heading } from '@ecomm/ui/typography';
 import {
   customerUpdateSchema,
   type CustomerUpdateInput,
-} from "@ecomm/validations/cms/customers/customers-schema";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@ecomm/ui/tabs";
-import { Button } from "@ecomm/ui/button";
-import { Loader } from "lucide-react";
-import { useTransition } from "react";
-import { useRouter } from "next/navigation";
-import { CustomerDetailsStage } from "./customer-details-stage";
-import { AddressesStage } from "./addresses-stage";
-import { deleteCustomerById, updateCustomerById } from "../services/mutations";
-import { toast } from "@ecomm/ui/hooks/use-toast";
-import Link from "next/link";
-import { useStore } from "@/features/store/providers/store-provider";
+} from '@ecomm/validations/cms/customers/customers-schema';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from 'react-hook-form';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@ecomm/ui/tabs';
+import { Button } from '@ecomm/ui/button';
+import { Loader } from 'lucide-react';
+import { useTransition } from 'react';
+import { useRouter } from 'next/navigation';
+import { CustomerDetailsStage } from './customer-details-stage';
+import { AddressesStage } from './addresses-stage';
+import { deleteCustomerById, updateCustomerById } from '../services/mutations';
+import { toast } from '@ecomm/ui/hooks/use-toast';
+import Link from 'next/link';
+import { useStore } from '@/features/store/providers/store-provider';
 
 export function CustomerUpdateForm({
   customer,
@@ -28,7 +28,7 @@ export function CustomerUpdateForm({
   customer: CustomerDTO;
   tab?: string;
 }) {
-  "use no memo";
+  'use no memo';
 
   const store = useStore();
   const form = useForm<CustomerUpdateInput>({
@@ -36,11 +36,11 @@ export function CustomerUpdateForm({
     defaultValues: {
       addresses: customer.addresses,
       email: customer.email,
-      phone: customer.phone ?? "",
-      lastName: customer.lastName ?? "",
+      phone: customer.phone ?? '',
+      lastName: customer.lastName ?? '',
       birthDate: customer.birthDate ? new Date(customer.birthDate) : undefined,
-      firstName: customer.firstName ?? "",
-      middleName: customer.middleName ?? "",
+      firstName: customer.firstName ?? '',
+      middleName: customer.middleName ?? '',
     },
   });
 
@@ -53,16 +53,16 @@ export function CustomerUpdateForm({
 
       if (!result.success) {
         toast({
-          title: "Customer Update",
-          description: "There was an issue with updating the customer.",
+          title: 'Customer Update',
+          description: 'There was an issue with updating the customer.',
         });
 
         return;
       }
 
       toast({
-        title: "Customer update",
-        description: "Customer was successfully updated",
+        title: 'Customer update',
+        description: 'Customer was successfully updated',
       });
     });
   };
@@ -73,19 +73,19 @@ export function CustomerUpdateForm({
 
       if (!result.success) {
         toast({
-          title: "Customer deletion",
+          title: 'Customer deletion',
           description: result.error.message,
         });
 
         return;
       }
 
-      router.push("/customers");
+      router.push('/customers');
     });
   };
 
   return (
-    <div className="max-w-4xl mx-auto p-8 space-y-8">
+    <div className="mx-auto max-w-4xl space-y-8 p-8">
       <Heading as="h2">Update customer</Heading>
       <Form {...form}>
         <form
@@ -96,7 +96,7 @@ export function CustomerUpdateForm({
             return form.handleSubmit(handleSubmit)(e);
           }}
         >
-          <Tabs defaultValue={tab ?? "customer-details"}>
+          <Tabs defaultValue={tab ?? 'customer-details'}>
             <TabsList>
               <TabsTrigger asChild value="customer-details">
                 <Link href={`/customers/${customer.id}/customer-details`}>
@@ -116,11 +116,11 @@ export function CustomerUpdateForm({
               <AddressesStage />
             </TabsContent>
           </Tabs>
-          <div className="flex justify-end gap-4 mt-4">
+          <div className="mt-4 flex justify-end gap-4">
             <Button
               variant="outline"
               type="button"
-              onClick={() => router.push("/customers")}
+              onClick={() => router.push('/customers')}
             >
               Cancel
             </Button>
@@ -134,7 +134,7 @@ export function CustomerUpdateForm({
               {isPending ? (
                 <Loader className="animate-spin" size={16} />
               ) : (
-                "Delete"
+                'Delete'
               )}
             </Button>
             <Button
@@ -145,7 +145,7 @@ export function CustomerUpdateForm({
               {isPending ? (
                 <Loader className="animate-spin" size={16} />
               ) : (
-                "Save"
+                'Save'
               )}
             </Button>
           </div>

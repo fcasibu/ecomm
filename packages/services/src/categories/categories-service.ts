@@ -1,14 +1,14 @@
-import { PrismaClient } from "@ecomm/db";
-import type { Prisma } from "@ecomm/db";
+import { PrismaClient } from '@ecomm/db';
+import type { Prisma } from '@ecomm/db';
 import type {
   CategoryCreateInput,
   CategoryUpdateInput,
-} from "@ecomm/validations/cms/categories/category-schema";
-import type { SearchOptions } from "../base-service";
-import { BaseService } from "../base-service";
-import { MaxTierReachedError } from "../errors/max-tier-reached-error";
-import { MaxCategoryChildrenCountError } from "../errors/max-children-count-error";
-import { createTextSearchCondition } from "../utils/prisma-helpers";
+} from '@ecomm/validations/cms/categories/category-schema';
+import type { SearchOptions } from '../base-service';
+import { BaseService } from '../base-service';
+import { MaxTierReachedError } from '../errors/max-tier-reached-error';
+import { MaxCategoryChildrenCountError } from '../errors/max-children-count-error';
+import { createTextSearchCondition } from '../utils/prisma-helpers';
 
 export type Category = Prisma.CategoryGetPayload<{
   include: {
@@ -87,14 +87,14 @@ export class CategoriesService extends BaseService {
     let whereCondition: Prisma.CategoryWhereInput = { locale };
 
     if (query) {
-      whereCondition = createTextSearchCondition(query, ["name", "slug"]);
+      whereCondition = createTextSearchCondition(query, ['name', 'slug']);
     }
 
     const [categories, totalCount] = await this.prismaClient.$transaction([
       this.prismaClient.category.findMany({
         include: CATEGORY_INCLUDE,
         where: whereCondition,
-        orderBy: { updatedAt: "desc" },
+        orderBy: { updatedAt: 'desc' },
         ...pagination,
       }),
       this.prismaClient.category.count({ where: whereCondition }),

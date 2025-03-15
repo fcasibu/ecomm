@@ -1,15 +1,15 @@
-import { CalendarInput } from "@ecomm/ui/calendar-input";
+import { CalendarInput } from '@ecomm/ui/calendar-input';
 import {
   FormField,
   FormItem,
   FormLabel,
   FormControl,
   FormMessage,
-} from "@ecomm/ui/form";
-import { Input } from "@ecomm/ui/input";
-import { Heading } from "@ecomm/ui/typography";
-import type { CustomerCreateInput } from "@ecomm/validations/cms/customers/customers-schema";
-import { useFormContext } from "react-hook-form";
+} from '@ecomm/ui/form';
+import { Input } from '@ecomm/ui/input';
+import { Heading } from '@ecomm/ui/typography';
+import type { CustomerCreateInput } from '@ecomm/validations/cms/customers/customers-schema';
+import { useFormContext } from 'react-hook-form';
 
 export function CustomerDetailsStage() {
   const formContext = useFormContext<CustomerCreateInput>();

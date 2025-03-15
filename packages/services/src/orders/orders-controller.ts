@@ -1,16 +1,16 @@
-import type { OrdersService } from "./orders-service";
-import { ValidationError } from "../errors/validation-error";
-import { BaseController } from "../base-controller";
-import { logger } from "@ecomm/lib/logger";
-import { NotFoundError } from "../errors/not-found-error";
-import type { OrderDTO } from "./order-dto";
+import type { OrdersService } from './orders-service';
+import { ValidationError } from '../errors/validation-error';
+import { BaseController } from '../base-controller';
+import { logger } from '@ecomm/lib/logger';
+import { NotFoundError } from '../errors/not-found-error';
+import type { OrderDTO } from './order-dto';
 import {
   orderCreateSchema,
   orderUpdateSchema,
   type OrderCreateInput,
   type OrderUpdateInput,
-} from "@ecomm/validations/cms/orders/orders-schema";
-import { OrderTransformer } from "./order-transformer";
+} from '@ecomm/validations/cms/orders/orders-schema';
+import { OrderTransformer } from './order-transformer';
 
 export class OrdersController extends BaseController {
   private readonly transformer = new OrderTransformer();
@@ -21,7 +21,7 @@ export class OrdersController extends BaseController {
 
   public async create(locale: string, input: OrderCreateInput) {
     try {
-      logger.info({ input }, "Creating a new order");
+      logger.info({ input }, 'Creating a new order');
       const result = orderCreateSchema.safeParse(input);
 
       if (!result.success) throw new ValidationError(result.error);
@@ -31,15 +31,15 @@ export class OrdersController extends BaseController {
       );
 
       if (!order) {
-        throw new NotFoundError("Order not found.");
+        throw new NotFoundError('Order not found.');
       }
 
-      logger.info({ orderId: order.id }, "Order successfully created");
+      logger.info({ orderId: order.id }, 'Order successfully created');
 
       return order;
     } catch (error) {
       this.logAndThrowError(error, {
-        message: "Error creating order",
+        message: 'Error creating order',
       });
     }
   }
@@ -50,7 +50,7 @@ export class OrdersController extends BaseController {
     input: OrderUpdateInput,
   ) {
     try {
-      logger.info({ orderId, input }, "Updating order");
+      logger.info({ orderId, input }, 'Updating order');
       const result = orderUpdateSchema.safeParse(input);
 
       if (!result.success) {
@@ -65,7 +65,7 @@ export class OrdersController extends BaseController {
         throw new NotFoundError(`Order ID "${orderId}" not found.`);
       }
 
-      logger.info({ orderId: updatedOrder.id }, "Fetched order");
+      logger.info({ orderId: updatedOrder.id }, 'Fetched order');
       return updatedOrder;
     } catch (error) {
       this.logAndThrowError(error, {
@@ -77,7 +77,7 @@ export class OrdersController extends BaseController {
 
   public async getById(locale: string, id: string) {
     try {
-      logger.info({ id }, "Fetching order");
+      logger.info({ id }, 'Fetching order');
 
       const order = this.transformer.toDTO(
         await this.ordersService.getById(locale, id),
@@ -87,12 +87,12 @@ export class OrdersController extends BaseController {
         throw new NotFoundError(`Order ID "${id}" not found.`);
       }
 
-      logger.info({ orderId: order.id }, "Fetched order");
+      logger.info({ orderId: order.id }, 'Fetched order');
 
       return order;
     } catch (error) {
       this.logAndThrowError(error, {
-        message: "Error fetching order",
+        message: 'Error fetching order',
       });
     }
   }
@@ -101,7 +101,7 @@ export class OrdersController extends BaseController {
     locale: string,
     input: { page?: number; pageSize?: number },
   ) {
-    logger.info({ input }, "Fetching all orders");
+    logger.info({ input }, 'Fetching all orders');
 
     try {
       const result = await this.ordersService.getAll(locale, input);
@@ -125,13 +125,13 @@ export class OrdersController extends BaseController {
           currentPage: response.currentPage,
           pageSize: response.pageSize,
         },
-        "Orders fetched successfully",
+        'Orders fetched successfully',
       );
 
       return response;
     } catch (error) {
       this.logAndThrowError(error, {
-        message: "Error fetching all orders",
+        message: 'Error fetching all orders',
       });
     }
   }

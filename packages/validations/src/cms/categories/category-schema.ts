@@ -1,8 +1,8 @@
-import { z } from "zod";
+import { z } from 'zod';
 
 export const categoryCreateSchema = z.object({
-  name: z.string().min(1, "Category name is required"),
-  slug: z.string().min(1, "Category slug is required"),
+  name: z.string().min(1, 'Category name is required'),
+  slug: z.string().min(1, 'Category slug is required'),
   description: z.string().optional(),
   image: z.string().optional(),
   parentId: z.string().uuid().optional(),

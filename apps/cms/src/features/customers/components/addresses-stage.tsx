@@ -1,4 +1,4 @@
-import { Button } from "@ecomm/ui/button";
+import { Button } from '@ecomm/ui/button';
 import {
   Form,
   FormField,
@@ -6,8 +6,8 @@ import {
   FormLabel,
   FormControl,
   FormMessage,
-} from "@ecomm/ui/form";
-import { Input } from "@ecomm/ui/input";
+} from '@ecomm/ui/form';
+import { Input } from '@ecomm/ui/input';
 import {
   Select,
   SelectTrigger,
@@ -15,7 +15,7 @@ import {
   SelectContent,
   SelectGroup,
   SelectItem,
-} from "@ecomm/ui/select";
+} from '@ecomm/ui/select';
 import {
   Sheet,
   SheetTrigger,
@@ -23,7 +23,7 @@ import {
   SheetHeader,
   SheetTitle,
   SheetFooter,
-} from "@ecomm/ui/sheet";
+} from '@ecomm/ui/sheet';
 import {
   Table,
   TableHeader,
@@ -31,17 +31,17 @@ import {
   TableHead,
   TableBody,
   TableCell,
-} from "@ecomm/ui/table";
-import { Text, Heading } from "@ecomm/ui/typography";
+} from '@ecomm/ui/table';
+import { Text, Heading } from '@ecomm/ui/typography';
 import {
   type CustomerCreateInput,
   type AddressInput,
   addressSchema,
-} from "@ecomm/validations/cms/customers/customers-schema";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Plus } from "lucide-react";
-import { useState } from "react";
-import { useFormContext, useForm } from "react-hook-form";
+} from '@ecomm/validations/cms/customers/customers-schema';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { Plus } from 'lucide-react';
+import { useState } from 'react';
+import { useFormContext, useForm } from 'react-hook-form';
 
 export function AddressesStage() {
   const formContext = useFormContext<CustomerCreateInput>();
@@ -78,7 +78,7 @@ export function AddressControl({
   onChange,
   ...props
 }: AddressControlProps) {
-  "use no memo";
+  'use no memo';
 
   const [isOpen, setIsOpen] = useState(false);
   const [currentItem, setCurrentItem] = useState<AddressInput | null>(null);
@@ -86,12 +86,12 @@ export function AddressControl({
   const form = useForm<AddressInput>({
     resolver: zodResolver(addressSchema),
     defaultValues: {
-      type: "BILLING",
-      street: "",
-      city: "",
-      state: "",
-      postalCode: "",
-      country: "",
+      type: 'BILLING',
+      street: '',
+      city: '',
+      state: '',
+      postalCode: '',
+      country: '',
     },
   });
 
@@ -171,7 +171,7 @@ export function AddressControl({
           >
             <SheetHeader>
               <SheetTitle>
-                {currentItem ? "Edit address" : "Create an address"}
+                {currentItem ? 'Edit address' : 'Create an address'}
               </SheetTitle>
             </SheetHeader>
             <FormField
@@ -282,7 +282,7 @@ export function AddressControl({
                 </Button>
               )}
               <Button form="address-form" type="submit">
-                {currentItem ? "Update address" : "Save changes"}
+                {currentItem ? 'Update address' : 'Save changes'}
               </Button>
             </SheetFooter>
           </form>

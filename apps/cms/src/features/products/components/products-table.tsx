@@ -1,9 +1,9 @@
-import { getProducts } from "../services/queries";
-import { Heading } from "@ecomm/ui/typography";
-import { QueryPagination } from "@/components/query-pagination";
-import { ProductsTableClient } from "./products-table-client";
-import { PRODUCTS_PAGE_SIZE } from "@/lib/constants";
-import { getCookieCurrentLocale } from "@/lib/get-cookie-current-locale";
+import { getProducts } from '../services/queries';
+import { Heading } from '@ecomm/ui/typography';
+import { QueryPagination } from '@/components/query-pagination';
+import { ProductsTableClient } from './products-table-client';
+import { PRODUCTS_PAGE_SIZE } from '@/lib/constants';
+import { getCookieCurrentLocale } from '@/lib/get-cookie-current-locale';
 
 export async function ProductsTable({
   searchParams,
@@ -11,10 +11,10 @@ export async function ProductsTable({
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
   const where = searchParams.then((sp) => ({
-    page: Number(sp.page || "1"),
-    query: (sp.q as string) ?? "",
+    page: Number(sp.page || '1'),
+    query: (sp.q as string) ?? '',
   }));
-  const { page = 1, query = "" } = await where;
+  const { page = 1, query = '' } = await where;
 
   const locale = await getCookieCurrentLocale();
   const result = await getProducts(locale, {

@@ -1,5 +1,5 @@
-import { getFlagOfLocale } from "@ecomm/lib/get-flag-of-locale";
-import { Badge } from "@ecomm/ui/badge";
+import { getFlagOfLocale } from '@ecomm/lib/get-flag-of-locale';
+import { Badge } from '@ecomm/ui/badge';
 import {
   Table,
   TableBody,
@@ -7,15 +7,15 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@ecomm/ui/table";
-import { getStores } from "../services/queries";
-import { STORES_PAGE_SIZE } from "@/lib/constants";
-import { getLocales } from "@ecomm/lib/locales";
-import { QueryPagination } from "@/components/query-pagination";
-import { deleteStoreById } from "../services/mutations";
-import { Button } from "@ecomm/ui/button";
-import { Trash } from "lucide-react";
-import type { StoreDTO } from "@ecomm/services/store/store-dto";
+} from '@ecomm/ui/table';
+import { getStores } from '../services/queries';
+import { STORES_PAGE_SIZE } from '@/lib/constants';
+import { getLocales } from '@ecomm/lib/locales';
+import { QueryPagination } from '@/components/query-pagination';
+import { deleteStoreById } from '../services/mutations';
+import { Button } from '@ecomm/ui/button';
+import { Trash } from 'lucide-react';
+import type { StoreDTO } from '@ecomm/services/store/store-dto';
 
 export async function LocalesTable({
   searchParams,
@@ -23,7 +23,7 @@ export async function LocalesTable({
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
   const locales = getLocales();
-  const where = searchParams.then((sp) => Number(sp.page || "1"));
+  const where = searchParams.then((sp) => Number(sp.page || '1'));
   const page = await where;
 
   const result = await getStores({
@@ -41,15 +41,15 @@ export async function LocalesTable({
   const totalPages = Math.ceil(totalCount / STORES_PAGE_SIZE);
 
   const handleStoreDelete = (storeId: string) => async () => {
-    "use server";
+    'use server';
 
     await deleteStoreById(storeId);
   };
 
   const sortedStores = stores.sort((a, b) => {
     if (a.locale === b.locale) return 0;
-    if (a.locale === "en-US") return -1;
-    if (b.locale === "en-US") return 1;
+    if (a.locale === 'en-US') return -1;
+    if (b.locale === 'en-US') return 1;
 
     return 0;
   });
@@ -75,7 +75,7 @@ export async function LocalesTable({
                 <TableCell>
                   <Badge variant="outline">{store.currency}</Badge>
                 </TableCell>
-                {sortedStores.length !== 1 && store.locale !== "en-US" && (
+                {sortedStores.length !== 1 && store.locale !== 'en-US' && (
                   <TableCell className="w-[20px] pr-4">
                     <form action={handleStoreDelete(store.id)}>
                       <Button

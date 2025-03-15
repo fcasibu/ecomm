@@ -1,7 +1,7 @@
-import { BaseTransformer } from "../base-transformer";
-import type { AddressDTO } from "../customers/customer-dto";
-import type { OrderDTO, OrderItemDTO } from "./order-dto";
-import type { Order } from "./orders-service";
+import { BaseTransformer } from '../base-transformer';
+import type { AddressDTO } from '../customers/customer-dto';
+import type { OrderDTO, OrderItemDTO } from './order-dto';
+import type { Order } from './orders-service';
 
 export class OrderTransformer extends BaseTransformer {
   public toDTO(order: Order | null | undefined): OrderDTO | null {
@@ -13,7 +13,7 @@ export class OrderTransformer extends BaseTransformer {
       status: order.status,
       items: order.items.map((item) => this.transformerOrderItem(item)),
       customer: {
-        email: order.customer?.email ?? "",
+        email: order.customer?.email ?? '',
         addresses:
           order.customer?.addresses.map((address) =>
             this.transformAddress(address),
@@ -24,7 +24,7 @@ export class OrderTransformer extends BaseTransformer {
     };
   }
 
-  private transformerOrderItem(item: Order["items"][number]): OrderItemDTO {
+  private transformerOrderItem(item: Order['items'][number]): OrderItemDTO {
     return {
       id: item.id,
       sku: item.sku,
@@ -38,7 +38,7 @@ export class OrderTransformer extends BaseTransformer {
   }
 
   private transformAddress(
-    address: NonNullable<Order["customer"]>["addresses"][number],
+    address: NonNullable<Order['customer']>['addresses'][number],
   ): AddressDTO {
     return {
       id: address.id,

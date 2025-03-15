@@ -1,7 +1,7 @@
-"use client";
+'use client';
 
-import { format } from "date-fns";
-import type { ProductDTO } from "@ecomm/services/products/product-dto";
+import { format } from 'date-fns';
+import type { ProductDTO } from '@ecomm/services/products/product-dto';
 import {
   Table,
   TableBody,
@@ -9,9 +9,9 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@ecomm/ui/table";
-import { Minus } from "lucide-react";
-import { useRouter } from "next/navigation";
+} from '@ecomm/ui/table';
+import { Minus } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 
 export function ProductsTableClient({ products }: { products: ProductDTO[] }) {
   const router = useRouter();
@@ -35,14 +35,14 @@ export function ProductsTableClient({ products }: { products: ProductDTO[] }) {
             aria-label="Go to product details"
             onClick={() => router.push(`/products/${product.id}`)}
             onKeyDown={(e) => {
-              if (e.key === "Enter" || e.key === " ") {
+              if (e.key === 'Enter' || e.key === ' ') {
                 router.push(`/products/${product.id}`);
               }
             }}
             tabIndex={0}
             className="cursor-pointer"
           >
-            <TableCell className="font-medium max-w-[140px] truncate">
+            <TableCell className="max-w-[140px] truncate font-medium">
               {product.sku}
             </TableCell>
             <TableCell className="max-w-[20ch] truncate">
@@ -52,8 +52,8 @@ export function ProductsTableClient({ products }: { products: ProductDTO[] }) {
               {product.description || <Minus />}
             </TableCell>
             <TableCell>{product.category?.name || <Minus />}</TableCell>
-            <TableCell>{format(product.createdAt, "MM/dd/yyyy")}</TableCell>
-            <TableCell>{format(product.updatedAt, "MM/dd/yyyy")}</TableCell>
+            <TableCell>{format(product.createdAt, 'MM/dd/yyyy')}</TableCell>
+            <TableCell>{format(product.updatedAt, 'MM/dd/yyyy')}</TableCell>
           </TableRow>
         ))}
       </TableBody>

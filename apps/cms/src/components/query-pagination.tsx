@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import {
   Pagination,
@@ -8,13 +8,13 @@ import {
   PaginationPrevious,
   PaginationNext,
   PaginationEllipsis,
-} from "@ecomm/ui/pagination";
-import { useQueryState } from "nuqs";
-import { useTransition } from "react";
+} from '@ecomm/ui/pagination';
+import { useQueryState } from 'nuqs';
+import { useTransition } from 'react';
 
 export function QueryPagination({ totalPages = 1 }: { totalPages?: number }) {
-  const [page, setPage] = useQueryState("page", {
-    defaultValue: "1",
+  const [page, setPage] = useQueryState('page', {
+    defaultValue: '1',
     shallow: false,
   });
   const [isPending, startTransition] = useTransition();
@@ -86,7 +86,7 @@ export function QueryPagination({ totalPages = 1 }: { totalPages?: number }) {
               e.preventDefault();
               handlePageChange(currentPage - 1);
             }}
-            className={currentPage <= 1 ? "pointer-events-none opacity-50" : ""}
+            className={currentPage <= 1 ? 'pointer-events-none opacity-50' : ''}
             aria-disabled={currentPage <= 1}
           />
         </PaginationItem>
@@ -109,7 +109,7 @@ export function QueryPagination({ totalPages = 1 }: { totalPages?: number }) {
                   handlePageChange(Number(pageNumber));
                 }}
                 isActive={pageNumber === currentPage}
-                className={isPending ? "opacity-50" : ""}
+                className={isPending ? 'opacity-50' : ''}
               >
                 {pageNumber}
               </PaginationLink>
@@ -125,7 +125,7 @@ export function QueryPagination({ totalPages = 1 }: { totalPages?: number }) {
               handlePageChange(currentPage + 1);
             }}
             className={
-              currentPage >= totalPages ? "pointer-events-none opacity-50" : ""
+              currentPage >= totalPages ? 'pointer-events-none opacity-50' : ''
             }
             aria-disabled={currentPage >= totalPages}
           />

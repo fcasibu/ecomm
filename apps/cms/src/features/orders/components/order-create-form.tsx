@@ -1,20 +1,20 @@
-"use client";
+'use client';
 
-import { Suspense, useEffect, useState, useTransition } from "react";
-import { useFieldArray, useForm, useFormContext } from "react-hook-form";
-import { useRouter, useSearchParams } from "next/navigation";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Check, ChevronsUpDown, Loader, Trash } from "lucide-react";
-import type { ZodType } from "zod";
+import { Suspense, useEffect, useState, useTransition } from 'react';
+import { useFieldArray, useForm, useFormContext } from 'react-hook-form';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { Check, ChevronsUpDown, Loader, Trash } from 'lucide-react';
+import type { ZodType } from 'zod';
 
-import { Button } from "@ecomm/ui/button";
-import { cn } from "@ecomm/ui/lib/utils";
-import { Input } from "@ecomm/ui/input";
-import { Separator } from "@ecomm/ui/separator";
-import { Text, Heading } from "@ecomm/ui/typography";
-import { toast } from "@ecomm/ui/hooks/use-toast";
-import { ImageComponent } from "@ecomm/ui/image";
-import { Popover, PopoverContent, PopoverTrigger } from "@ecomm/ui/popover";
+import { Button } from '@ecomm/ui/button';
+import { cn } from '@ecomm/ui/lib/utils';
+import { Input } from '@ecomm/ui/input';
+import { Separator } from '@ecomm/ui/separator';
+import { Text, Heading } from '@ecomm/ui/typography';
+import { toast } from '@ecomm/ui/hooks/use-toast';
+import { ImageComponent } from '@ecomm/ui/image';
+import { Popover, PopoverContent, PopoverTrigger } from '@ecomm/ui/popover';
 import {
   Form,
   FormControl,
@@ -23,14 +23,14 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@ecomm/ui/form";
+} from '@ecomm/ui/form';
 import {
   Sheet,
   SheetTrigger,
   SheetContent,
   SheetHeader,
   SheetTitle,
-} from "@ecomm/ui/sheet";
+} from '@ecomm/ui/sheet';
 import {
   Table,
   TableBody,
@@ -38,7 +38,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@ecomm/ui/table";
+} from '@ecomm/ui/table';
 import {
   Command,
   CommandEmpty,
@@ -46,61 +46,61 @@ import {
   CommandInput,
   CommandItem,
   CommandList,
-} from "@ecomm/ui/command";
+} from '@ecomm/ui/command';
 
-import { useMultiStage } from "@/hooks/use-multi-stage";
-import { QueryPagination } from "@/components/query-pagination";
-import { CustomersTableSkeleton } from "@/features/customers/components/customers-table-skeleton";
-import { CustomersTable } from "./customers-table";
-import { useGetCustomers } from "@/features/customers/hooks/use-get-customers";
-import { useGetProducts } from "@/features/products/hooks/use-get-products";
-import { createCart } from "@/features/cart/services/mutations";
-import { createOrder } from "../services/mutations";
-import { formatPrice } from "@ecomm/lib/format-price";
+import { useMultiStage } from '@/hooks/use-multi-stage';
+import { QueryPagination } from '@/components/query-pagination';
+import { CustomersTableSkeleton } from '@/features/customers/components/customers-table-skeleton';
+import { CustomersTable } from './customers-table';
+import { useGetCustomers } from '@/features/customers/hooks/use-get-customers';
+import { useGetProducts } from '@/features/products/hooks/use-get-products';
+import { createCart } from '@/features/cart/services/mutations';
+import { createOrder } from '../services/mutations';
+import { formatPrice } from '@ecomm/lib/format-price';
 
 import {
   orderCreateSchema,
   type OrderCreateInput,
-} from "@ecomm/validations/cms/orders/orders-schema";
+} from '@ecomm/validations/cms/orders/orders-schema';
 import {
   cartCreateSchema,
   type CartCreateInput,
-} from "@ecomm/validations/cms/cart/cart-schema";
+} from '@ecomm/validations/cms/cart/cart-schema';
 import type {
   ProductDTO,
   ProductVariantDTO,
-} from "@ecomm/services/products/product-dto";
-import { CUSTOMERS_PAGE_SIZE, PRODUCTS_PAGE_SIZE } from "@/lib/constants";
-import { useStore } from "@/features/store/providers/store-provider";
+} from '@ecomm/services/products/product-dto';
+import { CUSTOMERS_PAGE_SIZE, PRODUCTS_PAGE_SIZE } from '@/lib/constants';
+import { useStore } from '@/features/store/providers/store-provider';
 
-type StageKey = "customer" | "cart";
+type StageKey = 'customer' | 'cart';
 
 const stages = [
-  { title: "Customer", key: "customer" },
-  { title: "Cart", key: "cart" },
+  { title: 'Customer', key: 'customer' },
+  { title: 'Cart', key: 'cart' },
 ] as const;
 
 const stageAwareSchema = (currentStage: StageKey) => {
   switch (currentStage) {
-    case "customer":
+    case 'customer':
       return orderCreateSchema.pick({
         customerId: true,
         shippingAddressId: true,
         billingAddressId: true,
       });
-    case "cart":
+    case 'cart':
       return orderCreateSchema.omit({ cart: true });
     default:
-      throw new Error("Invalid step");
+      throw new Error('Invalid step');
   }
 };
 
 export function OrderCreateForm() {
-  "use no memo";
+  'use no memo';
 
   const store = useStore();
   const { currentStage, onNext, onPrevious, goToStage, isStageDisabled } =
-    useMultiStage(stages, "customer");
+    useMultiStage(stages, 'customer');
 
   const [isPending, startTransition] = useTransition();
   const router = useRouter();
@@ -117,11 +117,11 @@ export function OrderCreateForm() {
   });
 
   const handleSubmit = (data: OrderCreateInput) => {
-    if (currentStage !== "cart") return onNext();
+    if (currentStage !== 'cart') return onNext();
 
     if (!data.preCart.itemsForDisplay.length) {
-      form.setError("preCart", {
-        message: "Cart must at least have one item",
+      form.setError('preCart', {
+        message: 'Cart must at least have one item',
       });
 
       return;
@@ -135,8 +135,8 @@ export function OrderCreateForm() {
 
       if (!cartResult.success) {
         toast({
-          title: "Cart creation",
-          description: "There was an issue with creating a cart.",
+          title: 'Cart creation',
+          description: 'There was an issue with creating a cart.',
         });
         return;
       }
@@ -148,18 +148,18 @@ export function OrderCreateForm() {
 
       if (!result.success) {
         toast({
-          title: "Order Creation",
-          description: "There was an issue with creating an order.",
+          title: 'Order Creation',
+          description: 'There was an issue with creating an order.',
         });
         return;
       }
 
       toast({
-        title: "Order creation",
-        description: "Order was successfully created",
+        title: 'Order creation',
+        description: 'Order was successfully created',
       });
 
-      router.push("/orders");
+      router.push('/orders');
     });
   };
 
@@ -179,7 +179,7 @@ export function OrderCreateForm() {
             return form.handleSubmit(handleSubmit)(e);
           }}
         >
-          <div className="max-w-3xl mx-auto p-8 space-y-8">
+          <div className="mx-auto max-w-3xl space-y-8 p-8">
             <StageContent currentStage={currentStage} />
             <StageController
               onPrevious={onPrevious}
@@ -205,15 +205,15 @@ function StageController({
   onPrevious,
 }: StageControllerProps) {
   const router = useRouter();
-  const isFirstStage = currentStage === "customer";
-  const isLastStage = currentStage === "cart";
+  const isFirstStage = currentStage === 'customer';
+  const isLastStage = currentStage === 'cart';
 
   const buttonText = isPending ? (
     <Loader className="animate-spin" size={16} />
   ) : isLastStage ? (
-    "Submit"
+    'Submit'
   ) : (
-    "Next"
+    'Next'
   );
 
   return (
@@ -221,7 +221,7 @@ function StageController({
       <Button
         variant="outline"
         type="button"
-        onClick={() => router.push("/orders")}
+        onClick={() => router.push('/orders')}
       >
         Cancel
       </Button>
@@ -236,7 +236,7 @@ function StageController({
           {isPending ? (
             <Loader className="animate-spin" size={16} />
           ) : (
-            "Previous"
+            'Previous'
           )}
         </Button>
       )}
@@ -260,7 +260,7 @@ function StageIndicator({
   isStageDisabled,
 }: StageIndicatorProps) {
   return (
-    <div className="flex justify-between gap-6 w-full">
+    <div className="flex w-full justify-between gap-6">
       {stages.map((stage, index) => {
         const isActive = currentStage === stage.key;
         const isLastStage = index === stages.length - 1;
@@ -268,19 +268,19 @@ function StageIndicator({
         return (
           <div
             key={stage.key}
-            className={cn("flex items-center flex-1", {
-              "justify-end flex-grow-0": isLastStage,
+            className={cn('flex flex-1 items-center', {
+              'flex-grow-0 justify-end': isLastStage,
             })}
           >
-            <div className="flex items-center gap-2 w-full">
-              <div className="flex w-[40px] h-[40px] justify-center items-center">
+            <div className="flex w-full items-center gap-2">
+              <div className="flex h-[40px] w-[40px] items-center justify-center">
                 <Button
                   aria-label={`Move to ${stage.title}`}
                   variant="none"
                   className={cn(
-                    "w-[40px] h-[40px] rounded-full outline outline-black flex justify-center items-center",
+                    'flex h-[40px] w-[40px] items-center justify-center rounded-full outline outline-black',
                     {
-                      "outline-none outline-transparent bg-blue-500 outline-offset-0":
+                      'bg-blue-500 outline-none outline-offset-0 outline-transparent':
                         isActive,
                     },
                   )}
@@ -289,8 +289,8 @@ function StageIndicator({
                   size="icon"
                 >
                   <span
-                    className={cn("text-black pointer-events-none text-lg", {
-                      "text-white": isActive,
+                    className={cn('pointer-events-none text-lg text-black', {
+                      'text-white': isActive,
                     })}
                   >
                     {index + 1}
@@ -299,7 +299,7 @@ function StageIndicator({
               </div>
               <span className="flex-shrink-0">{stage.title}</span>
               {!isLastStage && (
-                <Separator className="bg-gray-500 !flex-shrink" />
+                <Separator className="!flex-shrink bg-gray-500" />
               )}
             </div>
           </div>
@@ -315,13 +315,13 @@ interface StageContentProps {
 
 function StageContent({ currentStage }: StageContentProps) {
   switch (currentStage) {
-    case "customer":
+    case 'customer':
       return <CustomerStage />;
-    case "cart":
+    case 'cart':
       return (
         <Suspense
           fallback={
-            <div className="max-w-4xl mx-auto p-8 space-y-8 flex justify-center items-center h-full">
+            <div className="mx-auto flex h-full max-w-4xl items-center justify-center space-y-8 p-8">
               <Loader className="animate-spin" />
             </div>
           }
@@ -330,13 +330,13 @@ function StageContent({ currentStage }: StageContentProps) {
         </Suspense>
       );
     default:
-      throw new Error("Unknown stage");
+      throw new Error('Unknown stage');
   }
 }
 
 function CustomerStage() {
   const searchParams = useSearchParams();
-  const page = Number(searchParams.get("page") || "1");
+  const page = Number(searchParams.get('page') || '1');
   const formContext = useFormContext<OrderCreateInput>();
 
   const { result, isLoading } = useGetCustomers({
@@ -387,7 +387,7 @@ function CartStage() {
   const [popoverStates, setPopoverStates] = useState<boolean[]>([]);
   const formContext = useFormContext<OrderCreateInput>();
   const searchParams = useSearchParams();
-  const page = Number(searchParams.get("page") || "1");
+  const page = Number(searchParams.get('page') || '1');
   const store = useStore();
 
   const { result, isLoading } = useGetProducts({
@@ -397,16 +397,16 @@ function CartStage() {
 
   const products =
     (!isLoading && result.success ? result.data.products : []) ?? [];
-  const cart = formContext.watch("preCart");
+  const cart = formContext.watch('preCart');
 
   const form = useForm<CartCreateInput>({
     resolver: zodResolver(cartCreateSchema),
-    defaultValues: { items: [{ sku: "", productId: "", quantity: 1 }] },
+    defaultValues: { items: [{ sku: '', productId: '', quantity: 1 }] },
   });
 
   const { fields, append, remove } = useFieldArray({
     control: form.control,
-    name: "items",
+    name: 'items',
   });
 
   useEffect(() => {
@@ -448,9 +448,9 @@ function CartStage() {
     form.setValue(`items.${index}.productId`, product.id);
 
     if (product.variants.length === 1) {
-      form.setValue(`items.${index}.sku`, product.variants[0]?.sku || "");
+      form.setValue(`items.${index}.sku`, product.variants[0]?.sku || '');
     } else {
-      form.setValue(`items.${index}.sku`, "");
+      form.setValue(`items.${index}.sku`, '');
     }
 
     closePopover(index);
@@ -469,7 +469,7 @@ function CartStage() {
       remove(index);
 
       toast({
-        title: "Products merged",
+        title: 'Products merged',
         description: `Combined quantities for ${product.name}`,
       });
     } else {
@@ -497,8 +497,8 @@ function CartStage() {
       );
 
       toast({
-        title: "Products merged",
-        description: `Combined quantities for ${product?.name || "selected product"}`,
+        title: 'Products merged',
+        description: `Combined quantities for ${product?.name || 'selected product'}`,
       });
     }
   };
@@ -514,14 +514,14 @@ function CartStage() {
 
       return {
         ...item,
-        image: variant.images[0] ?? "",
+        image: variant.images[0] ?? '',
         name: product.name,
         price: variant.price,
         stock: variant.stock,
       };
     });
 
-    formContext.setValue("preCart", {
+    formContext.setValue('preCart', {
       itemsForDisplay: cartItemsForDisplay,
       ...data,
     });
@@ -530,17 +530,17 @@ function CartStage() {
   };
 
   const renderVariantStock = (stock: number) => {
-    if (stock <= 0) return "Out of stock";
+    if (stock <= 0) return 'Out of stock';
     if (stock < 5) return `Low stock: ${stock} remaining`;
 
     return `In stock: ${stock} available`;
   };
 
   const getStockTextColor = (stock: number) => {
-    if (stock <= 0) return "text-red-500";
-    if (stock < 5) return "text-amber-500";
+    if (stock <= 0) return 'text-red-500';
+    if (stock < 5) return 'text-amber-500';
 
-    return "text-green-500";
+    return 'text-green-500';
   };
 
   return (
@@ -570,7 +570,7 @@ function CartStage() {
 
               return form.handleSubmit(handleSubmit)(e);
             }}
-            className="space-y-4 overflow-y-auto h-full"
+            className="h-full space-y-4 overflow-y-auto"
           >
             <div>
               <SheetHeader>
@@ -585,7 +585,7 @@ function CartStage() {
             </div>
 
             {fields.map((rootField, index) => (
-              <div key={rootField.id} className="space-y-2 border p-4 rounded">
+              <div key={rootField.id} className="space-y-2 rounded border p-4">
                 <FormField
                   control={form.control}
                   name={`items.${index}.productId`}
@@ -605,7 +605,7 @@ function CartStage() {
                               className="w-full justify-between"
                             >
                               {products.find((p) => p.id === field.value)
-                                ?.name ?? "Search by SKU or Variant Key"}
+                                ?.name ?? 'Search by SKU or Variant Key'}
                               <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                             </Button>
                           </PopoverTrigger>
@@ -625,10 +625,10 @@ function CartStage() {
                                     >
                                       <Check
                                         className={cn(
-                                          "mr-2 h-4 w-4",
+                                          'mr-2 h-4 w-4',
                                           field.value === product.id
-                                            ? "opacity-100"
-                                            : "opacity-0",
+                                            ? 'opacity-100'
+                                            : 'opacity-0',
                                         )}
                                       />
                                       {product.name}
@@ -663,11 +663,11 @@ function CartStage() {
                               <div
                                 key={variant.sku}
                                 className={cn(
-                                  "border rounded p-3 cursor-pointer flex items-start",
+                                  'flex cursor-pointer items-start rounded border p-3',
                                   isSelected
-                                    ? "border-primary bg-primary/5"
-                                    : "border-gray-200",
-                                  isOutOfStock ? "opacity-50" : "",
+                                    ? 'border-primary bg-primary/5'
+                                    : 'border-gray-200',
+                                  isOutOfStock ? 'opacity-50' : '',
                                 )}
                                 onClick={() => {
                                   if (!isOutOfStock) {
@@ -676,9 +676,9 @@ function CartStage() {
                                   }
                                 }}
                               >
-                                <div className="flex-shrink-0 mr-3">
+                                <div className="mr-3 flex-shrink-0">
                                   {variant.images && (
-                                    <div className="rounded overflow-hidden bg-gray-100 border">
+                                    <div className="overflow-hidden rounded border bg-gray-100">
                                       <ImageComponent
                                         src={variant.images[0]}
                                         alt="Product Variant"
@@ -690,7 +690,7 @@ function CartStage() {
                                   )}
                                 </div>
                                 <div className="flex-1">
-                                  <div className="flex justify-between mb-1">
+                                  <div className="mb-1 flex justify-between">
                                     <div className="font-medium">
                                       {variant.sku}
                                     </div>
@@ -706,7 +706,7 @@ function CartStage() {
                                     Object.entries(variant.attributes).map(
                                       ([key, value]) => (
                                         <div
-                                          className="text-sm text-gray-500 mb-1"
+                                          className="mb-1 text-sm text-gray-500"
                                           key={`${key}-${value}`}
                                         >
                                           {key}: {value}
@@ -716,7 +716,7 @@ function CartStage() {
 
                                   <div
                                     className={cn(
-                                      "text-sm",
+                                      'text-sm',
                                       getStockTextColor(variant.stock),
                                     )}
                                   >
@@ -724,14 +724,14 @@ function CartStage() {
                                   </div>
 
                                   {isOutOfStock && (
-                                    <div className="text-xs text-red-500 mt-1">
+                                    <div className="mt-1 text-xs text-red-500">
                                       This variant cannot be selected
                                     </div>
                                   )}
 
                                   {isSelected && (
-                                    <div className="absolute top-2 right-2">
-                                      <Check className="h-4 w-4 text-primary" />
+                                    <div className="absolute right-2 top-2">
+                                      <Check className="text-primary h-4 w-4" />
                                     </div>
                                   )}
                                 </div>
@@ -780,7 +780,7 @@ function CartStage() {
             <div className="flex space-x-4">
               <Button
                 type="button"
-                onClick={() => append({ sku: "", productId: "", quantity: 1 })}
+                onClick={() => append({ sku: '', productId: '', quantity: 1 })}
                 variant="outline"
               >
                 Add Another Item
@@ -795,7 +795,7 @@ function CartStage() {
 }
 
 interface CartDetailsProps {
-  cart: OrderCreateInput["preCart"];
+  cart: OrderCreateInput['preCart'];
   formContext: ReturnType<typeof useFormContext<OrderCreateInput>>;
 }
 
@@ -810,7 +810,7 @@ function CartDetails({ cart, formContext }: CartDetailsProps) {
     const updatedItems = cart.itemsForDisplay.filter(
       (item) => item.sku !== itemSku,
     );
-    formContext.setValue("preCart.itemsForDisplay", updatedItems);
+    formContext.setValue('preCart.itemsForDisplay', updatedItems);
   };
 
   return (
@@ -833,13 +833,13 @@ function CartDetails({ cart, formContext }: CartDetailsProps) {
                   alt={item.name}
                   width={50}
                   height={50}
-                  className="inline-block mr-2 aspect-square"
+                  className="mr-2 inline-block aspect-square"
                 />
                 <div>
                   <Text size="sm" className="mb-0">
                     {item.name}
                   </Text>
-                  <Text className="text-gray-500 my-0 text-[10px]">
+                  <Text className="my-0 text-[10px] text-gray-500">
                     {item.sku}
                   </Text>
                 </div>

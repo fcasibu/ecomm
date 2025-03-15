@@ -1,8 +1,8 @@
-"use client";
+'use client';
 
-import { useForm, useFormContext } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Button } from "@ecomm/ui/button";
+import { useForm, useFormContext } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { Button } from '@ecomm/ui/button';
 import {
   Form,
   FormControl,
@@ -10,41 +10,41 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@ecomm/ui/form";
-import { Loader } from "lucide-react";
+} from '@ecomm/ui/form';
+import { Loader } from 'lucide-react';
 import {
   storeCreateSchema,
   type StoreCreateInput,
-} from "@ecomm/validations/cms/store/store-schema";
-import { useMemo, useTransition } from "react";
-import { createStore } from "../services/mutations";
-import { toast } from "@ecomm/ui/hooks/use-toast";
+} from '@ecomm/validations/cms/store/store-schema';
+import { useMemo, useTransition } from 'react';
+import { createStore } from '../services/mutations';
+import { toast } from '@ecomm/ui/hooks/use-toast';
 import {
   Command,
   CommandGroup,
   CommandInput,
   CommandItem,
   CommandList,
-} from "@ecomm/ui/command";
-import { cn } from "@ecomm/ui/lib/utils";
-import { Popover, PopoverContent, PopoverTrigger } from "@ecomm/ui/popover";
-import { Check, ChevronsUpDown } from "lucide-react";
-import { useState } from "react";
-import { getFlagOfLocale } from "@ecomm/lib/get-flag-of-locale";
-import { Text } from "@ecomm/ui/typography";
+} from '@ecomm/ui/command';
+import { cn } from '@ecomm/ui/lib/utils';
+import { Popover, PopoverContent, PopoverTrigger } from '@ecomm/ui/popover';
+import { Check, ChevronsUpDown } from 'lucide-react';
+import { useState } from 'react';
+import { getFlagOfLocale } from '@ecomm/lib/get-flag-of-locale';
+import { Text } from '@ecomm/ui/typography';
 
 export function StoreCreateForm({
   locales,
 }: {
   locales: Record<string, { name: string; currencyCode: string }>;
 }) {
-  "use no memo";
+  'use no memo';
 
   const form = useForm<StoreCreateInput>({
     resolver: zodResolver(storeCreateSchema),
     defaultValues: {
-      locale: "en-US",
-      currency: "USD",
+      locale: 'en-US',
+      currency: 'USD',
     },
   });
 
@@ -55,10 +55,10 @@ export function StoreCreateForm({
       const result = await createStore(data);
 
       if (!result.success) {
-        if (result.error.code === "DUPLICATE_ERROR") {
+        if (result.error.code === 'DUPLICATE_ERROR') {
           toast({
-            variant: "destructive",
-            title: "Store Creation",
+            variant: 'destructive',
+            title: 'Store Creation',
             description: (
               <Text>
                 Store with the locale <b>{data.locale}</b> already exists.
@@ -67,9 +67,9 @@ export function StoreCreateForm({
           });
         } else {
           toast({
-            variant: "destructive",
-            title: "Store Creation",
-            description: "There was an issue with creating a store.",
+            variant: 'destructive',
+            title: 'Store Creation',
+            description: 'There was an issue with creating a store.',
           });
         }
 
@@ -77,8 +77,8 @@ export function StoreCreateForm({
       }
 
       toast({
-        title: "Store Creation",
-        description: "STore was successfully created",
+        title: 'Store Creation',
+        description: 'STore was successfully created',
       });
     });
   }
@@ -108,7 +108,7 @@ export function StoreCreateForm({
           {isPending ? (
             <Loader className="mr-2 h-4 w-4 animate-spin" />
           ) : (
-            "Create Locale"
+            'Create Locale'
           )}
         </Button>
       </form>
@@ -146,7 +146,7 @@ function LocaleList({
           variant="outline"
           role="combobox"
           aria-expanded={open}
-          className="w-full justify-between max-w-[300px] flex"
+          className="flex w-full max-w-[300px] justify-between"
         >
           {`${getFlagOfLocale(value)} ${value}`}
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
@@ -165,14 +165,14 @@ function LocaleList({
                   <CommandItem
                     onSelect={() => {
                       onSelectLocale(key);
-                      formContext.setValue("currency", locale.currencyCode);
+                      formContext.setValue('currency', locale.currencyCode);
                       setOpen(false);
                     }}
                   >
                     <Check
                       className={cn(
-                        "mr-2 h-4 w-4",
-                        key === value ? "opacity-100" : "opacity-0",
+                        'mr-2 h-4 w-4',
+                        key === value ? 'opacity-100' : 'opacity-0',
                       )}
                     />
                     {`${getFlagOfLocale(key)} ${locale.name} (${key})`}

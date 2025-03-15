@@ -1,13 +1,13 @@
-"use client";
+'use client';
 
-import { useState } from "react";
+import { useState } from 'react';
 
 interface Stage {
   readonly title: string;
   readonly key: string;
 }
 
-type StageKey<T extends readonly Stage[]> = T[number]["key"];
+type StageKey<T extends readonly Stage[]> = T[number]['key'];
 
 export function useMultiStage<const T extends readonly Stage[]>(
   stages: T,
@@ -33,11 +33,11 @@ export function useMultiStage<const T extends readonly Stage[]>(
     }
   };
 
-  const goToStage = (stage: T[number]["key"]) => {
+  const goToStage = (stage: T[number]['key']) => {
     setCurrentStage(stage);
   };
 
-  const isStageDisabled = (stageKey: T[number]["key"]) => {
+  const isStageDisabled = (stageKey: T[number]['key']) => {
     const currentStageIndex = stages.findIndex(
       (stage) => stage.key === currentStage,
     );

@@ -1,6 +1,6 @@
-import { ProductDetail } from "@/features/products/components/product-detail";
-import { Loader } from "lucide-react";
-import { Suspense } from "react";
+import { ProductDetail } from '@/features/products/components/product-detail';
+import { Loader } from 'lucide-react';
+import { Suspense } from 'react';
 
 export default function Page({ params }: { params: Promise<{ id: string }> }) {
   const id = params.then((p) => p.id);
@@ -8,7 +8,7 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
   return (
     <Suspense
       fallback={
-        <div className="max-w-4xl mx-auto p-8 space-y-8 flex justify-center items-center h-full">
+        <div className="mx-auto flex h-full max-w-4xl items-center justify-center space-y-8 p-8">
           <Loader className="animate-spin" />
         </div>
       }

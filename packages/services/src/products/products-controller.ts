@@ -3,14 +3,14 @@ import {
   productUpdateSchema,
   type ProductCreateInput,
   type ProductUpdateInput,
-} from "@ecomm/validations/cms/products/product-schema";
-import type { ProductsService } from "./products-service";
-import { ValidationError } from "../errors/validation-error";
-import { BaseController } from "../base-controller";
-import { logger } from "@ecomm/lib/logger";
-import type { ProductDTO } from "./product-dto";
-import { NotFoundError } from "../errors/not-found-error";
-import { ProductTransformer } from "./product-transformer";
+} from '@ecomm/validations/cms/products/product-schema';
+import type { ProductsService } from './products-service';
+import { ValidationError } from '../errors/validation-error';
+import { BaseController } from '../base-controller';
+import { logger } from '@ecomm/lib/logger';
+import type { ProductDTO } from './product-dto';
+import { NotFoundError } from '../errors/not-found-error';
+import { ProductTransformer } from './product-transformer';
 
 export class ProductsController extends BaseController {
   private readonly transformer = new ProductTransformer();
@@ -21,7 +21,7 @@ export class ProductsController extends BaseController {
 
   public async create(locale: string, input: ProductCreateInput) {
     try {
-      logger.info({ input }, "Creating a new product");
+      logger.info({ input }, 'Creating a new product');
       const result = productCreateSchema.safeParse(input);
 
       if (!result.success) throw new ValidationError(result.error);
@@ -31,15 +31,15 @@ export class ProductsController extends BaseController {
       );
 
       if (!product) {
-        throw new NotFoundError("Product not found.");
+        throw new NotFoundError('Product not found.');
       }
 
-      logger.info({ productId: product.id }, "Product successfully created");
+      logger.info({ productId: product.id }, 'Product successfully created');
 
       return product;
     } catch (error) {
       this.logAndThrowError(error, {
-        message: "Error creating product",
+        message: 'Error creating product',
       });
     }
   }
@@ -50,7 +50,7 @@ export class ProductsController extends BaseController {
     input: ProductUpdateInput,
   ) {
     try {
-      logger.info({ productId, input }, "Updating product");
+      logger.info({ productId, input }, 'Updating product');
       const result = productUpdateSchema.safeParse(input);
 
       if (!result.success) {
@@ -62,12 +62,12 @@ export class ProductsController extends BaseController {
       );
 
       if (!updatedProduct) {
-        throw new NotFoundError("Product not found.");
+        throw new NotFoundError('Product not found.');
       }
 
       logger.info(
         { productId: updatedProduct.id },
-        "Product updated successfully",
+        'Product updated successfully',
       );
       return updatedProduct;
     } catch (error) {
@@ -79,11 +79,11 @@ export class ProductsController extends BaseController {
   }
 
   public async delete(locale: string, productId: string) {
-    logger.info({ productId }, "Deleting product");
+    logger.info({ productId }, 'Deleting product');
 
     try {
       await this.productsService.delete(locale, productId);
-      logger.info({ productId }, "Product deleted successfully");
+      logger.info({ productId }, 'Product deleted successfully');
 
       return { success: true };
     } catch (error) {
@@ -95,7 +95,7 @@ export class ProductsController extends BaseController {
 
   public async getById(locale: string, id: string) {
     try {
-      logger.info({ id }, "Fetching product");
+      logger.info({ id }, 'Fetching product');
 
       const product = this.transformer.toDTO(
         await this.productsService.getById(locale, id),
@@ -105,12 +105,12 @@ export class ProductsController extends BaseController {
         throw new NotFoundError(`Product ID "${id}" not found.`);
       }
 
-      logger.info({ productId: product.id }, "Fetched product");
+      logger.info({ productId: product.id }, 'Fetched product');
 
       return product;
     } catch (error) {
       this.logAndThrowError(error, {
-        message: "Error fetching product",
+        message: 'Error fetching product',
       });
     }
   }
@@ -123,7 +123,7 @@ export class ProductsController extends BaseController {
       pageSize?: number;
     },
   ) {
-    logger.info({ input }, "Fetching all products");
+    logger.info({ input }, 'Fetching all products');
 
     try {
       const result = await this.productsService.getAll(locale, input);
@@ -147,13 +147,13 @@ export class ProductsController extends BaseController {
           currentPage: response.currentPage,
           pageSize: response.pageSize,
         },
-        "Products fetched successfully",
+        'Products fetched successfully',
       );
 
       return response;
     } catch (error) {
       this.logAndThrowError(error, {
-        message: "Error fetching all products",
+        message: 'Error fetching all products',
       });
     }
   }

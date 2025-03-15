@@ -1,7 +1,7 @@
-import { notFound } from "next/navigation";
-import { getProductById } from "../services/queries";
-import { ProductUpdateForm } from "./product-update-form";
-import { getCookieCurrentLocale } from "@/lib/get-cookie-current-locale";
+import { notFound } from 'next/navigation';
+import { getProductById } from '../services/queries';
+import { ProductUpdateForm } from './product-update-form';
+import { getCookieCurrentLocale } from '@/lib/get-cookie-current-locale';
 
 export async function ProductDetail({
   productId,

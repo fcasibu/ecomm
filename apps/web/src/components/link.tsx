@@ -1,9 +1,9 @@
-"use client";
+'use client';
 
-import type { LinkProps } from "next/link";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
-import React, { useEffect, useRef } from "react";
+import type { LinkProps } from 'next/link';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import React, { useEffect, useRef } from 'react';
 
 type PrefetchImage = {
   srcset: string;
@@ -18,7 +18,7 @@ function sleep(ms: number) {
 }
 
 async function prefetchImages(href: string) {
-  if (!href.startsWith("/") || href === "/") {
+  if (!href.startsWith('/') || href === '/') {
     return [];
   }
 
@@ -26,7 +26,7 @@ async function prefetchImages(href: string) {
 
   try {
     const imageResponse = await fetch(`/api/prefetch-images/${url.pathname}`, {
-      priority: "low",
+      priority: 'low',
     });
 
     if (!imageResponse.ok) {
@@ -81,7 +81,7 @@ export const NextLink = ({ children, ...props }: NextLinkProps) => {
           prefetchTimeout = null;
         }
       },
-      { rootMargin: "0px", threshold: 0.1 },
+      { rootMargin: '0px', threshold: 0.1 },
     );
 
     observer.observe(linkElement);
@@ -128,12 +128,12 @@ export const NextLink = ({ children, ...props }: NextLinkProps) => {
 };
 
 function prefetchImage(image: PrefetchImage) {
-  if (image.loading === "lazy" || seen.has(image.srcset)) {
+  if (image.loading === 'lazy' || seen.has(image.srcset)) {
     return;
   }
   const img = new Image();
-  img.decoding = "async";
-  img.fetchPriority = "low";
+  img.decoding = 'async';
+  img.fetchPriority = 'low';
   img.sizes = image.sizes;
   seen.add(image.srcset);
   img.srcset = image.srcset;

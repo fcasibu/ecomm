@@ -3,13 +3,13 @@ import {
   cartUpdateSchema,
   type CartCreateInput,
   type CartUpdateInput,
-} from "@ecomm/validations/cms/cart/cart-schema";
-import { BaseController } from "../base-controller";
-import type { CartService } from "./cart-service";
-import { logger } from "@ecomm/lib/logger";
-import { ValidationError } from "../errors/validation-error";
-import { NotFoundError } from "../errors/not-found-error";
-import { CartTransformer } from "./cart-transformer";
+} from '@ecomm/validations/cms/cart/cart-schema';
+import { BaseController } from '../base-controller';
+import type { CartService } from './cart-service';
+import { logger } from '@ecomm/lib/logger';
+import { ValidationError } from '../errors/validation-error';
+import { NotFoundError } from '../errors/not-found-error';
+import { CartTransformer } from './cart-transformer';
 
 export class CartController extends BaseController {
   private readonly transformer = new CartTransformer();
@@ -20,7 +20,7 @@ export class CartController extends BaseController {
 
   public async create(locale: string, input: CartCreateInput) {
     try {
-      logger.info({ input }, "Creating a new cart");
+      logger.info({ input }, 'Creating a new cart');
       const result = cartCreateSchema.safeParse(input);
 
       if (!result.success) throw new ValidationError(result.error);
@@ -30,22 +30,22 @@ export class CartController extends BaseController {
       );
 
       if (!cart) {
-        throw new NotFoundError("Cart not found.");
+        throw new NotFoundError('Cart not found.');
       }
 
-      logger.info({ cartId: cart.id }, "Cart successfully created");
+      logger.info({ cartId: cart.id }, 'Cart successfully created');
 
       return cart;
     } catch (error) {
       this.logAndThrowError(error, {
-        message: "Error creating cart",
+        message: 'Error creating cart',
       });
     }
   }
 
   public async update(locale: string, cartId: string, input: CartUpdateInput) {
     try {
-      logger.info({ cartId, input }, "Updating cart");
+      logger.info({ cartId, input }, 'Updating cart');
       const result = cartUpdateSchema.safeParse(input);
 
       if (!result.success) {
@@ -59,7 +59,7 @@ export class CartController extends BaseController {
         throw new NotFoundError(`Cart ID "${cartId}" not found.`);
       }
 
-      logger.info({ cartId: updatedCart.id }, "Fetched cart");
+      logger.info({ cartId: updatedCart.id }, 'Fetched cart');
 
       return updatedCart;
     } catch (error) {
@@ -71,11 +71,11 @@ export class CartController extends BaseController {
   }
 
   public async delete(locale: string, cartId: string) {
-    logger.info({ cartId }, "Deleting customer");
+    logger.info({ cartId }, 'Deleting customer');
 
     try {
       await this.cartService.delete(locale, cartId);
-      logger.info({ cartId }, "Cart deleted successfully");
+      logger.info({ cartId }, 'Cart deleted successfully');
 
       return { success: true };
     } catch (error) {
@@ -87,7 +87,7 @@ export class CartController extends BaseController {
 
   public async getById(locale: string, id: string) {
     try {
-      logger.info({ id }, "Fetching cart");
+      logger.info({ id }, 'Fetching cart');
 
       const cart = this.transformer.toDTO(
         await this.cartService.getById(locale, id),
@@ -97,12 +97,12 @@ export class CartController extends BaseController {
         throw new NotFoundError(`Cart ID "${id}" not found.`);
       }
 
-      logger.info({ cartId: cart.id }, "Fetched cart");
+      logger.info({ cartId: cart.id }, 'Fetched cart');
 
       return cart;
     } catch (error) {
       this.logAndThrowError(error, {
-        message: "Error fetching cart",
+        message: 'Error fetching cart',
       });
     }
   }

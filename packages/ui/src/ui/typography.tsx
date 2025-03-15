@@ -1,18 +1,18 @@
-import { Slot } from "@radix-ui/react-slot";
-import type { VariantProps } from "class-variance-authority";
-import { cva } from "class-variance-authority";
+import { Slot } from '@radix-ui/react-slot';
+import type { VariantProps } from 'class-variance-authority';
+import { cva } from 'class-variance-authority';
 
-type Headings = "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
+type Headings = 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6';
 
-const heading = cva("m-0 font-bold leading-1.5", {
+const heading = cva('m-0 font-bold leading-1.5', {
   variants: {
     as: {
-      h1: "text-[2.9rem]",
-      h2: "text-[2.4rem]",
-      h3: "text-[2rem]",
-      h4: "text-[1.7rem]",
-      h5: "text-[1.4rem]",
-      h6: "text-[1.2rem]",
+      h1: 'text-[2.9rem]',
+      h2: 'text-[2.4rem]',
+      h3: 'text-[2rem]',
+      h4: 'text-[1.7rem]',
+      h5: 'text-[1.4rem]',
+      h6: 'text-[1.2rem]',
     },
   },
 });
@@ -35,28 +35,28 @@ export function Heading<T extends Headings>({
   );
 }
 
-const text = cva("m-0 font-normal leading-[1.5] last:m-0", {
+const text = cva('m-0 font-normal leading-[1.5] last:m-0', {
   variants: {
     size: {
-      xs: "text-[0.6]rem",
-      sm: "text-[0.8rem]",
-      md: "text-[1rem]",
+      xs: 'text-[0.6]rem',
+      sm: 'text-[0.8rem]',
+      md: 'text-[1rem]',
     },
   },
 });
 
 interface TextProps
-  extends React.ComponentProps<"p">,
+  extends React.ComponentProps<'p'>,
     VariantProps<typeof text> {
-  as?: "p" | "span";
+  as?: 'p' | 'span';
   asChild?: boolean;
 }
 
 export function Text({
   className,
-  as: Tag = "p",
+  as: Tag = 'p',
   children,
-  size = "sm",
+  size = 'sm',
   asChild,
   ...props
 }: TextProps) {

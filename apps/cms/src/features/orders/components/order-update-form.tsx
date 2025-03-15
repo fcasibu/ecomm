@@ -1,32 +1,32 @@
-"use client";
+'use client';
 
-import { Form } from "@ecomm/ui/form";
-import { Heading, Text } from "@ecomm/ui/typography";
+import { Form } from '@ecomm/ui/form';
+import { Heading, Text } from '@ecomm/ui/typography';
 import {
   orderUpdateSchema,
   type OrderUpdateInput,
-} from "@ecomm/validations/cms/orders/orders-schema";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import { Button } from "@ecomm/ui/button";
-import { Loader } from "lucide-react";
-import { useTransition } from "react";
-import { useRouter } from "next/navigation";
+} from '@ecomm/validations/cms/orders/orders-schema';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from 'react-hook-form';
+import { Button } from '@ecomm/ui/button';
+import { Loader } from 'lucide-react';
+import { useTransition } from 'react';
+import { useRouter } from 'next/navigation';
 import {
   FormControl,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
-} from "@ecomm/ui/form";
+} from '@ecomm/ui/form';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@ecomm/ui/select";
-import { Card, CardContent, CardHeader, CardTitle } from "@ecomm/ui/card";
+} from '@ecomm/ui/select';
+import { Card, CardContent, CardHeader, CardTitle } from '@ecomm/ui/card';
 import {
   Table,
   TableBody,
@@ -34,18 +34,18 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@ecomm/ui/table";
-import { updateOrderById } from "../services/mutations";
-import { toast } from "@ecomm/ui/hooks/use-toast";
-import { OrderStatus } from "@ecomm/db";
-import type { OrderDTO } from "@ecomm/services/orders/order-dto";
-import type { AddressDTO } from "@ecomm/services/customers/customer-dto";
-import { formatPrice } from "@ecomm/lib/format-price";
-import { ImageComponent } from "@ecomm/ui/image";
-import { useStore } from "@/features/store/providers/store-provider";
+} from '@ecomm/ui/table';
+import { updateOrderById } from '../services/mutations';
+import { toast } from '@ecomm/ui/hooks/use-toast';
+import { OrderStatus } from '@ecomm/db';
+import type { OrderDTO } from '@ecomm/services/orders/order-dto';
+import type { AddressDTO } from '@ecomm/services/customers/customer-dto';
+import { formatPrice } from '@ecomm/lib/format-price';
+import { ImageComponent } from '@ecomm/ui/image';
+import { useStore } from '@/features/store/providers/store-provider';
 
 export function OrderUpdateForm({ order }: { order: OrderDTO }) {
-  "use no memo";
+  'use no memo';
 
   const store = useStore();
   const form = useForm<OrderUpdateInput>({
@@ -64,34 +64,34 @@ export function OrderUpdateForm({ order }: { order: OrderDTO }) {
 
       if (!result.success) {
         toast({
-          title: "Order Update",
-          description: "There was an issue with updating the order.",
+          title: 'Order Update',
+          description: 'There was an issue with updating the order.',
         });
 
         return;
       }
 
       toast({
-        title: "Order update",
-        description: "Order was successfully updated",
+        title: 'Order update',
+        description: 'Order was successfully updated',
       });
     });
   };
 
   const getBillingAddress = (): AddressDTO | undefined => {
     return order.customer.addresses.find(
-      (address) => address.type === "BILLING",
+      (address) => address.type === 'BILLING',
     );
   };
 
   const getShippingAddress = (): AddressDTO | undefined => {
     return order.customer.addresses.find(
-      (address) => address.type === "SHIPPING",
+      (address) => address.type === 'SHIPPING',
     );
   };
 
   const formatAddress = (address: AddressDTO | undefined) => {
-    if (!address) return "No address provided";
+    if (!address) return 'No address provided';
 
     return (
       <div className="text-sm">
@@ -105,7 +105,7 @@ export function OrderUpdateForm({ order }: { order: OrderDTO }) {
   };
 
   return (
-    <div className="max-w-4xl mx-auto p-8 space-y-8">
+    <div className="mx-auto max-w-4xl space-y-8 p-8">
       <Heading as="h1">Update order</Heading>
       <Form {...form}>
         <form
@@ -157,17 +157,17 @@ export function OrderUpdateForm({ order }: { order: OrderDTO }) {
             </CardHeader>
             <CardContent className="space-y-4">
               <div>
-                <Text className="font-medium mb-1">Email</Text>
+                <Text className="mb-1 font-medium">Email</Text>
                 <Text size="sm">{order.customer.email}</Text>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                 <div>
-                  <Text className="font-medium mb-1">Billing Address</Text>
+                  <Text className="mb-1 font-medium">Billing Address</Text>
                   <Text size="sm">{formatAddress(getBillingAddress())}</Text>
                 </div>
                 <div>
-                  <Text className="font-medium mb-1">Shipping Address</Text>
+                  <Text className="mb-1 font-medium">Shipping Address</Text>
                   <Text size="sm">{formatAddress(getShippingAddress())}</Text>
                 </div>
               </div>
@@ -234,11 +234,11 @@ export function OrderUpdateForm({ order }: { order: OrderDTO }) {
               </Table>
             </CardContent>
           </Card>
-          <div className="flex justify-end gap-4 mt-4">
+          <div className="mt-4 flex justify-end gap-4">
             <Button
               variant="outline"
               type="button"
-              onClick={() => router.push("/orders")}
+              onClick={() => router.push('/orders')}
             >
               Cancel
             </Button>
@@ -250,7 +250,7 @@ export function OrderUpdateForm({ order }: { order: OrderDTO }) {
               {isPending ? (
                 <Loader className="animate-spin" size={16} />
               ) : (
-                "Save"
+                'Save'
               )}
             </Button>
           </div>

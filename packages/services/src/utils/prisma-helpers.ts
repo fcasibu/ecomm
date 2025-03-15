@@ -1,7 +1,7 @@
 export function createTextSearchCondition(query: string, fields: string[]) {
   return {
     OR: fields.map((field) => ({
-      [field]: { contains: query, mode: "insensitive" },
+      [field]: { contains: query, mode: 'insensitive' },
     })),
   };
 }
@@ -13,7 +13,7 @@ export function createNestedTextSearchCondition(
   return {
     OR: nestedFields.map(({ model, field }) => ({
       [model]: {
-        some: { [field]: { contains: query, mode: "insensitive" } },
+        some: { [field]: { contains: query, mode: 'insensitive' } },
       },
     })),
   };

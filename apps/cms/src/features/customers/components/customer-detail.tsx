@@ -1,7 +1,7 @@
-import { notFound } from "next/navigation";
-import { CustomerUpdateForm } from "./customer-update-form";
-import { getCustomerById } from "../services/queries";
-import { getCookieCurrentLocale } from "@/lib/get-cookie-current-locale";
+import { notFound } from 'next/navigation';
+import { CustomerUpdateForm } from './customer-update-form';
+import { getCustomerById } from '../services/queries';
+import { getCookieCurrentLocale } from '@/lib/get-cookie-current-locale';
 
 export async function CustomerDetail({
   param,

@@ -1,11 +1,11 @@
-import { PrismaClient } from "@ecomm/db";
-import type { Prisma } from "@ecomm/db";
+import { PrismaClient } from '@ecomm/db';
+import type { Prisma } from '@ecomm/db';
 import type {
   OrderCreateInput,
   OrderUpdateInput,
-} from "@ecomm/validations/cms/orders/orders-schema";
-import type { SearchOptions } from "../base-service";
-import { BaseService } from "../base-service";
+} from '@ecomm/validations/cms/orders/orders-schema';
+import type { SearchOptions } from '../base-service';
+import { BaseService } from '../base-service';
 
 export type Order = Prisma.OrderGetPayload<{
   include: {
@@ -72,7 +72,7 @@ export class OrdersService extends BaseService {
       this.prismaClient.order.findMany({
         where: { locale },
         include: ORDER_INCLUDE,
-        orderBy: { updatedAt: "desc" },
+        orderBy: { updatedAt: 'desc' },
         ...pagination,
       }),
       this.prismaClient.order.count(),

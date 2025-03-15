@@ -1,7 +1,7 @@
-import { PrismaClient } from "@ecomm/db";
-import { BaseService, type SearchOptions } from "../base-service";
-import type { StoreCreateInput } from "@ecomm/validations/cms/store/store-schema";
-import { createTextSearchCondition } from "../utils/prisma-helpers";
+import { PrismaClient } from '@ecomm/db';
+import { BaseService, type SearchOptions } from '../base-service';
+import type { StoreCreateInput } from '@ecomm/validations/cms/store/store-schema';
+import { createTextSearchCondition } from '../utils/prisma-helpers';
 
 export class StoreService extends BaseService {
   constructor(prismaClient: PrismaClient) {
@@ -36,13 +36,13 @@ export class StoreService extends BaseService {
     let whereCondition = {};
 
     if (query) {
-      whereCondition = createTextSearchCondition(query, ["locale"]);
+      whereCondition = createTextSearchCondition(query, ['locale']);
     }
 
     const [stores, totalCount] = await this.prismaClient.$transaction([
       this.prismaClient.store.findMany({
         where: whereCondition,
-        orderBy: { updatedAt: "desc" },
+        orderBy: { updatedAt: 'desc' },
         ...pagination,
       }),
       this.prismaClient.store.count({ where: whereCondition }),

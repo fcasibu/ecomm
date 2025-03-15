@@ -1,5 +1,5 @@
-import { BaseController } from "../base-controller";
-import type { ImageService } from "./image-service";
+import { BaseController } from '../base-controller';
+import type { ImageService } from './image-service';
 
 export class ImageController extends BaseController {
   constructor(private readonly imageService: ImageService) {
@@ -11,7 +11,7 @@ export class ImageController extends BaseController {
       return await this.imageService.upload(file, identifier);
     } catch (error) {
       this.logAndThrowError(error, {
-        message: "Image upload failed",
+        message: 'Image upload failed',
       });
     }
   }

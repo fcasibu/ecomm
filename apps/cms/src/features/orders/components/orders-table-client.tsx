@@ -1,9 +1,9 @@
-"use client";
+'use client';
 
-import { format } from "date-fns";
-import { useStore } from "@/features/store/providers/store-provider";
-import { formatPrice } from "@ecomm/lib/format-price";
-import type { OrderDTO } from "@ecomm/services/orders/order-dto";
+import { format } from 'date-fns';
+import { useStore } from '@/features/store/providers/store-provider';
+import { formatPrice } from '@ecomm/lib/format-price';
+import type { OrderDTO } from '@ecomm/services/orders/order-dto';
 import {
   Table,
   TableBody,
@@ -11,8 +11,8 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@ecomm/ui/table";
-import { useRouter } from "next/navigation";
+} from '@ecomm/ui/table';
+import { useRouter } from 'next/navigation';
 
 export function OrdersTableClient({ orders }: { orders: OrderDTO[] }) {
   const store = useStore();
@@ -35,7 +35,7 @@ export function OrdersTableClient({ orders }: { orders: OrderDTO[] }) {
             key={order.id}
             onClick={() => router.push(`/orders/${order.id}`)}
             onKeyDown={(e) => {
-              if (e.key === "Enter" || e.key === " ") {
+              if (e.key === 'Enter' || e.key === ' ') {
                 router.push(`/orders/${order.id}`);
               }
             }}
@@ -48,8 +48,8 @@ export function OrdersTableClient({ orders }: { orders: OrderDTO[] }) {
             <TableCell className="text-right">
               {formatPrice(order.totalAmount, store.currency)}
             </TableCell>
-            <TableCell>{format(order.createdAt, "MM/dd/yyyy")}</TableCell>
-            <TableCell>{format(order.updatedAt, "MM/dd/yyyy")}</TableCell>
+            <TableCell>{format(order.createdAt, 'MM/dd/yyyy')}</TableCell>
+            <TableCell>{format(order.updatedAt, 'MM/dd/yyyy')}</TableCell>
           </TableRow>
         ))}
       </TableBody>

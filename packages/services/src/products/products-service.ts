@@ -1,17 +1,17 @@
-import { PrismaClient } from "@ecomm/db";
-import type { Prisma } from "@ecomm/db";
+import { PrismaClient } from '@ecomm/db';
+import type { Prisma } from '@ecomm/db';
 import type {
   ProductCreateInput,
   ProductUpdateInput,
-} from "@ecomm/validations/cms/products/product-schema";
-import type { SearchOptions } from "../base-service";
-import { BaseService } from "../base-service";
-import { generateSku, generateVariantSku } from "../utils/generate-sku";
+} from '@ecomm/validations/cms/products/product-schema';
+import type { SearchOptions } from '../base-service';
+import { BaseService } from '../base-service';
+import { generateSku, generateVariantSku } from '../utils/generate-sku';
 import {
   createTextSearchCondition,
   createNestedTextSearchCondition,
   combineSearchConditions,
-} from "../utils/prisma-helpers";
+} from '../utils/prisma-helpers';
 
 export type Product = Prisma.ProductGetPayload<{
   include: {
@@ -71,9 +71,9 @@ export class ProductsService extends BaseService {
     let whereCondition: Prisma.ProductWhereInput = { locale };
 
     if (query) {
-      const directSearch = createTextSearchCondition(query, ["name", "sku"]);
+      const directSearch = createTextSearchCondition(query, ['name', 'sku']);
       const nestedSearch = createNestedTextSearchCondition(query, [
-        { model: "variants", field: "sku" },
+        { model: 'variants', field: 'sku' },
       ]);
 
       whereCondition = combineSearchConditions(directSearch, nestedSearch);
@@ -83,7 +83,7 @@ export class ProductsService extends BaseService {
       this.prismaClient.product.findMany({
         include: PRODUCT_INCLUDE,
         where: whereCondition,
-        orderBy: { updatedAt: "desc" },
+        orderBy: { updatedAt: 'desc' },
         ...pagination,
       }),
       this.prismaClient.product.count({ where: whereCondition }),

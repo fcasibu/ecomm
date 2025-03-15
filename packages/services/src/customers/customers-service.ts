@@ -1,13 +1,13 @@
-import { PrismaClient } from "@ecomm/db";
-import type { Prisma } from "@ecomm/db";
+import { PrismaClient } from '@ecomm/db';
+import type { Prisma } from '@ecomm/db';
 import type {
   CustomerCreateInput,
   CustomerUpdateInput,
-} from "@ecomm/validations/cms/customers/customers-schema";
-import type { SearchOptions } from "../base-service";
-import { BaseService } from "../base-service";
-import { hashPassword } from "../utils/password";
-import { createTextSearchCondition } from "../utils/prisma-helpers";
+} from '@ecomm/validations/cms/customers/customers-schema';
+import type { SearchOptions } from '../base-service';
+import { BaseService } from '../base-service';
+import { hashPassword } from '../utils/password';
+import { createTextSearchCondition } from '../utils/prisma-helpers';
 
 export type Customer = Prisma.CustomerGetPayload<{
   include: {
@@ -73,10 +73,10 @@ export class CustomersService extends BaseService {
 
     if (query) {
       whereCondition = createTextSearchCondition(query, [
-        "email",
-        "firstName",
-        "lastName",
-        "phone",
+        'email',
+        'firstName',
+        'lastName',
+        'phone',
       ]);
     }
 
@@ -85,7 +85,7 @@ export class CustomersService extends BaseService {
         include: CUSTOMER_INCLUDE,
         omit: CUSTOMER_OMIT,
         where: whereCondition,
-        orderBy: { updatedAt: "desc" },
+        orderBy: { updatedAt: 'desc' },
         ...pagination,
       }),
       this.prismaClient.customer.count({ where: whereCondition }),

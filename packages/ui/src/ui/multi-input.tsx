@@ -1,17 +1,17 @@
-import { assertValue, cn } from "#lib/utils";
-import * as React from "react";
+import { assertValue, cn } from '#lib/utils';
+import * as React from 'react';
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
-} from "./collapsible";
-import { ChevronsUpDown, Plus, X } from "lucide-react";
-import { Button } from "./button";
-import { Text } from "./typography";
+} from './collapsible';
+import { ChevronsUpDown, Plus, X } from 'lucide-react';
+import { Button } from './button';
+import { Text } from './typography';
 
 const MultiInput = React.forwardRef<
   HTMLInputElement,
-  Omit<React.ComponentProps<"input">, "value" | "onChange"> & {
+  Omit<React.ComponentProps<'input'>, 'value' | 'onChange'> & {
     value: string[];
     onChange: (
       data: string[],
@@ -21,7 +21,7 @@ const MultiInput = React.forwardRef<
 >(({ className, value, onChange, ...props }, ref) => {
   const [isOpen, setIsOpen] = React.useState(true);
   const [values, setValues] = React.useState<string[]>(
-    Array.isArray(value) && value.length ? value : [""],
+    Array.isArray(value) && value.length ? value : [''],
   );
 
   const handleChange =
@@ -37,17 +37,17 @@ const MultiInput = React.forwardRef<
     };
 
   const handleAdd = () => {
-    setValues((prev) => [...prev, ""]);
+    setValues((prev) => [...prev, '']);
   };
 
   const handleRemove = (index: number) => () => {
-    assertValue(index !== 0, "Should not be index 0");
+    assertValue(index !== 0, 'Should not be index 0');
     setValues((prev) => prev.filter((_, idx) => idx !== index));
   };
 
   return (
     <Collapsible open={isOpen} onOpenChange={setIsOpen}>
-      <div className="flex items-center justify-end space-x-4 px-4 mb-2">
+      <div className="mb-2 flex items-center justify-end space-x-4 px-4">
         <Button variant="ghost" size="sm" type="button" onClick={handleAdd}>
           <Plus className="h-4 w-4" />
           <span className="sr-only">Add</span>
@@ -64,7 +64,7 @@ const MultiInput = React.forwardRef<
         <input
           type="text"
           className={cn(
-            "flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-base shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm",
+            'border-input file:text-foreground placeholder:text-muted-foreground focus-visible:ring-ring flex h-9 w-full rounded-md border bg-transparent px-3 py-1 text-base shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium focus-visible:outline-none focus-visible:ring-1 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm',
             className,
           )}
           value={values[0]}
@@ -80,7 +80,7 @@ const MultiInput = React.forwardRef<
               <input
                 type="text"
                 className={cn(
-                  "flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-base shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm",
+                  'border-input file:text-foreground placeholder:text-muted-foreground focus-visible:ring-ring flex h-9 w-full rounded-md border bg-transparent px-3 py-1 text-base shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium focus-visible:outline-none focus-visible:ring-1 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm',
                   className,
                 )}
                 value={item}
@@ -103,6 +103,6 @@ const MultiInput = React.forwardRef<
     </Collapsible>
   );
 });
-MultiInput.displayName = "MultiInput";
+MultiInput.displayName = 'MultiInput';
 
 export { MultiInput };

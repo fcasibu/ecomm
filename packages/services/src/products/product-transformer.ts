@@ -1,10 +1,10 @@
-import { BaseTransformer } from "../base-transformer";
+import { BaseTransformer } from '../base-transformer';
 import type {
   ProductAttribute,
   ProductDTO,
   ProductVariantDTO,
-} from "./product-dto";
-import type { Product } from "./products-service";
+} from './product-dto';
+import type { Product } from './products-service';
 
 export class ProductTransformer extends BaseTransformer {
   public toDTO(product: Product | null | undefined): ProductDTO | null {
@@ -26,7 +26,7 @@ export class ProductTransformer extends BaseTransformer {
   }
 
   private transformVariant(
-    variant: Product["variants"][number],
+    variant: Product['variants'][number],
   ): ProductVariantDTO {
     const attributes = variant.attributes as ProductAttribute[];
 
@@ -46,8 +46,8 @@ export class ProductTransformer extends BaseTransformer {
   }
 
   private transformCategory(
-    category: Product["category"] | null,
-  ): ProductDTO["category"] {
+    category: Product['category'] | null,
+  ): ProductDTO['category'] {
     if (!category) return category;
 
     return {

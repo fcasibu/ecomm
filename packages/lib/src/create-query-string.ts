@@ -1,4 +1,4 @@
-import type { ReadonlyURLSearchParams } from "next/navigation";
+import type { ReadonlyURLSearchParams } from 'next/navigation';
 
 export function createQueryString(
   search: string | ReadonlyURLSearchParams | URLSearchParams,

@@ -1,4 +1,4 @@
-import { Prisma, PrismaClient } from "@ecomm/db";
+import { Prisma, PrismaClient } from '@ecomm/db';
 
 export interface PaginationOptions {
   page?: number;

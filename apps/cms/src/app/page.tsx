@@ -1,11 +1,11 @@
-import { getCategories } from "@/features/categories/services/queries";
-import { getCustomers } from "@/features/customers/services/queries";
-import { getOrders } from "@/features/orders/services/queries";
-import { getProducts } from "@/features/products/services/queries";
-import { getCookieCurrentLocale } from "@/lib/get-cookie-current-locale";
-import type { Result } from "@ecomm/lib/execute-operation";
-import { Card, CardHeader, CardTitle, CardContent } from "@ecomm/ui/card";
-import { Package, Users, ShoppingCart, List } from "lucide-react";
+import { getCategories } from '@/features/categories/services/queries';
+import { getCustomers } from '@/features/customers/services/queries';
+import { getOrders } from '@/features/orders/services/queries';
+import { getProducts } from '@/features/products/services/queries';
+import { getCookieCurrentLocale } from '@/lib/get-cookie-current-locale';
+import type { Result } from '@ecomm/lib/execute-operation';
+import { Card, CardHeader, CardTitle, CardContent } from '@ecomm/ui/card';
+import { Package, Users, ShoppingCart, List } from 'lucide-react';
 
 const getDashboardData = async () => {
   const locale = await getCookieCurrentLocale();
@@ -21,7 +21,7 @@ const getDashboardData = async () => {
   const extractCount = (
     result: PromiseSettledResult<Result<{ totalCount: number }>>,
   ) =>
-    result.status === "fulfilled" && result.value.success
+    result.status === 'fulfilled' && result.value.success
       ? result.value.data.totalCount
       : 0;
 
@@ -39,12 +39,12 @@ export default async function Home() {
 
   return (
     <div>
-      <h1 className="text-3xl font-bold mb-8">Dashboard</h1>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <h1 className="mb-8 text-3xl font-bold">Dashboard</h1>
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Products</CardTitle>
-            <Package className="h-4 w-4 text-muted-foreground" />
+            <Package className="text-muted-foreground h-4 w-4" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{productsCount}</div>
@@ -53,7 +53,7 @@ export default async function Home() {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Categories</CardTitle>
-            <List className="h-4 w-4 text-muted-foreground" />
+            <List className="text-muted-foreground h-4 w-4" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{categoriesCount}</div>
@@ -62,7 +62,7 @@ export default async function Home() {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Orders</CardTitle>
-            <ShoppingCart className="h-4 w-4 text-muted-foreground" />
+            <ShoppingCart className="text-muted-foreground h-4 w-4" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{ordersCount}</div>
@@ -71,7 +71,7 @@ export default async function Home() {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Customers</CardTitle>
-            <Users className="h-4 w-4 text-muted-foreground" />
+            <Users className="text-muted-foreground h-4 w-4" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{customersCount}</div>

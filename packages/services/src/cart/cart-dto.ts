@@ -1,4 +1,4 @@
-import type { CartStatus } from "@ecomm/db";
+import type { CartStatus } from '@ecomm/db';
 
 export interface CartItemDTO {
   id: string;

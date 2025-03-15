@@ -1,4 +1,4 @@
-import { init } from "@paralleldrive/cuid2";
+import { init } from '@paralleldrive/cuid2';
 
 const createSkuId = init({
   length: 8,
@@ -10,9 +10,9 @@ const createVariantSkuId = init({
 
 export function generateSku(name: string): string {
   const nameSegment = name
-    .split(" ")
+    .split(' ')
     .map((item) => item.charAt(0))
-    .join("")
+    .join('')
     .substring(0, 2);
 
   return `${nameSegment}-${createSkuId()}`.toUpperCase();

@@ -1,13 +1,13 @@
-"use server";
+'use server';
 
-import "server-only";
-import { categoriesController } from "@ecomm/services/registry";
+import 'server-only';
+import { categoriesController } from '@ecomm/services/registry';
 import type {
   CategoryCreateInput,
   CategoryUpdateInput,
-} from "@ecomm/validations/cms/categories/category-schema";
-import { executeOperation } from "@ecomm/lib/execute-operation";
-import { revalidateTag } from "next/cache";
+} from '@ecomm/validations/cms/categories/category-schema';
+import { executeOperation } from '@ecomm/lib/execute-operation';
+import { revalidateTag } from 'next/cache';
 
 export const createCategory = async (
   locale: string,
@@ -18,12 +18,12 @@ export const createCategory = async (
   );
 
   if (result.success) {
-    revalidateTag("categories");
-    revalidateTag("root_categories");
-    revalidateTag("category");
-    revalidateTag("categories_path");
-    revalidateTag("product");
-    revalidateTag("products");
+    revalidateTag('categories');
+    revalidateTag('root_categories');
+    revalidateTag('category');
+    revalidateTag('categories_path');
+    revalidateTag('product');
+    revalidateTag('products');
   }
 
   return result;
@@ -38,12 +38,12 @@ export const deleteCategoryById = async (
   );
 
   if (result.success) {
-    revalidateTag("categories");
-    revalidateTag("root_categories");
-    revalidateTag("category");
-    revalidateTag("categories_path");
-    revalidateTag("product");
-    revalidateTag("products");
+    revalidateTag('categories');
+    revalidateTag('root_categories');
+    revalidateTag('category');
+    revalidateTag('categories_path');
+    revalidateTag('product');
+    revalidateTag('products');
   }
 
   return result;
@@ -59,12 +59,12 @@ export const updateCategoryById = async (
   );
 
   if (result.success) {
-    revalidateTag("categories");
-    revalidateTag("root_categories");
-    revalidateTag("category");
-    revalidateTag("categories_path");
-    revalidateTag("product");
-    revalidateTag("products");
+    revalidateTag('categories');
+    revalidateTag('root_categories');
+    revalidateTag('category');
+    revalidateTag('categories_path');
+    revalidateTag('product');
+    revalidateTag('products');
   }
 
   return result;

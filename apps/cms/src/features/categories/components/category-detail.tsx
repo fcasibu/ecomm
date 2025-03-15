@@ -1,10 +1,10 @@
-import { CategoryUpdateForm } from "@/features/categories/components/category-update-form";
+import { CategoryUpdateForm } from '@/features/categories/components/category-update-form';
 import {
   getCategoriesPath,
   getCategoryById,
-} from "@/features/categories/services/queries";
-import { getCookieCurrentLocale } from "@/lib/get-cookie-current-locale";
-import { notFound } from "next/navigation";
+} from '@/features/categories/services/queries';
+import { getCookieCurrentLocale } from '@/lib/get-cookie-current-locale';
+import { notFound } from 'next/navigation';
 
 export async function CategoryDetail({
   categoryId,

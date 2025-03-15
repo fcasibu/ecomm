@@ -1,4 +1,4 @@
-import { Skeleton } from "@ecomm/ui/skeleton";
+import { Skeleton } from '@ecomm/ui/skeleton';
 import {
   Table,
   TableBody,
@@ -6,7 +6,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@ecomm/ui/table";
+} from '@ecomm/ui/table';
 
 export function LocalesTableSkeleton() {
   const skeletonItems = Array.from({ length: 10 });
@@ -24,13 +24,13 @@ export function LocalesTableSkeleton() {
           {skeletonItems.map((_, index) => (
             <TableRow key={index}>
               <TableCell>
-                <Skeleton className="h-5 w-full mb-1" />
+                <Skeleton className="mb-1 h-5 w-full" />
               </TableCell>
               <TableCell>
-                <Skeleton className="h-5 w-full mb-1" />
+                <Skeleton className="mb-1 h-5 w-full" />
               </TableCell>
               <TableCell>
-                <Skeleton className="h-5 w-full mb-1" />
+                <Skeleton className="mb-1 h-5 w-full" />
               </TableCell>
             </TableRow>
           ))}

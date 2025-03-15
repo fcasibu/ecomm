@@ -1,16 +1,16 @@
-import { getCategories } from "@/features/categories/services/queries";
-import { STORE_CURRENT_LOCALE_COOKIE_KEY } from "@/features/store/constants";
-import { mapErrorToAppError } from "@ecomm/lib/execute-operation";
-import { NextRequest, NextResponse } from "next/server";
+import { getCategories } from '@/features/categories/services/queries';
+import { STORE_CURRENT_LOCALE_COOKIE_KEY } from '@/features/store/constants';
+import { mapErrorToAppError } from '@ecomm/lib/execute-operation';
+import { NextRequest, NextResponse } from 'next/server';
 
-export const dynamic = "force-dynamic";
+export const dynamic = 'force-dynamic';
 
 export const GET = async (req: NextRequest) => {
   try {
     const searchParams = req.nextUrl.searchParams;
-    const page = Number(searchParams.get("page"));
-    const query = searchParams.get("query") ?? "";
-    const pageSize = Number(searchParams.get("pageSize"));
+    const page = Number(searchParams.get('page'));
+    const query = searchParams.get('query') ?? '';
+    const pageSize = Number(searchParams.get('pageSize'));
     const locale = req.cookies.get(STORE_CURRENT_LOCALE_COOKIE_KEY)
       ?.value as string;
 

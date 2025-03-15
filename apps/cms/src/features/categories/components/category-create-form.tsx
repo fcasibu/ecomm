@@ -1,7 +1,7 @@
-"use client";
+'use client';
 
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Button } from "@ecomm/ui/button";
+import { zodResolver } from '@hookform/resolvers/zod';
+import { Button } from '@ecomm/ui/button';
 import {
   Form,
   FormControl,
@@ -9,34 +9,34 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@ecomm/ui/form";
-import { Input } from "@ecomm/ui/input";
-import { categoryCreateSchema } from "@ecomm/validations/cms/categories/category-schema";
-import { useForm } from "react-hook-form";
-import type { z } from "zod";
-import { slugify } from "@ecomm/ui/lib/utils";
-import { createCategory } from "@/features/categories/services/mutations";
-import { toast } from "@ecomm/ui/hooks/use-toast";
-import { Suspense, useTransition } from "react";
-import { Loader } from "lucide-react";
-import { useRouter } from "next/navigation";
-import { Heading, Text } from "@ecomm/ui/typography";
-import { CategorySelect } from "@/components/category-select";
-import { ImageUpload } from "@/components/image-upload";
-import { CategorySelectSkeleton } from "@/components/category-select-skeleton";
-import { useStore } from "@/features/store/providers/store-provider";
+} from '@ecomm/ui/form';
+import { Input } from '@ecomm/ui/input';
+import { categoryCreateSchema } from '@ecomm/validations/cms/categories/category-schema';
+import { useForm } from 'react-hook-form';
+import type { z } from 'zod';
+import { slugify } from '@ecomm/ui/lib/utils';
+import { createCategory } from '@/features/categories/services/mutations';
+import { toast } from '@ecomm/ui/hooks/use-toast';
+import { Suspense, useTransition } from 'react';
+import { Loader } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { Heading, Text } from '@ecomm/ui/typography';
+import { CategorySelect } from '@/components/category-select';
+import { ImageUpload } from '@/components/image-upload';
+import { CategorySelectSkeleton } from '@/components/category-select-skeleton';
+import { useStore } from '@/features/store/providers/store-provider';
 
 export function CategoryCreateForm() {
-  "use no memo";
+  'use no memo';
 
   const store = useStore();
   const form = useForm<z.infer<typeof categoryCreateSchema>>({
     resolver: zodResolver(categoryCreateSchema),
     defaultValues: {
-      name: "",
-      slug: "",
-      description: "",
-      image: "",
+      name: '',
+      slug: '',
+      description: '',
+      image: '',
       parentId: undefined,
     },
   });
@@ -49,9 +49,9 @@ export function CategoryCreateForm() {
       const result = await createCategory(store.locale, data);
 
       if (!result.success) {
-        if (result.error.code === "DUPLICATE_ERROR") {
+        if (result.error.code === 'DUPLICATE_ERROR') {
           toast({
-            title: "Category creation",
+            title: 'Category creation',
             description: (
               <Text>
                 Category with the slug <b>{data.slug}</b> already exists.
@@ -60,24 +60,24 @@ export function CategoryCreateForm() {
           });
         } else {
           toast({
-            title: "Category creation",
-            description: "There was an issue with creating a Category",
+            title: 'Category creation',
+            description: 'There was an issue with creating a Category',
           });
         }
         return;
       }
 
       toast({
-        title: "Category creation",
-        description: "Category was successfully created",
+        title: 'Category creation',
+        description: 'Category was successfully created',
       });
 
-      router.push("/categories");
+      router.push('/categories');
     });
   };
 
   return (
-    <div className="max-w-4xl mx-auto p-8 space-y-8">
+    <div className="mx-auto max-w-4xl space-y-8 p-8">
       <Heading as="h1">Create a new category</Heading>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
@@ -93,7 +93,7 @@ export function CategoryCreateForm() {
                     {...field}
                     onChange={(e) => {
                       field.onChange(e);
-                      form.setValue("slug", slugify(e.target.value));
+                      form.setValue('slug', slugify(e.target.value));
                     }}
                   />
                 </FormControl>
@@ -165,7 +165,7 @@ export function CategoryCreateForm() {
             <Button
               variant="outline"
               type="button"
-              onClick={() => router.push("/categories")}
+              onClick={() => router.push('/categories')}
             >
               Cancel
             </Button>
@@ -177,7 +177,7 @@ export function CategoryCreateForm() {
               {isPending ? (
                 <Loader className="animate-spin" size={16} />
               ) : (
-                "Create"
+                'Create'
               )}
             </Button>
           </div>

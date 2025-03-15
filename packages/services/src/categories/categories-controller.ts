@@ -1,16 +1,16 @@
-import type { CategoriesService } from "./categories-service";
-import { ValidationError } from "../errors/validation-error";
+import type { CategoriesService } from './categories-service';
+import { ValidationError } from '../errors/validation-error';
 import {
   type CategoryCreateInput,
   categoryCreateSchema,
   type CategoryUpdateInput,
   categoryUpdateSchema,
-} from "@ecomm/validations/cms/categories/category-schema";
-import { NotFoundError } from "../errors/not-found-error";
-import { logger } from "@ecomm/lib/logger";
-import type { CategoryDTO } from "./category-dto";
-import { BaseController } from "../base-controller";
-import { CategoryTransformer } from "./category-transformer";
+} from '@ecomm/validations/cms/categories/category-schema';
+import { NotFoundError } from '../errors/not-found-error';
+import { logger } from '@ecomm/lib/logger';
+import type { CategoryDTO } from './category-dto';
+import { BaseController } from '../base-controller';
+import { CategoryTransformer } from './category-transformer';
 
 export class CategoriesController extends BaseController {
   private readonly transformer = new CategoryTransformer();
@@ -21,7 +21,7 @@ export class CategoriesController extends BaseController {
 
   public async create(locale: string, input: CategoryCreateInput) {
     try {
-      logger.info({ input }, "Creating a new category");
+      logger.info({ input }, 'Creating a new category');
       const result = categoryCreateSchema.safeParse(input);
 
       if (!result.success) {
@@ -33,10 +33,10 @@ export class CategoriesController extends BaseController {
       );
 
       if (!category) {
-        throw new NotFoundError("Category not found.");
+        throw new NotFoundError('Category not found.');
       }
 
-      logger.info({ categoryId: category.id }, "Category created successfully");
+      logger.info({ categoryId: category.id }, 'Category created successfully');
       return category;
     } catch (error) {
       this.logAndThrowError(error, {
@@ -52,7 +52,7 @@ export class CategoriesController extends BaseController {
     input: CategoryUpdateInput,
   ) {
     try {
-      logger.info({ categoryId, input }, "Updating category");
+      logger.info({ categoryId, input }, 'Updating category');
       const result = categoryUpdateSchema.safeParse(input);
 
       if (!result.success) {
@@ -68,7 +68,7 @@ export class CategoriesController extends BaseController {
 
       logger.info(
         { categoryId: updatedCategory.id },
-        "Category updated successfully",
+        'Category updated successfully',
       );
       return updatedCategory;
     } catch (error) {
@@ -81,11 +81,11 @@ export class CategoriesController extends BaseController {
   }
 
   public async delete(locale: string, categoryId: string) {
-    logger.info({ categoryId }, "Deleting category");
+    logger.info({ categoryId }, 'Deleting category');
 
     try {
       await this.categoriesService.delete(locale, categoryId);
-      logger.info({ categoryId }, "Category deleted successfully");
+      logger.info({ categoryId }, 'Category deleted successfully');
 
       return { success: true };
     } catch (error) {
@@ -97,7 +97,7 @@ export class CategoriesController extends BaseController {
   }
 
   public async getById(locale: string, id: string) {
-    logger.info({ id }, "Fetching category by id");
+    logger.info({ id }, 'Fetching category by id');
 
     try {
       const category = this.transformer.toDTO(
@@ -110,7 +110,7 @@ export class CategoriesController extends BaseController {
 
       logger.info(
         { categoryId: category.id },
-        "Category fetched by ID successfully",
+        'Category fetched by ID successfully',
       );
       return category;
     } catch (error) {
@@ -121,7 +121,7 @@ export class CategoriesController extends BaseController {
   }
 
   public async getBySlug(locale: string, slug: string) {
-    logger.info({ slug }, "Fetching category by slug");
+    logger.info({ slug }, 'Fetching category by slug');
 
     try {
       const category = this.transformer.toDTO(
@@ -134,7 +134,7 @@ export class CategoriesController extends BaseController {
 
       logger.info(
         { categoryId: category.id },
-        "Category fetched by slug successfully",
+        'Category fetched by slug successfully',
       );
       return category;
     } catch (error) {
@@ -152,7 +152,7 @@ export class CategoriesController extends BaseController {
       pageSize?: number;
     },
   ) {
-    logger.info({ input }, "Fetching all categories");
+    logger.info({ input }, 'Fetching all categories');
 
     try {
       const result = await this.categoriesService.getAll(locale, input);
@@ -176,30 +176,30 @@ export class CategoriesController extends BaseController {
           currentPage: response.currentPage,
           pageSize: response.pageSize,
         },
-        "Categories fetched successfully",
+        'Categories fetched successfully',
       );
 
       return response;
     } catch (error) {
       this.logAndThrowError(error, {
-        message: "Error fetching all categories",
+        message: 'Error fetching all categories',
       });
     }
   }
 
   public async getRootCategories(locale: string) {
-    logger.info("Fetching all root categories");
+    logger.info('Fetching all root categories');
 
     try {
       const categories = (
         await this.categoriesService.getRootCategories(locale)
       ).map((category) => this.transformer.toDTO(category));
 
-      logger.info({ categories }, "Root categories fetched successfully");
+      logger.info({ categories }, 'Root categories fetched successfully');
       return categories;
     } catch (error) {
       this.logAndThrowError(error, {
-        message: "Error fetching all root categories",
+        message: 'Error fetching all root categories',
       });
     }
   }

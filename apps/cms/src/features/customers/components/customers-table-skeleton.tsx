@@ -1,5 +1,5 @@
-import { CUSTOMERS_PAGE_SIZE } from "@/lib/constants";
-import { Skeleton } from "@ecomm/ui/skeleton";
+import { CUSTOMERS_PAGE_SIZE } from '@/lib/constants';
+import { Skeleton } from '@ecomm/ui/skeleton';
 import {
   Table,
   TableBody,
@@ -7,7 +7,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@ecomm/ui/table";
+} from '@ecomm/ui/table';
 
 export function CustomersTableSkeleton() {
   const skeletonItems = Array.from({ length: CUSTOMERS_PAGE_SIZE });
@@ -28,22 +28,22 @@ export function CustomersTableSkeleton() {
         {skeletonItems.map((_, index) => (
           <TableRow key={index}>
             <TableCell className="max-w-[140px] truncate">
-              <Skeleton className="h-5 w-full mb-1" />
+              <Skeleton className="mb-1 h-5 w-full" />
             </TableCell>
             <TableCell>
-              <Skeleton className="h-5 w-full mb-1" />
+              <Skeleton className="mb-1 h-5 w-full" />
             </TableCell>
             <TableCell>
-              <Skeleton className="h-5 w-full mb-1" />
+              <Skeleton className="mb-1 h-5 w-full" />
             </TableCell>
             <TableCell>
-              <Skeleton className="h-5 w-full mb-1" />
+              <Skeleton className="mb-1 h-5 w-full" />
             </TableCell>
             <TableCell>
-              <Skeleton className="h-5 w-full mb-1" />
+              <Skeleton className="mb-1 h-5 w-full" />
             </TableCell>
             <TableCell>
-              <Skeleton className="h-5 w-full mb-1" />
+              <Skeleton className="mb-1 h-5 w-full" />
             </TableCell>
           </TableRow>
         ))}

@@ -1,7 +1,7 @@
-"use client";
+'use client';
 
-import { format } from "date-fns";
-import type { CustomerDTO } from "@ecomm/services/customers/customer-dto";
+import { format } from 'date-fns';
+import type { CustomerDTO } from '@ecomm/services/customers/customer-dto';
 import {
   Table,
   TableBody,
@@ -9,9 +9,9 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@ecomm/ui/table";
-import { Minus } from "lucide-react";
-import { useRouter } from "next/navigation";
+} from '@ecomm/ui/table';
+import { Minus } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 
 export function CustomersTableClient({
   customers,
@@ -41,7 +41,7 @@ export function CustomersTableClient({
               router.push(`/customers/${customer.id}/customer-details`)
             }
             onKeyDown={(e) => {
-              if (e.key === "Enter" || e.key === " ") {
+              if (e.key === 'Enter' || e.key === ' ') {
                 router.push(`/customers/${customer.id}/customer-details`);
               }
             }}
@@ -54,8 +54,8 @@ export function CustomersTableClient({
             <TableCell>{customer.firstName || <Minus />}</TableCell>
             <TableCell>{customer.lastName || <Minus />}</TableCell>
             <TableCell>{customer.email}</TableCell>
-            <TableCell>{format(customer.createdAt, "MM/dd/yyyy")}</TableCell>
-            <TableCell>{format(customer.updatedAt, "MM/dd/yyyy")}</TableCell>
+            <TableCell>{format(customer.createdAt, 'MM/dd/yyyy')}</TableCell>
+            <TableCell>{format(customer.updatedAt, 'MM/dd/yyyy')}</TableCell>
           </TableRow>
         ))}
       </TableBody>

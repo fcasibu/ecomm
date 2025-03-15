@@ -1,10 +1,10 @@
-"use client";
+'use client';
 
-import { useRef, useState } from "react";
-import { Calendar } from "./calendar";
-import { CalendarIcon, X } from "lucide-react";
-import { format, isValid, parse } from "date-fns";
-import { useOutsideClick } from "#hooks/use-outside-click";
+import { useRef, useState } from 'react';
+import { Calendar } from './calendar';
+import { CalendarIcon, X } from 'lucide-react';
+import { format, isValid, parse } from 'date-fns';
+import { useOutsideClick } from '#hooks/use-outside-click';
 
 interface CalendarInputProps {
   value?: Date;
@@ -15,7 +15,7 @@ export function CalendarInput({ value, onChange }: CalendarInputProps) {
   const [month, setMonth] = useState(() => value ?? new Date());
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(value);
   const [inputValue, setInputValue] = useState<string>(
-    value ? format(value, "MM/dd/yyyy") : "",
+    value ? format(value, 'MM/dd/yyyy') : '',
   );
   const [showCalendar, setShowCalendar] = useState(false);
   const [lastValidDate, setLastValidDate] = useState<Date | null>(null);
@@ -25,7 +25,7 @@ export function CalendarInput({ value, onChange }: CalendarInputProps) {
   useOutsideClick(ref, () => {
     setShowCalendar(false);
     if (lastValidDate) {
-      setInputValue(format(lastValidDate, "MM/dd/yyyy"));
+      setInputValue(format(lastValidDate, 'MM/dd/yyyy'));
       setSelectedDate(lastValidDate);
       setMonth(lastValidDate);
       onChange(lastValidDate);
@@ -33,7 +33,7 @@ export function CalendarInput({ value, onChange }: CalendarInputProps) {
   });
 
   const parseDateInput = (value: string) => {
-    const dateFormats = ["MM", "MM/dd", "MM/dd/yyyy"];
+    const dateFormats = ['MM', 'MM/dd', 'MM/dd/yyyy'];
 
     for (const format of dateFormats) {
       const date = parse(value, format, new Date());
@@ -76,12 +76,12 @@ export function CalendarInput({ value, onChange }: CalendarInputProps) {
 
     setSelectedDate(date);
     setMonth(date);
-    setInputValue(format(date, "MM/dd/yyyy"));
+    setInputValue(format(date, 'MM/dd/yyyy'));
     onChange(date);
   };
 
   const clearInput = () => {
-    setInputValue("");
+    setInputValue('');
     setSelectedDate(undefined);
     onChange(undefined);
     setMonth(new Date());
@@ -97,7 +97,7 @@ export function CalendarInput({ value, onChange }: CalendarInputProps) {
         onChange={handleInputChange}
         onFocus={() => setShowCalendar(true)}
         placeholder="MM/DD/YYYY"
-        className="border rounded-md p-2 pr-8 w-full cursor-default"
+        className="w-full cursor-default rounded-md border p-2 pr-8"
       />
 
       {inputValue && (
@@ -114,7 +114,7 @@ export function CalendarInput({ value, onChange }: CalendarInputProps) {
       <CalendarIcon className="absolute right-2 top-1/2 -translate-y-1/2 opacity-50" />
 
       {showCalendar && (
-        <div className="absolute mt-2 z-10">
+        <div className="absolute z-10 mt-2">
           <Calendar
             month={month}
             onMonthChange={setMonth}

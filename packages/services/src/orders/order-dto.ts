@@ -1,5 +1,5 @@
-import type { OrderStatus } from "@ecomm/db";
-import type { AddressDTO } from "../customers/customer-dto";
+import type { OrderStatus } from '@ecomm/db';
+import type { AddressDTO } from '../customers/customer-dto';
 
 export interface OrderItemDTO {
   id: string;

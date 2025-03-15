@@ -1,7 +1,7 @@
-import assert from "node:assert";
-import { BaseTransformer } from "../base-transformer";
-import type { CartDTO, CartItemDTO } from "./cart-dto";
-import type { Cart } from "./cart-service";
+import assert from 'node:assert';
+import { BaseTransformer } from '../base-transformer';
+import type { CartDTO, CartItemDTO } from './cart-dto';
+import type { Cart } from './cart-service';
 
 export class CartTransformer extends BaseTransformer {
   public toDTO(cart: Cart | null | undefined): CartDTO | null {
@@ -19,13 +19,13 @@ export class CartTransformer extends BaseTransformer {
     };
   }
 
-  private transformCartItem(item: Cart["items"][number]): CartItemDTO {
+  private transformCartItem(item: Cart['items'][number]): CartItemDTO {
     const variant = item.product.variants.find(
       (variant) => variant.sku === item.sku,
     );
 
-    assert(variant, "variant should always be defined");
-    assert(variant.images[0], "variant should always have an image defined");
+    assert(variant, 'variant should always be defined');
+    assert(variant.images[0], 'variant should always have an image defined');
 
     return {
       id: item.id,

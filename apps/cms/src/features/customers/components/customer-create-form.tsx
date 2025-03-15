@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import {
   Form,
@@ -8,87 +8,87 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@ecomm/ui/form";
+} from '@ecomm/ui/form';
 import {
   customerCreateSchema,
   type CustomerCreateInput,
-} from "@ecomm/validations/cms/customers/customers-schema";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect, useTransition } from "react";
-import { useForm, useFormContext } from "react-hook-form";
-import { createCustomer } from "../services/mutations";
-import { toast } from "@ecomm/ui/hooks/use-toast";
-import { useRouter } from "next/navigation";
-import { Heading } from "@ecomm/ui/typography";
-import { Separator } from "@ecomm/ui/separator";
-import { Loader } from "lucide-react";
-import { cn } from "@ecomm/ui/lib/utils";
-import { Button } from "@ecomm/ui/button";
-import { PasswordInput } from "@ecomm/ui/password-input";
-import { Switch } from "@ecomm/ui/switch";
-import { CustomerDetailsStage } from "./customer-details-stage";
-import { AddressesStage } from "./addresses-stage";
-import { useMultiStage } from "@/hooks/use-multi-stage";
-import { useStore } from "@/features/store/providers/store-provider";
+} from '@ecomm/validations/cms/customers/customers-schema';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useEffect, useTransition } from 'react';
+import { useForm, useFormContext } from 'react-hook-form';
+import { createCustomer } from '../services/mutations';
+import { toast } from '@ecomm/ui/hooks/use-toast';
+import { useRouter } from 'next/navigation';
+import { Heading } from '@ecomm/ui/typography';
+import { Separator } from '@ecomm/ui/separator';
+import { Loader } from 'lucide-react';
+import { cn } from '@ecomm/ui/lib/utils';
+import { Button } from '@ecomm/ui/button';
+import { PasswordInput } from '@ecomm/ui/password-input';
+import { Switch } from '@ecomm/ui/switch';
+import { CustomerDetailsStage } from './customer-details-stage';
+import { AddressesStage } from './addresses-stage';
+import { useMultiStage } from '@/hooks/use-multi-stage';
+import { useStore } from '@/features/store/providers/store-provider';
 
-type StageKey = "customer-details" | "security" | "addresses";
+type StageKey = 'customer-details' | 'security' | 'addresses';
 
 const stages = [
-  { title: "Customer details", key: "customer-details" },
-  { title: "Security", key: "security" },
-  { title: "Addresses", key: "addresses" },
+  { title: 'Customer details', key: 'customer-details' },
+  { title: 'Security', key: 'security' },
+  { title: 'Addresses', key: 'addresses' },
 ] as const;
 
 export function CustomerCreateForm() {
   // TODO(fcasibu): useFormContext is not working properly with react compiler
-  "use no memo";
+  'use no memo';
 
   const store = useStore();
   const form = useForm<CustomerCreateInput>({
     resolver: zodResolver(customerCreateSchema),
     defaultValues: {
-      password: "",
-      passwordConfirm: "",
+      password: '',
+      passwordConfirm: '',
       addresses: [],
-      email: "",
-      phone: "",
-      lastName: "",
+      email: '',
+      phone: '',
+      lastName: '',
       birthDate: undefined,
-      firstName: "",
-      middleName: "",
+      firstName: '',
+      middleName: '',
       authMode: undefined,
-      currentStage: "customer-details",
+      currentStage: 'customer-details',
     },
   });
 
   const { currentStage, onNext, onPrevious, goToStage, isStageDisabled } =
-    useMultiStage(stages, "customer-details");
+    useMultiStage(stages, 'customer-details');
 
   const [isPending, startTransition] = useTransition();
   const router = useRouter();
 
   useEffect(() => {
-    form.setValue("currentStage", currentStage);
+    form.setValue('currentStage', currentStage);
   }, [currentStage, form]);
 
   const handleSubmit = (data: CustomerCreateInput) => {
-    if (currentStage !== "addresses") return onNext();
+    if (currentStage !== 'addresses') return onNext();
 
     startTransition(async () => {
       const result = await createCustomer(store.locale, data);
 
       if (!result.success) {
         switch (result.error.code) {
-          case "DUPLICATE_ERROR":
+          case 'DUPLICATE_ERROR':
             toast({
-              title: "Customer Creation",
-              description: "Customer with the same email already exists.",
+              title: 'Customer Creation',
+              description: 'Customer with the same email already exists.',
             });
             break;
           default:
             toast({
-              title: "Customer Creation",
-              description: "There was an issue with creating a customer.",
+              title: 'Customer Creation',
+              description: 'There was an issue with creating a customer.',
             });
         }
 
@@ -96,11 +96,11 @@ export function CustomerCreateForm() {
       }
 
       toast({
-        title: "Customer creation",
-        description: "Customer was successfully created",
+        title: 'Customer creation',
+        description: 'Customer was successfully created',
       });
 
-      router.push("/customers");
+      router.push('/customers');
     });
   };
 
@@ -120,7 +120,7 @@ export function CustomerCreateForm() {
             return form.handleSubmit(handleSubmit)(e);
           }}
         >
-          <div className="max-w-3xl mx-auto p-8 space-y-8">
+          <div className="mx-auto max-w-3xl space-y-8 p-8">
             <StageContent currentStage={currentStage} />
 
             <StageController
@@ -149,11 +149,11 @@ function StageController(props: {
       <Button
         variant="outline"
         type="button"
-        onClick={() => router.push("/customers")}
+        onClick={() => router.push('/customers')}
       >
         Cancel
       </Button>
-      {currentStage !== "customer-details" && (
+      {currentStage !== 'customer-details' && (
         <Button
           disabled={isPending}
           type="button"
@@ -163,17 +163,17 @@ function StageController(props: {
           {isPending ? (
             <Loader className="animate-spin" size={16} />
           ) : (
-            "Previous"
+            'Previous'
           )}
         </Button>
       )}
       <Button disabled={isPending} type="submit" className="min-w-[120px]">
         {isPending ? (
           <Loader className="animate-spin" size={16} />
-        ) : currentStage === "addresses" ? (
-          "Submit"
+        ) : currentStage === 'addresses' ? (
+          'Submit'
         ) : (
-          "Next"
+          'Next'
         )}
       </Button>
     </div>
@@ -190,23 +190,23 @@ function StageIndicator({
   isStageDisabled: (stage: StageKey) => boolean;
 }) {
   return (
-    <div className="flex justify-between gap-6 w-full">
+    <div className="flex w-full justify-between gap-6">
       {stages.map((stage, index) => (
         <div
           key={stage.key}
-          className={cn("flex items-center flex-1", {
-            "justify-end flex-grow-0": index === stages.length - 1,
+          className={cn('flex flex-1 items-center', {
+            'flex-grow-0 justify-end': index === stages.length - 1,
           })}
         >
-          <div className="flex items-center gap-2 w-full">
-            <div className="flex w-[40px] h-[40px] justify-center items-center">
+          <div className="flex w-full items-center gap-2">
+            <div className="flex h-[40px] w-[40px] items-center justify-center">
               <Button
                 aria-label={`Move to ${stage.title}`}
                 variant="none"
                 className={cn(
-                  "w-[40px] h-[40px] rounded-full outline outline-black flex justify-center items-center",
+                  'flex h-[40px] w-[40px] items-center justify-center rounded-full outline outline-black',
                   {
-                    "outline-none outline-transparent bg-blue-500 outline-offset-0":
+                    'bg-blue-500 outline-none outline-offset-0 outline-transparent':
                       currentStage === stage.key,
                   },
                 )}
@@ -215,8 +215,8 @@ function StageIndicator({
                 size="icon"
               >
                 <span
-                  className={cn("text-black pointer-events-none text-lg", {
-                    "text-white": currentStage === stage.key,
+                  className={cn('pointer-events-none text-lg text-black', {
+                    'text-white': currentStage === stage.key,
                   })}
                 >
                   {index + 1}
@@ -225,7 +225,7 @@ function StageIndicator({
             </div>
             <span className="flex-shrink-0">{stage.title}</span>
             {index !== stages.length - 1 && (
-              <Separator className="bg-gray-500 !flex-shrink" />
+              <Separator className="!flex-shrink bg-gray-500" />
             )}
           </div>
         </div>
@@ -236,20 +236,20 @@ function StageIndicator({
 
 function StageContent({ currentStage }: { currentStage: StageKey }) {
   switch (currentStage) {
-    case "customer-details":
+    case 'customer-details':
       return <CustomerDetailsStage />;
-    case "security":
+    case 'security':
       return <SecurityStage />;
-    case "addresses":
+    case 'addresses':
       return <AddressesStage />;
     default:
-      throw new Error("Unknown stage");
+      throw new Error('Unknown stage');
   }
 }
 
 function SecurityStage() {
   const formContext = useFormContext<CustomerCreateInput>();
-  const authMode = formContext.watch("authMode");
+  const authMode = formContext.watch('authMode');
 
   return (
     <div>
@@ -270,11 +270,11 @@ function SecurityStage() {
                       checked={field.value}
                       onCheckedChange={(checked) => {
                         if (checked) {
-                          formContext.resetField("password", {
+                          formContext.resetField('password', {
                             keepError: false,
                           });
 
-                          formContext.resetField("passwordConfirm", {
+                          formContext.resetField('passwordConfirm', {
                             keepError: false,
                           });
                         }

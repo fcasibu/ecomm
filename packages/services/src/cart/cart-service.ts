@@ -1,11 +1,11 @@
-import { PrismaClient } from "@ecomm/db";
-import type { Prisma, ProductVariant } from "@ecomm/db";
+import { PrismaClient } from '@ecomm/db';
+import type { Prisma, ProductVariant } from '@ecomm/db';
 import type {
   CartCreateInput,
   CartUpdateInput,
-} from "@ecomm/validations/cms/cart/cart-schema";
-import { BaseService } from "../base-service";
-import { randomUUID } from "node:crypto";
+} from '@ecomm/validations/cms/cart/cart-schema';
+import { BaseService } from '../base-service';
+import { randomUUID } from 'node:crypto';
 
 export type Cart = Prisma.CartGetPayload<{
   include: {

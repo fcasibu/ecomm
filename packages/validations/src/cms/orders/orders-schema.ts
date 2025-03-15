@@ -1,5 +1,5 @@
-import { z } from "zod";
-import { cartCreateSchema } from "../cart/cart-schema";
+import { z } from 'zod';
+import { cartCreateSchema } from '../cart/cart-schema';
 
 const cartItemSchema = z.object({
   id: z.string().uuid(),
@@ -12,7 +12,7 @@ const cartItemSchema = z.object({
 });
 
 export const orderCreateSchema = z.object({
-  customerId: z.string().uuid({ message: "You must select a customer" }),
+  customerId: z.string().uuid({ message: 'You must select a customer' }),
   shippingAddressId: z.string().uuid(),
   billingAddressId: z.string().uuid(),
   preCart: z
@@ -23,13 +23,13 @@ export const orderCreateSchema = z.object({
   cart: z.object({
     id: z.string(),
     totalAmount: z.number(),
-    status: z.enum(["COMPLETED", "ACTIVE", "ABANDONED"]),
+    status: z.enum(['COMPLETED', 'ACTIVE', 'ABANDONED']),
     items: z.array(cartItemSchema),
   }),
 });
 
 export const orderUpdateSchema = z.object({
-  orderStatus: z.enum(["PENDING", "COMPLETED", "CANCELLED"]),
+  orderStatus: z.enum(['PENDING', 'COMPLETED', 'CANCELLED']),
 });
 
 export type OrderCreateInput = z.infer<typeof orderCreateSchema>;

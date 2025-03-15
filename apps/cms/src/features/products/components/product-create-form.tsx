@@ -1,7 +1,7 @@
-"use client";
+'use client';
 
-import { CategorySelect } from "@/components/category-select";
-import { Button } from "@ecomm/ui/button";
+import { CategorySelect } from '@/components/category-select';
+import { Button } from '@ecomm/ui/button';
 import {
   FormField,
   FormItem,
@@ -9,23 +9,23 @@ import {
   FormControl,
   FormMessage,
   Form,
-} from "@ecomm/ui/form";
-import { Input } from "@ecomm/ui/input";
-import { MultiInput } from "@ecomm/ui/multi-input";
+} from '@ecomm/ui/form';
+import { Input } from '@ecomm/ui/input';
+import { MultiInput } from '@ecomm/ui/multi-input';
 import {
   productAttributes,
   productCreateSchema,
   productCreateVariantSchema,
-} from "@ecomm/validations/cms/products/product-schema";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Loader, Plus } from "lucide-react";
-import { useForm } from "react-hook-form";
-import type { z } from "zod";
-import { Suspense, useState, useTransition } from "react";
-import { createProduct } from "../services/mutations";
-import { toast } from "@ecomm/ui/hooks/use-toast";
-import { useRouter } from "next/navigation";
-import { Heading } from "@ecomm/ui/typography";
+} from '@ecomm/validations/cms/products/product-schema';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { Loader, Plus } from 'lucide-react';
+import { useForm } from 'react-hook-form';
+import type { z } from 'zod';
+import { Suspense, useState, useTransition } from 'react';
+import { createProduct } from '../services/mutations';
+import { toast } from '@ecomm/ui/hooks/use-toast';
+import { useRouter } from 'next/navigation';
+import { Heading } from '@ecomm/ui/typography';
 import {
   Sheet,
   SheetContent,
@@ -33,21 +33,21 @@ import {
   SheetHeader,
   SheetTitle,
   SheetTrigger,
-} from "@ecomm/ui/sheet";
-import { ImageComponent } from "@ecomm/ui/image";
-import { CategorySelectSkeleton } from "@/components/category-select-skeleton";
-import { MultiImageUpload } from "@/components/multi-image-upload";
-import { useStore } from "@/features/store/providers/store-provider";
+} from '@ecomm/ui/sheet';
+import { ImageComponent } from '@ecomm/ui/image';
+import { CategorySelectSkeleton } from '@/components/category-select-skeleton';
+import { MultiImageUpload } from '@/components/multi-image-upload';
+import { useStore } from '@/features/store/providers/store-provider';
 
 export function ProductCreateForm() {
-  "use no memo";
+  'use no memo';
 
   const store = useStore();
   const form = useForm<z.infer<typeof productCreateSchema>>({
     resolver: zodResolver(productCreateSchema),
     defaultValues: {
-      name: "",
-      description: "",
+      name: '',
+      description: '',
       categoryId: undefined,
       features: [],
       variants: [],
@@ -63,24 +63,24 @@ export function ProductCreateForm() {
 
       if (!result.success) {
         toast({
-          title: "Product Creation",
-          description: "There was an issue with creating a product.",
+          title: 'Product Creation',
+          description: 'There was an issue with creating a product.',
         });
 
         return;
       }
 
       toast({
-        title: "Product creation",
-        description: "Product was successfully created",
+        title: 'Product creation',
+        description: 'Product was successfully created',
       });
 
-      router.push("/products");
+      router.push('/products');
     });
   };
 
   return (
-    <div className="max-w-4xl mx-auto p-8 space-y-8">
+    <div className="mx-auto max-w-4xl space-y-8 p-8">
       <Heading as="h1">Create a new product</Heading>
       <Form {...form}>
         <form
@@ -180,7 +180,7 @@ export function ProductCreateForm() {
             <Button
               variant="outline"
               type="button"
-              onClick={() => router.push("/products")}
+              onClick={() => router.push('/products')}
             >
               Cancel
             </Button>
@@ -192,7 +192,7 @@ export function ProductCreateForm() {
               {isPending ? (
                 <Loader className="animate-spin" size={16} />
               ) : (
-                "Create"
+                'Create'
               )}
             </Button>
           </div>
@@ -267,7 +267,7 @@ function ProductVariantsControl({
 
   return (
     <Sheet open={isOpen} onOpenChange={handleSheetOpenChange}>
-      <div className="flex gap-2 flex-wrap">
+      <div className="flex flex-wrap gap-2">
         {value.length > 0 &&
           value.map((item, index) => (
             <SheetTrigger
@@ -275,10 +275,10 @@ function ProductVariantsControl({
               key={index}
               onClick={() => handleVariantClick(item)}
             >
-              <div className="w-24 h-24 aspect-square border border-black flex justify-center items-center cursor-pointer">
+              <div className="flex aspect-square h-24 w-24 cursor-pointer items-center justify-center border border-black">
                 <ImageComponent
                   src={item.images[0]}
-                  className="object-cover aspect-square"
+                  className="aspect-square object-cover"
                   alt={`Product variant ${index + 1}`}
                   width={96}
                   height={96}
@@ -287,7 +287,7 @@ function ProductVariantsControl({
             </SheetTrigger>
           ))}
         <SheetTrigger asChild>
-          <div className="w-24 h-24 aspect-square border border-black flex justify-center items-center cursor-pointer">
+          <div className="flex aspect-square h-24 w-24 cursor-pointer items-center justify-center border border-black">
             <input className="sr-only" type="button" {...props} />
             <Plus />
           </div>
@@ -307,8 +307,8 @@ function ProductVariantsControl({
             <SheetHeader>
               <SheetTitle>
                 {currentItem
-                  ? "Edit product variant"
-                  : "Create a product variant"}
+                  ? 'Edit product variant'
+                  : 'Create a product variant'}
               </SheetTitle>
             </SheetHeader>
             <FormField
@@ -375,7 +375,7 @@ function ProductVariantsControl({
                       <FormControl>
                         <Input
                           {...field}
-                          value={field.value?.value ?? ""}
+                          value={field.value?.value ?? ''}
                           onChange={(event) => {
                             field.onChange({
                               title: key,
@@ -401,7 +401,7 @@ function ProductVariantsControl({
                 </Button>
               )}
               <Button type="submit">
-                {currentItem ? "Update variant" : "Save changes"}
+                {currentItem ? 'Update variant' : 'Save changes'}
               </Button>
             </SheetFooter>
           </form>

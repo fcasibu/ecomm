@@ -1,7 +1,7 @@
-import { BaseTransformer } from "../base-transformer";
-import type { ProductAttribute } from "../products/product-dto";
-import type { Category } from "./categories-service";
-import type { CategoryDTO } from "./category-dto";
+import { BaseTransformer } from '../base-transformer';
+import type { ProductAttribute } from '../products/product-dto';
+import type { Category } from './categories-service';
+import type { CategoryDTO } from './category-dto';
 
 export class CategoryTransformer extends BaseTransformer {
   public toDTO(category: Category | null | undefined): CategoryDTO | null {
@@ -26,8 +26,8 @@ export class CategoryTransformer extends BaseTransformer {
   }
 
   private transformCategoryChild(
-    category: Category["children"][number],
-  ): CategoryDTO["children"][number] {
+    category: Category['children'][number],
+  ): CategoryDTO['children'][number] {
     return {
       slug: category.slug,
       image: category.image,
@@ -41,8 +41,8 @@ export class CategoryTransformer extends BaseTransformer {
   }
 
   private transformProduct(
-    product: Category["products"][number],
-  ): CategoryDTO["products"][number] {
+    product: Category['products'][number],
+  ): CategoryDTO['products'][number] {
     return {
       id: product.id,
       description: product.description,
@@ -59,8 +59,8 @@ export class CategoryTransformer extends BaseTransformer {
   }
 
   private transformVariant(
-    variant: Category["products"][number]["variants"][number],
-  ): CategoryDTO["products"][number]["variants"][number] {
+    variant: Category['products'][number]['variants'][number],
+  ): CategoryDTO['products'][number]['variants'][number] {
     const attributes = variant.attributes as ProductAttribute[];
 
     return {

@@ -1,7 +1,7 @@
-import { Button } from "@ecomm/ui/button";
-import { ChevronsUpDown } from "lucide-react";
-import { Skeleton } from "@ecomm/ui/skeleton";
-import { Popover, PopoverTrigger } from "@ecomm/ui/popover";
+import { Button } from '@ecomm/ui/button';
+import { ChevronsUpDown } from 'lucide-react';
+import { Skeleton } from '@ecomm/ui/skeleton';
+import { Popover, PopoverTrigger } from '@ecomm/ui/popover';
 
 export function CategorySelectSkeleton() {
   return (

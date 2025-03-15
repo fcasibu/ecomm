@@ -1,7 +1,7 @@
-import { logger } from "@ecomm/lib/logger";
-import { ConstraintError } from "./errors/constraint-error";
-import { DuplicateError } from "./errors/duplicate-error";
-import { NotFoundError } from "./errors/not-found-error";
+import { logger } from '@ecomm/lib/logger';
+import { ConstraintError } from './errors/constraint-error';
+import { DuplicateError } from './errors/duplicate-error';
+import { NotFoundError } from './errors/not-found-error';
 
 export interface ErrorOptions {
   message?: string;
@@ -18,22 +18,22 @@ export class BaseController {
     };
 
     switch (prismaError?.code) {
-      case "P2025": {
+      case 'P2025': {
         logger.error({ error }, options?.notFoundMessage);
         throw new NotFoundError(
-          options?.notFoundMessage ?? "Resource not found",
+          options?.notFoundMessage ?? 'Resource not found',
         );
       }
-      case "P2002": {
-        const target = prismaError.meta?.target?.join(", ") ?? "";
+      case 'P2002': {
+        const target = prismaError.meta?.target?.join(', ') ?? '';
         const message =
           options?.duplicateMessage ?? `Duplicate entry for ${target}`;
         logger.error({ error }, message);
         throw new DuplicateError(message);
       }
-      case "P2003": {
+      case 'P2003': {
         const message =
-          options?.constraintMessage ?? "Operation violates constraints";
+          options?.constraintMessage ?? 'Operation violates constraints';
         logger.error({ error }, message);
         throw new ConstraintError(message);
       }

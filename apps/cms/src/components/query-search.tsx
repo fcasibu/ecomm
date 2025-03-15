@@ -1,18 +1,18 @@
-"use client";
+'use client';
 
-import { Button } from "@ecomm/ui/button";
-import { Loader, X } from "lucide-react";
-import { useQueryState } from "nuqs";
-import { Input } from "@ecomm/ui/input";
-import { useRef, useTransition } from "react";
+import { Button } from '@ecomm/ui/button';
+import { Loader, X } from 'lucide-react';
+import { useQueryState } from 'nuqs';
+import { Input } from '@ecomm/ui/input';
+import { useRef, useTransition } from 'react';
 
-export function QuerySearch({ label = "Search" }: { label?: string }) {
-  const [query, setQuery] = useQueryState("q", {
-    defaultValue: "",
+export function QuerySearch({ label = 'Search' }: { label?: string }) {
+  const [query, setQuery] = useQueryState('q', {
+    defaultValue: '',
   });
 
-  const [_, setPage] = useQueryState("page", {
-    defaultValue: "1",
+  const [_, setPage] = useQueryState('page', {
+    defaultValue: '1',
     shallow: false,
   });
 
@@ -27,7 +27,7 @@ export function QuerySearch({ label = "Search" }: { label?: string }) {
         e.stopPropagation();
 
         startTransition(async () => {
-          await setPage("1");
+          await setPage('1');
           hasSearched.current = true;
         });
       }}
@@ -37,18 +37,18 @@ export function QuerySearch({ label = "Search" }: { label?: string }) {
           aria-label={label}
           type="text"
           placeholder={label}
-          value={query || ""}
+          value={query || ''}
           onChange={(e) => {
             setQuery(e.target.value);
 
             if (hasSearched.current && !e.target.value.length) {
               startTransition(async () => {
-                await setPage("1");
+                await setPage('1');
                 hasSearched.current = false;
               });
             }
           }}
-          className="pr-12 py-2 focus:ring-2 focus:ring-primary"
+          className="focus:ring-primary py-2 pr-12 focus:ring-2"
         />
 
         <Button
@@ -60,19 +60,19 @@ export function QuerySearch({ label = "Search" }: { label?: string }) {
           className="absolute right-2 top-1/2 -translate-y-1/2 p-1"
           onClick={() => {
             if (!hasSearched.current) {
-              setQuery("");
+              setQuery('');
 
               return;
             }
 
             startTransition(async () => {
-              await setQuery("");
-              await setPage("1");
+              await setQuery('');
+              await setPage('1');
               hasSearched.current = false;
             });
           }}
         >
-          <X className="h-4 w-4 text-muted-foreground" />
+          <X className="text-muted-foreground h-4 w-4" />
         </Button>
       </div>
       <Button
@@ -80,7 +80,7 @@ export function QuerySearch({ label = "Search" }: { label?: string }) {
         disabled={isPending || !query}
         className="min-w-[120px]"
       >
-        {isPending ? <Loader className="animate-spin" size={16} /> : "Search"}
+        {isPending ? <Loader className="animate-spin" size={16} /> : 'Search'}
       </Button>
     </form>
   );

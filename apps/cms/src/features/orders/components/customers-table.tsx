@@ -1,21 +1,21 @@
-import "client-only";
-import { Card, CardHeader, CardTitle, CardContent } from "@ecomm/ui/card";
-import { Button } from "@ecomm/ui/button";
+import 'client-only';
+import { Card, CardHeader, CardTitle, CardContent } from '@ecomm/ui/card';
+import { Button } from '@ecomm/ui/button';
 import {
   FormControl,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
-} from "@ecomm/ui/form";
+} from '@ecomm/ui/form';
 import {
   Select,
   SelectTrigger,
   SelectContent,
   SelectItem,
   SelectValue,
-} from "@ecomm/ui/select";
-import type { CustomerDTO } from "@ecomm/services/customers/customer-dto";
+} from '@ecomm/ui/select';
+import type { CustomerDTO } from '@ecomm/services/customers/customer-dto';
 import {
   Table,
   TableBody,
@@ -23,13 +23,13 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@ecomm/ui/table";
-import { Minus } from "lucide-react";
-import { useFormContext } from "react-hook-form";
-import type { OrderCreateInput } from "@ecomm/validations/cms/orders/orders-schema";
-import { toast } from "@ecomm/ui/hooks/use-toast";
-import { Heading, Text } from "@ecomm/ui/typography";
-import { format } from "date-fns";
+} from '@ecomm/ui/table';
+import { Minus } from 'lucide-react';
+import { useFormContext } from 'react-hook-form';
+import type { OrderCreateInput } from '@ecomm/validations/cms/orders/orders-schema';
+import { toast } from '@ecomm/ui/hooks/use-toast';
+import { Heading, Text } from '@ecomm/ui/typography';
+import { format } from 'date-fns';
 
 export function CustomersTable({
   customers,
@@ -49,7 +49,7 @@ export function CustomersTable({
       <CustomerAddressSelect
         customer={customer}
         onChangeCustomer={() => {
-          onChange("");
+          onChange('');
         }}
       />
     );
@@ -70,18 +70,18 @@ export function CustomersTable({
       <TableBody>
         {customers.map((customer) => {
           const shippingAddresses = customer.addresses.filter(
-            (address) => address.type === "SHIPPING",
+            (address) => address.type === 'SHIPPING',
           );
           const billingAddresses = customer.addresses.filter(
-            (address) => address.type === "BILLING",
+            (address) => address.type === 'BILLING',
           );
 
           const showToastForMissingAddress = () => {
             toast({
-              title: "Missing address",
+              title: 'Missing address',
               description:
-                "The customer you have selected does not have the required addresses. The customer need to have at least one shipping and one billing address.",
-              variant: "destructive",
+                'The customer you have selected does not have the required addresses. The customer need to have at least one shipping and one billing address.',
+              variant: 'destructive',
             });
           };
 
@@ -95,21 +95,21 @@ export function CustomersTable({
                   return;
                 }
 
-                formContext.clearErrors("shippingAddressId");
-                formContext.clearErrors("billingAddressId");
+                formContext.clearErrors('shippingAddressId');
+                formContext.clearErrors('billingAddressId');
 
                 onChange(customer.id);
                 formContext.setValue(
-                  "shippingAddressId",
+                  'shippingAddressId',
                   shippingAddresses[0]!.id,
                 );
                 formContext.setValue(
-                  "billingAddressId",
+                  'billingAddressId',
                   billingAddresses[0]!.id,
                 );
               }}
               onKeyDown={(e) => {
-                if (e.key === "Enter" || e.key === " ") {
+                if (e.key === 'Enter' || e.key === ' ') {
                   if (!shippingAddresses.length || !billingAddresses.length) {
                     showToastForMissingAddress();
                     return;
@@ -117,11 +117,11 @@ export function CustomersTable({
 
                   onChange(customer.id);
                   formContext.setValue(
-                    "shippingAddressId",
+                    'shippingAddressId',
                     shippingAddresses[0]!.id,
                   );
                   formContext.setValue(
-                    "billingAddressId",
+                    'billingAddressId',
                     billingAddresses[0]!.id,
                   );
                 }
@@ -135,8 +135,8 @@ export function CustomersTable({
               <TableCell>{customer.firstName || <Minus />}</TableCell>
               <TableCell>{customer.lastName || <Minus />}</TableCell>
               <TableCell>{customer.email}</TableCell>
-              <TableCell>{format(customer.createdAt, "MM/dd/yyyy")}</TableCell>
-              <TableCell>{format(customer.updatedAt, "MM/dd/yyyy")}</TableCell>
+              <TableCell>{format(customer.createdAt, 'MM/dd/yyyy')}</TableCell>
+              <TableCell>{format(customer.updatedAt, 'MM/dd/yyyy')}</TableCell>
             </TableRow>
           );
         })}
@@ -155,14 +155,14 @@ export const CustomerAddressSelect = ({
   onChangeCustomer,
 }: CustomerAddressSelectorProps) => {
   const formContext = useFormContext<OrderCreateInput>();
-  const shippingAddressId = formContext.watch("shippingAddressId");
-  const billingAddressId = formContext.watch("billingAddressId");
+  const shippingAddressId = formContext.watch('shippingAddressId');
+  const billingAddressId = formContext.watch('billingAddressId');
 
   const shippingAddresses = customer.addresses.filter(
-    (address) => address.type === "SHIPPING",
+    (address) => address.type === 'SHIPPING',
   );
   const billingAddresses = customer.addresses.filter(
-    (address) => address.type === "BILLING",
+    (address) => address.type === 'BILLING',
   );
 
   const selectedShippingAddress = shippingAddressId
@@ -174,14 +174,14 @@ export const CustomerAddressSelect = ({
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-center">
+      <div className="flex items-center justify-between">
         <Heading as="h3">Customer Addresses</Heading>
         <Button variant="outline" onClick={onChangeCustomer}>
           Change Customer
         </Button>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
         <Card>
           <CardHeader>
             <CardTitle>Shipping Address</CardTitle>
@@ -190,10 +190,10 @@ export const CustomerAddressSelect = ({
             {selectedShippingAddress ? (
               <div className="space-y-4">
                 <Text size="sm">
-                  {selectedShippingAddress.street},{" "}
-                  {selectedShippingAddress.city},{" "}
-                  {selectedShippingAddress.state}{" "}
-                  {selectedShippingAddress.postalCode},{" "}
+                  {selectedShippingAddress.street},{' '}
+                  {selectedShippingAddress.city},{' '}
+                  {selectedShippingAddress.state}{' '}
+                  {selectedShippingAddress.postalCode},{' '}
                   {selectedShippingAddress.country}
                 </Text>
                 <FormField
@@ -241,8 +241,8 @@ export const CustomerAddressSelect = ({
               <div className="space-y-4">
                 <Text size="sm">
                   {selectedBillingAddress.street}, {selectedBillingAddress.city}
-                  , {selectedBillingAddress.state}{" "}
-                  {selectedBillingAddress.postalCode},{" "}
+                  , {selectedBillingAddress.state}{' '}
+                  {selectedBillingAddress.postalCode},{' '}
                   {selectedBillingAddress.country}
                 </Text>
                 <FormField

@@ -1,13 +1,13 @@
-import type { StoreService } from "./store-service";
-import { ValidationError } from "../errors/validation-error";
-import { BaseController } from "../base-controller";
-import { logger } from "@ecomm/lib/logger";
+import type { StoreService } from './store-service';
+import { ValidationError } from '../errors/validation-error';
+import { BaseController } from '../base-controller';
+import { logger } from '@ecomm/lib/logger';
 import {
   storeCreateSchema,
   type StoreCreateInput,
-} from "@ecomm/validations/cms/store/store-schema";
-import { StoreTransformer } from "./store-transformer";
-import type { StoreDTO } from "./store-dto";
+} from '@ecomm/validations/cms/store/store-schema';
+import { StoreTransformer } from './store-transformer';
+import type { StoreDTO } from './store-dto';
 
 export class StoreController extends BaseController {
   private readonly transformer = new StoreTransformer();
@@ -18,7 +18,7 @@ export class StoreController extends BaseController {
 
   public async create(input: StoreCreateInput) {
     try {
-      logger.info({ input }, "Creating a new store");
+      logger.info({ input }, 'Creating a new store');
 
       const result = storeCreateSchema.safeParse(input);
 
@@ -28,35 +28,35 @@ export class StoreController extends BaseController {
         await this.storeService.create(result.data),
       );
       if (!store) {
-        throw new Error("Store not found");
+        throw new Error('Store not found');
       }
 
-      logger.info({ storeId: store.id }, "Store successfully created");
+      logger.info({ storeId: store.id }, 'Store successfully created');
       return store;
     } catch (error) {
       this.logAndThrowError(error, {
-        message: "Error creating store",
+        message: 'Error creating store',
       });
     }
   }
 
   public async getByLocale(locale: string) {
     try {
-      logger.info({ locale }, "Fetching store");
+      logger.info({ locale }, 'Fetching store');
 
       const store = this.transformer.toDTO(
         await this.storeService.getByLocale(locale),
       );
 
       if (!store) {
-        throw new Error("Store not found");
+        throw new Error('Store not found');
       }
 
-      logger.info({ storeId: store.id }, "Fetched store");
+      logger.info({ storeId: store.id }, 'Fetched store');
       return store;
     } catch (error) {
       this.logAndThrowError(error, {
-        message: "Error fetching store",
+        message: 'Error fetching store',
       });
     }
   }
@@ -66,7 +66,7 @@ export class StoreController extends BaseController {
     query?: string;
     pageSize?: number;
   }) {
-    logger.info({ input }, "Fetching all stores");
+    logger.info({ input }, 'Fetching all stores');
 
     try {
       const result = await this.storeService.getAll(input);
@@ -90,23 +90,23 @@ export class StoreController extends BaseController {
           currentPage: response.currentPage,
           pageSize: response.pageSize,
         },
-        "Store fetched successfully",
+        'Store fetched successfully',
       );
 
       return response;
     } catch (error) {
       this.logAndThrowError(error, {
-        message: "Error fetching all stores",
+        message: 'Error fetching all stores',
       });
     }
   }
 
   public async delete(storeId: string) {
-    logger.info({ storeId }, "Deleting store");
+    logger.info({ storeId }, 'Deleting store');
 
     try {
       const result = await this.storeService.delete(storeId);
-      logger.info({ storeId }, "Store deleted successfully");
+      logger.info({ storeId }, 'Store deleted successfully');
 
       return { success: true, locale: result.locale };
     } catch (error) {

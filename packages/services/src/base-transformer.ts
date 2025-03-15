@@ -7,6 +7,6 @@ export class BaseTransformer {
       return parsed.toISOString();
     }
 
-    return "";
+    return '';
   }
 }

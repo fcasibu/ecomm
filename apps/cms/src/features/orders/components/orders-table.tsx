@@ -1,16 +1,16 @@
-import { Heading } from "@ecomm/ui/typography";
-import { QueryPagination } from "@/components/query-pagination";
-import { ORDERS_PAGE_SIZE } from "@/lib/constants";
-import { getOrders } from "../services/queries";
-import { OrdersTableClient } from "./orders-table-client";
-import { getCookieCurrentLocale } from "@/lib/get-cookie-current-locale";
+import { Heading } from '@ecomm/ui/typography';
+import { QueryPagination } from '@/components/query-pagination';
+import { ORDERS_PAGE_SIZE } from '@/lib/constants';
+import { getOrders } from '../services/queries';
+import { OrdersTableClient } from './orders-table-client';
+import { getCookieCurrentLocale } from '@/lib/get-cookie-current-locale';
 
 export async function OrdersTable({
   searchParams,
 }: {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
-  const where = searchParams.then((sp) => Number(sp.page || "1"));
+  const where = searchParams.then((sp) => Number(sp.page || '1'));
   const page = await where;
 
   const locale = await getCookieCurrentLocale();

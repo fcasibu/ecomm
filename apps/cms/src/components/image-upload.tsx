@@ -1,17 +1,17 @@
-"use client";
+'use client';
 
-import type React from "react";
+import type React from 'react';
 
-import { useId, useTransition } from "react";
-import { Button } from "@ecomm/ui/button";
-import { Input } from "@ecomm/ui/input";
-import { toast } from "@ecomm/ui/hooks/use-toast";
-import { uploadImage } from "@/features/image/services/mutations";
-import { ImageComponent } from "@ecomm/ui/image";
-import { X } from "lucide-react";
+import { useId, useTransition } from 'react';
+import { Button } from '@ecomm/ui/button';
+import { Input } from '@ecomm/ui/input';
+import { toast } from '@ecomm/ui/hooks/use-toast';
+import { uploadImage } from '@/features/image/services/mutations';
+import { ImageComponent } from '@ecomm/ui/image';
+import { X } from 'lucide-react';
 
 interface ImageUploadProps
-  extends Omit<React.ComponentProps<"input">, "onChange" | "value"> {
+  extends Omit<React.ComponentProps<'input'>, 'onChange' | 'value'> {
   value?: string | string[] | undefined;
   onUpload: (value: string) => void;
   onRemove?: (value: string) => void;
@@ -20,20 +20,20 @@ interface ImageUploadProps
 const readFileAsDataURL = (file: File): Promise<string> => {
   return new Promise((resolve, reject) => {
     if (!(file instanceof File)) {
-      return reject(new Error("Invalid file provided"));
+      return reject(new Error('Invalid file provided'));
     }
 
     const reader = new FileReader();
 
     reader.onload = () => {
-      if (typeof reader.result === "string") {
+      if (typeof reader.result === 'string') {
         resolve(reader.result);
       } else {
-        reject(new Error("Failed to read file as Data URL"));
+        reject(new Error('Failed to read file as Data URL'));
       }
     };
 
-    reader.onerror = () => reject(new Error("File reading error"));
+    reader.onerror = () => reject(new Error('File reading error'));
 
     try {
       reader.readAsDataURL(file);
@@ -61,38 +61,38 @@ export function ImageUpload({
 
       const result = await uploadImage(
         dataURL,
-        file.name.replace(/\.[^/.]+$/, "").toLowerCase(),
+        file.name.replace(/\.[^/.]+$/, '').toLowerCase(),
       );
 
       if (!result.success) {
         switch (result.error.code) {
-          case "INVALID_IMAGE_FORMAT":
+          case 'INVALID_IMAGE_FORMAT':
             toast({
-              title: "Error",
-              description: "Invalid image format. Please try again.",
-              variant: "destructive",
+              title: 'Error',
+              description: 'Invalid image format. Please try again.',
+              variant: 'destructive',
             });
             break;
-          case "IMAGE_UPLOAD_ERROR":
+          case 'IMAGE_UPLOAD_ERROR':
             toast({
-              title: "Error",
-              description: "Failed to upload image. Please try again.",
-              variant: "destructive",
+              title: 'Error',
+              description: 'Failed to upload image. Please try again.',
+              variant: 'destructive',
             });
             break;
           default:
             toast({
-              title: "Error",
-              description: "An unexpected error occurred. Please try again.",
-              variant: "destructive",
+              title: 'Error',
+              description: 'An unexpected error occurred. Please try again.',
+              variant: 'destructive',
             });
         }
         return;
       }
 
       toast({
-        title: "Success",
-        description: "Image uploaded successfully",
+        title: 'Success',
+        description: 'Image uploaded successfully',
       });
 
       onUpload(result.data);
@@ -101,7 +101,7 @@ export function ImageUpload({
 
   return (
     <div>
-      <div className="flex flex-wrap gap-2 mb-2">
+      <div className="mb-2 flex flex-wrap gap-2">
         {value &&
           Array.isArray(value) &&
           value.map((image, index) => (
@@ -109,7 +109,7 @@ export function ImageUpload({
               <ImageComponent
                 src={image}
                 alt={`Uploaded image ${index}`}
-                className="object-cover rounded aspect-square"
+                className="aspect-square rounded object-cover"
                 width={100}
                 height={100}
                 quality={50}
@@ -117,7 +117,7 @@ export function ImageUpload({
               {onRemove && (
                 <Button
                   aria-label="Remove image"
-                  className="absolute top-0 right-2 p-0"
+                  className="absolute right-2 top-0 p-0"
                   onClick={() => onRemove(image)}
                   variant="none"
                 >
@@ -130,7 +130,7 @@ export function ImageUpload({
           <ImageComponent
             src={value}
             alt="Uploaded image"
-            className="object-cover rounded aspect-square"
+            className="aspect-square rounded object-cover"
             width={100}
             height={100}
             quality={50}
@@ -151,7 +151,7 @@ export function ImageUpload({
           onClick={() => document.getElementById(props.id || id)?.click()}
           disabled={isPending}
         >
-          {isPending ? "Uploading..." : "Upload"}
+          {isPending ? 'Uploading...' : 'Upload'}
         </Button>
       </div>
     </div>

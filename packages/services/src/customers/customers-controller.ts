@@ -1,16 +1,16 @@
-import type { CustomersService } from "./customers-service";
-import { ValidationError } from "../errors/validation-error";
-import { BaseController } from "../base-controller";
-import { logger } from "@ecomm/lib/logger";
-import { NotFoundError } from "../errors/not-found-error";
+import type { CustomersService } from './customers-service';
+import { ValidationError } from '../errors/validation-error';
+import { BaseController } from '../base-controller';
+import { logger } from '@ecomm/lib/logger';
+import { NotFoundError } from '../errors/not-found-error';
 import {
   customerCreateSchema,
   customerUpdateSchema,
   type CustomerCreateInput,
   type CustomerUpdateInput,
-} from "@ecomm/validations/cms/customers/customers-schema";
-import type { CustomerDTO } from "./customer-dto";
-import { CustomerTransformer } from "./customer-transformer";
+} from '@ecomm/validations/cms/customers/customers-schema';
+import type { CustomerDTO } from './customer-dto';
+import { CustomerTransformer } from './customer-transformer';
 
 export class CustomersController extends BaseController {
   private readonly transformer = new CustomerTransformer();
@@ -21,7 +21,7 @@ export class CustomersController extends BaseController {
 
   public async create(locale: string, input: CustomerCreateInput) {
     try {
-      logger.info({ input }, "Creating a new customer");
+      logger.info({ input }, 'Creating a new customer');
       const result = customerCreateSchema.safeParse(input);
 
       if (!result.success) throw new ValidationError(result.error);
@@ -31,15 +31,15 @@ export class CustomersController extends BaseController {
       );
 
       if (!customer) {
-        throw new NotFoundError("Customer not found.");
+        throw new NotFoundError('Customer not found.');
       }
 
-      logger.info({ customerId: customer.id }, "Customer successfully created");
+      logger.info({ customerId: customer.id }, 'Customer successfully created');
 
       return customer;
     } catch (error) {
       this.logAndThrowError(error, {
-        message: "Error creating customer",
+        message: 'Error creating customer',
       });
     }
   }
@@ -50,7 +50,7 @@ export class CustomersController extends BaseController {
     input: CustomerUpdateInput,
   ) {
     try {
-      logger.info({ customerId, input }, "Updating customer");
+      logger.info({ customerId, input }, 'Updating customer');
       const result = customerUpdateSchema.safeParse(input);
 
       if (!result.success) {
@@ -66,7 +66,7 @@ export class CustomersController extends BaseController {
 
       logger.info(
         { customerId: updatedCustomer.id },
-        "Customer updated successfully",
+        'Customer updated successfully',
       );
       return updatedCustomer;
     } catch (error) {
@@ -78,11 +78,11 @@ export class CustomersController extends BaseController {
   }
 
   public async delete(locale: string, customerId: string) {
-    logger.info({ customerId }, "Deleting customer");
+    logger.info({ customerId }, 'Deleting customer');
 
     try {
       await this.customersService.delete(locale, customerId);
-      logger.info({ customerId }, "Customer deleted successfully");
+      logger.info({ customerId }, 'Customer deleted successfully');
 
       return { success: true };
     } catch (error) {
@@ -94,7 +94,7 @@ export class CustomersController extends BaseController {
 
   public async getById(locale: string, id: string) {
     try {
-      logger.info({ id }, "Fetching customer");
+      logger.info({ id }, 'Fetching customer');
 
       const customer = this.transformer.toDTO(
         await this.customersService.getById(locale, id),
@@ -104,12 +104,12 @@ export class CustomersController extends BaseController {
         throw new NotFoundError(`Customer ID "${id}" not found.`);
       }
 
-      logger.info({ customerId: customer.id }, "Fetched customer");
+      logger.info({ customerId: customer.id }, 'Fetched customer');
 
       return customer;
     } catch (error) {
       this.logAndThrowError(error, {
-        message: "Error fetching customer",
+        message: 'Error fetching customer',
       });
     }
   }
@@ -122,7 +122,7 @@ export class CustomersController extends BaseController {
       pageSize?: number;
     },
   ) {
-    logger.info({ input }, "Fetching all customers");
+    logger.info({ input }, 'Fetching all customers');
 
     try {
       const result = await this.customersService.getAll(locale, input);
@@ -146,13 +146,13 @@ export class CustomersController extends BaseController {
           currentPage: response.currentPage,
           pageSize: response.pageSize,
         },
-        "Customers fetched successfully",
+        'Customers fetched successfully',
       );
 
       return response;
     } catch (error) {
       this.logAndThrowError(error, {
-        message: "Error fetching all customers",
+        message: 'Error fetching all customers',
       });
     }
   }

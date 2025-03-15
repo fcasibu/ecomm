@@ -1,9 +1,9 @@
-import { Heading } from "@ecomm/ui/typography";
-import { QueryPagination } from "@/components/query-pagination";
-import { CustomersTableClient } from "./customers-table-client";
-import { getCustomers } from "../services/queries";
-import { CUSTOMERS_PAGE_SIZE } from "@/lib/constants";
-import { getCookieCurrentLocale } from "@/lib/get-cookie-current-locale";
+import { Heading } from '@ecomm/ui/typography';
+import { QueryPagination } from '@/components/query-pagination';
+import { CustomersTableClient } from './customers-table-client';
+import { getCustomers } from '../services/queries';
+import { CUSTOMERS_PAGE_SIZE } from '@/lib/constants';
+import { getCookieCurrentLocale } from '@/lib/get-cookie-current-locale';
 
 export async function CustomersTable({
   searchParams,
@@ -11,10 +11,10 @@ export async function CustomersTable({
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
   const where = searchParams.then((sp) => ({
-    page: Number(sp.page || "1"),
-    query: (sp.q as string) ?? "",
+    page: Number(sp.page || '1'),
+    query: (sp.q as string) ?? '',
   }));
-  const { query = "", page = 1 } = await where;
+  const { query = '', page = 1 } = await where;
 
   const locale = await getCookieCurrentLocale();
   const result = await getCustomers(locale, {

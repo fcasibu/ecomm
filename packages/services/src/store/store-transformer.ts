@@ -1,6 +1,6 @@
-import { BaseTransformer } from "../base-transformer";
-import type { StoreDTO } from "./store-dto";
-import type { Store } from "@ecomm/db";
+import { BaseTransformer } from '../base-transformer';
+import type { StoreDTO } from './store-dto';
+import type { Store } from '@ecomm/db';
 
 export class StoreTransformer extends BaseTransformer {
   public toDTO(store: Store | null | undefined): StoreDTO | null {

@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import { Fragment, Suspense, use, useState } from "react";
+import { Fragment, Suspense, use, useState } from 'react';
 import {
   Pagination,
   PaginationContent,
@@ -8,9 +8,9 @@ import {
   PaginationItem,
   PaginationNext,
   PaginationPrevious,
-} from "@ecomm/ui/pagination";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Button } from "@ecomm/ui/button";
+} from '@ecomm/ui/pagination';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { Button } from '@ecomm/ui/button';
 import {
   Form,
   FormControl,
@@ -18,37 +18,37 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@ecomm/ui/form";
+} from '@ecomm/ui/form';
 import {
   Breadcrumb,
   BreadcrumbItem,
   BreadcrumbList,
   BreadcrumbLink,
   BreadcrumbSeparator,
-} from "@ecomm/ui/breadcrumb";
-import { Input } from "@ecomm/ui/input";
-import { categoryUpdateSchema } from "@ecomm/validations/cms/categories/category-schema";
-import { useForm } from "react-hook-form";
-import type { z } from "zod";
-import { slugify } from "@ecomm/ui/lib/utils";
+} from '@ecomm/ui/breadcrumb';
+import { Input } from '@ecomm/ui/input';
+import { categoryUpdateSchema } from '@ecomm/validations/cms/categories/category-schema';
+import { useForm } from 'react-hook-form';
+import type { z } from 'zod';
+import { slugify } from '@ecomm/ui/lib/utils';
 import {
   deleteCategoryById,
   updateCategoryById,
-} from "@/features/categories/services/mutations";
-import { toast } from "@ecomm/ui/hooks/use-toast";
-import { useTransition } from "react";
-import { useRouter } from "next/navigation";
-import { Text, Heading } from "@ecomm/ui/typography";
-import { ImageIcon, Loader, Package, Tag } from "lucide-react";
-import { Card, CardContent } from "@ecomm/ui/card";
-import { Badge } from "@ecomm/ui/badge";
-import type { CategoryDTO } from "@ecomm/services/categories/category-dto";
-import Link from "next/link";
-import { formatPrice } from "@ecomm/lib/format-price";
-import type { Result } from "@ecomm/lib/execute-operation";
-import { Skeleton } from "@ecomm/ui/skeleton";
-import { ImageUpload } from "@/components/image-upload";
-import { useStore } from "@/features/store/providers/store-provider";
+} from '@/features/categories/services/mutations';
+import { toast } from '@ecomm/ui/hooks/use-toast';
+import { useTransition } from 'react';
+import { useRouter } from 'next/navigation';
+import { Text, Heading } from '@ecomm/ui/typography';
+import { ImageIcon, Loader, Package, Tag } from 'lucide-react';
+import { Card, CardContent } from '@ecomm/ui/card';
+import { Badge } from '@ecomm/ui/badge';
+import type { CategoryDTO } from '@ecomm/services/categories/category-dto';
+import Link from 'next/link';
+import { formatPrice } from '@ecomm/lib/format-price';
+import type { Result } from '@ecomm/lib/execute-operation';
+import { Skeleton } from '@ecomm/ui/skeleton';
+import { ImageUpload } from '@/components/image-upload';
+import { useStore } from '@/features/store/providers/store-provider';
 
 export function CategoryUpdateForm({
   category,
@@ -59,7 +59,7 @@ export function CategoryUpdateForm({
     Result<{ id: string; name: string; slug: string }[]>
   >;
 }) {
-  "use no memo";
+  'use no memo';
 
   const store = useStore();
   const form = useForm<z.infer<typeof categoryUpdateSchema>>({
@@ -67,8 +67,8 @@ export function CategoryUpdateForm({
     defaultValues: {
       name: category.name,
       slug: category.slug,
-      description: category.description ?? "",
-      image: category.image ?? "",
+      description: category.description ?? '',
+      image: category.image ?? '',
     },
   });
 
@@ -81,9 +81,9 @@ export function CategoryUpdateForm({
 
       if (!result.success) {
         switch (result.error.code) {
-          case "DUPLICATE_ERROR": {
+          case 'DUPLICATE_ERROR': {
             toast({
-              title: "Category update",
+              title: 'Category update',
               description: (
                 <Text>
                   Category with the slug <b>{data.slug}</b> already exists.
@@ -95,8 +95,8 @@ export function CategoryUpdateForm({
 
           default: {
             toast({
-              title: "Category update",
-              description: "There was an issue with updating the Category",
+              title: 'Category update',
+              description: 'There was an issue with updating the Category',
             });
           }
         }
@@ -105,8 +105,8 @@ export function CategoryUpdateForm({
       }
 
       toast({
-        title: "Category update",
-        description: "Category was successfully updated",
+        title: 'Category update',
+        description: 'Category was successfully updated',
       });
     });
   };
@@ -116,9 +116,9 @@ export function CategoryUpdateForm({
       const result = await deleteCategoryById(store.locale, category.id);
 
       if (!result.success) {
-        if (result.error.code === "CONSTRAINT_ERROR") {
+        if (result.error.code === 'CONSTRAINT_ERROR') {
           toast({
-            title: "Category deletion",
+            title: 'Category deletion',
             description: result.error.message,
           });
         }
@@ -126,12 +126,12 @@ export function CategoryUpdateForm({
         return;
       }
 
-      router.push("/categories");
+      router.push('/categories');
     });
   };
 
   return (
-    <div className="max-w-4xl mx-auto p-8 space-y-8">
+    <div className="mx-auto max-w-4xl space-y-8 p-8">
       <Heading as="h1">Update Category</Heading>
       <Suspense fallback={<CategoryPathBreadcrumbSkeleton />}>
         <CategoryPathBreadcrumb
@@ -152,7 +152,7 @@ export function CategoryUpdateForm({
                     {...field}
                     onChange={(e) => {
                       field.onChange(e);
-                      form.setValue("slug", slugify(e.target.value));
+                      form.setValue('slug', slugify(e.target.value));
                     }}
                   />
                 </FormControl>
@@ -207,7 +207,7 @@ export function CategoryUpdateForm({
               variant="outline"
               type="button"
               disabled={isPending}
-              onClick={() => router.push("/categories")}
+              onClick={() => router.push('/categories')}
             >
               Cancel
             </Button>
@@ -221,7 +221,7 @@ export function CategoryUpdateForm({
               {isPending ? (
                 <Loader className="animate-spin" size={16} />
               ) : (
-                "Delete"
+                'Delete'
               )}
             </Button>
             <Button
@@ -232,7 +232,7 @@ export function CategoryUpdateForm({
               {isPending ? (
                 <Loader className="animate-spin" size={16} />
               ) : (
-                "Save"
+                'Save'
               )}
             </Button>
           </div>
@@ -299,51 +299,51 @@ function CategoryPathBreadcrumb({
 function SubCategories({
   subCategories,
 }: {
-  subCategories: CategoryDTO["children"];
+  subCategories: CategoryDTO['children'];
 }) {
   if (!subCategories.length) return null;
 
   return (
     <div>
       <Heading as="h2">Subcategories</Heading>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
+      <div className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
         {subCategories.map((category) => (
           <Link
             key={category.id}
             aria-label={`Go to ${category.name}`}
             href={`/categories/${category.id}`}
           >
-            <Card className="overflow-hidden transition-all hover:shadow-md flex flex-col h-full">
+            <Card className="flex h-full flex-col overflow-hidden transition-all hover:shadow-md">
               <div className="relative">
                 {category.image ? (
-                  <div className="h-32 bg-gray-100 w-full">
+                  <div className="h-32 w-full bg-gray-100">
                     <img
                       src={category.image}
                       alt={category.name}
-                      className="w-full h-full object-cover"
+                      className="h-full w-full object-cover"
                     />
                   </div>
                 ) : (
-                  <div className="flex items-center justify-center h-32 bg-slate-100">
+                  <div className="flex h-32 items-center justify-center bg-slate-100">
                     <ImageIcon className="h-10 w-10 text-slate-400" />
                   </div>
                 )}
               </div>
 
-              <CardContent className="p-4 flex flex-col flex-grow">
+              <CardContent className="flex flex-grow flex-col p-4">
                 <div>
-                  <div className="mb-2 font-semibold text-lg truncate">
+                  <div className="mb-2 truncate text-lg font-semibold">
                     {category.name}
                   </div>
 
                   {category.description && (
-                    <Text className="text-gray-500 line-clamp-2">
+                    <Text className="line-clamp-2 text-gray-500">
                       {category.description}
                     </Text>
                   )}
                 </div>
 
-                <div className="flex justify-between items-center mt-auto pt-4">
+                <div className="mt-auto flex items-center justify-between pt-4">
                   <Badge variant="outline" className="text-xs">
                     {category.updatedAt}
                   </Badge>
@@ -360,7 +360,7 @@ function SubCategories({
 const MAX_ITEMS_PER_PAGE = 12;
 const TOTAL_PAGE_NUMBERS = 5;
 
-function Products({ products }: { products: CategoryDTO["products"] }) {
+function Products({ products }: { products: CategoryDTO['products'] }) {
   const [currentPage, setCurrentPage] = useState(1);
   const store = useStore();
 
@@ -433,7 +433,7 @@ function Products({ products }: { products: CategoryDTO["products"] }) {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         {currentProducts.map((product) => {
           const variant = product.variants[0];
 
@@ -443,23 +443,23 @@ function Products({ products }: { products: CategoryDTO["products"] }) {
               aria-label={`Go to ${product.name}`}
               href={`/products/${product.id}`}
             >
-              <Card className="overflow-hidden transition-all hover:shadow-md flex flex-col h-full">
+              <Card className="flex h-full flex-col overflow-hidden transition-all hover:shadow-md">
                 <div className="relative">
                   {variant?.images.length ? (
-                    <div className="h-40 bg-gray-100 w-full">
+                    <div className="h-40 w-full bg-gray-100">
                       <img
                         src={variant.images[0]}
                         alt={product.name}
-                        className="w-full h-full object-cover"
+                        className="h-full w-full object-cover"
                       />
                     </div>
                   ) : (
-                    <div className="flex items-center justify-center h-40 bg-slate-100">
+                    <div className="flex h-40 items-center justify-center bg-slate-100">
                       <ImageIcon className="h-10 w-10 text-slate-400" />
                     </div>
                   )}
 
-                  <div className="absolute top-2 right-2 flex flex-col gap-1">
+                  <div className="absolute right-2 top-2 flex flex-col gap-1">
                     <Badge className="bg-white text-slate-800">
                       <Tag className="mr-1 h-3 w-3" />
                       {variant?.price &&
@@ -468,20 +468,20 @@ function Products({ products }: { products: CategoryDTO["products"] }) {
 
                     {variant?.stock && (
                       <Badge
-                        className={`${variant.stock > 10 ? "bg-green-100 text-green-800" : variant.stock > 0 ? "bg-amber-100 text-amber-800" : "bg-red-100 text-red-800"}`}
+                        className={`${variant.stock > 10 ? 'bg-green-100 text-green-800' : variant.stock > 0 ? 'bg-amber-100 text-amber-800' : 'bg-red-100 text-red-800'}`}
                       >
                         <Package className="mr-1 h-3 w-3" />
                         {variant.stock > 0
                           ? `${variant.stock} in stock`
-                          : "Out of stock"}
+                          : 'Out of stock'}
                       </Badge>
                     )}
                   </div>
                 </div>
 
-                <CardContent className="p-4 flex flex-col flex-grow">
+                <CardContent className="flex flex-grow flex-col p-4">
                   <div>
-                    <Text size="sm" className="mb-1 font-semibold truncate">
+                    <Text size="sm" className="mb-1 truncate font-semibold">
                       {product.name}
                     </Text>
                     <Text size="xs" className="mb-2 text-slate-500">
@@ -489,7 +489,7 @@ function Products({ products }: { products: CategoryDTO["products"] }) {
                     </Text>
                   </div>
 
-                  <div className="flex justify-between items-center mt-auto pt-4">
+                  <div className="mt-auto flex items-center justify-between pt-4">
                     <Badge variant="outline" className="text-xs">
                       {product.updatedAt}
                     </Badge>
@@ -509,8 +509,8 @@ function Products({ products }: { products: CategoryDTO["products"] }) {
                 onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
                 className={
                   currentPage === 1
-                    ? "pointer-events-none opacity-50"
-                    : "cursor-pointer"
+                    ? 'pointer-events-none opacity-50'
+                    : 'cursor-pointer'
                 }
                 aria-disabled={currentPage <= 1}
               />
@@ -528,10 +528,10 @@ function Products({ products }: { products: CategoryDTO["products"] }) {
               return (
                 <PaginationItem key={pageNumber}>
                   <Button
-                    variant={currentPage === pageNumber ? "default" : "outline"}
+                    variant={currentPage === pageNumber ? 'default' : 'outline'}
                     size="sm"
                     onClick={() => setCurrentPage(pageNumber)}
-                    className="w-8 h-8 p-0"
+                    className="h-8 w-8 p-0"
                   >
                     {pageNumber}
                   </Button>
@@ -546,8 +546,8 @@ function Products({ products }: { products: CategoryDTO["products"] }) {
                 }
                 className={
                   currentPage === totalPages
-                    ? "pointer-events-none opacity-50"
-                    : "cursor-pointer"
+                    ? 'pointer-events-none opacity-50'
+                    : 'cursor-pointer'
                 }
                 aria-disabled={currentPage >= totalPages}
               />

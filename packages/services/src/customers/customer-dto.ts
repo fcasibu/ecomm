@@ -1,6 +1,6 @@
 export interface AddressDTO {
   id: string;
-  type: "BILLING" | "SHIPPING";
+  type: 'BILLING' | 'SHIPPING';
   street: string;
   city: string;
   state: string;

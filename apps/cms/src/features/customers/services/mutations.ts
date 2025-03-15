@@ -1,14 +1,14 @@
-"use server";
+'use server';
 
-import "server-only";
+import 'server-only';
 
-import { executeOperation } from "@ecomm/lib/execute-operation";
-import { customersController } from "@ecomm/services/registry";
+import { executeOperation } from '@ecomm/lib/execute-operation';
+import { customersController } from '@ecomm/services/registry';
 import type {
   CustomerCreateInput,
   CustomerUpdateInput,
-} from "@ecomm/validations/cms/customers/customers-schema";
-import { revalidateTag } from "next/cache";
+} from '@ecomm/validations/cms/customers/customers-schema';
+import { revalidateTag } from 'next/cache';
 
 export const createCustomer = async (
   locale: string,
@@ -19,7 +19,7 @@ export const createCustomer = async (
   );
 
   if (result.success) {
-    revalidateTag("customers");
+    revalidateTag('customers');
   }
 
   return result;
@@ -35,7 +35,7 @@ export const updateCustomerById = async (
   );
 
   if (result.success) {
-    revalidateTag("customers");
+    revalidateTag('customers');
     revalidateTag(`customer_${id}`);
   }
 
@@ -48,7 +48,7 @@ export const deleteCustomerById = async (locale: string, id: string) => {
   );
 
   if (result.success) {
-    revalidateTag("customers");
+    revalidateTag('customers');
   }
 
   return result;

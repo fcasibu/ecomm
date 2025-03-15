@@ -1,4 +1,4 @@
-import type { ProductVariantDTO } from "../products/product-dto";
+import type { ProductVariantDTO } from '../products/product-dto';
 
 export interface CategoryDTO {
   name: string;

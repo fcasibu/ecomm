@@ -1,10 +1,10 @@
-import { PrismaPlugin } from "@prisma/nextjs-monorepo-workaround-plugin";
-import { fileURLToPath } from "node:url";
-import withBundleAnalyzer from "@next/bundle-analyzer";
-import createJiti from "jiti";
+import { PrismaPlugin } from '@prisma/nextjs-monorepo-workaround-plugin';
+import { fileURLToPath } from 'node:url';
+import withBundleAnalyzer from '@next/bundle-analyzer';
+import createJiti from 'jiti';
 const jiti = createJiti(fileURLToPath(import.meta.url));
 
-jiti.import("./src/env.ts");
+jiti.import('./src/env.ts');
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
@@ -27,12 +27,12 @@ const nextConfig = {
   images: {
     remotePatterns: [
       {
-        hostname: "*.cloudinary.com",
+        hostname: '*.cloudinary.com',
       },
     ],
     dangerouslyAllowSVG: true,
   },
-  serverExternalPackages: ["pino"],
+  serverExternalPackages: ['pino'],
   webpack: (config, { isServer }) => {
     if (isServer) {
       config.plugins = [...config.plugins, new PrismaPlugin()];
@@ -43,6 +43,6 @@ const nextConfig = {
 };
 
 // eslint-disable-next-line turbo/no-undeclared-env-vars, no-undef
-export default withBundleAnalyzer({ enabled: process.env.ANALYZE === "true" })(
+export default withBundleAnalyzer({ enabled: process.env.ANALYZE === 'true' })(
   nextConfig,
 );

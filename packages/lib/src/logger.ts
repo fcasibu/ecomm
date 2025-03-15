@@ -1,20 +1,20 @@
-import pino from "pino";
+import pino from 'pino';
 
 export const logger = pino({
-  level: "debug",
+  level: 'debug',
   timestamp: pino.stdTimeFunctions.isoTime,
   serializers: {
     error: pino.stdSerializers.err,
   },
   transport:
-    process.env.NODE_ENV === "production"
+    process.env.NODE_ENV === 'production'
       ? undefined
       : {
-          target: "pino-pretty",
+          target: 'pino-pretty',
           options: {
             colorize: true,
-            translateTime: "SYS:standard",
-            ignore: "pid,hostname",
+            translateTime: 'SYS:standard',
+            ignore: 'pid,hostname',
           },
         },
 });

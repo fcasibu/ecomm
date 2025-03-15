@@ -1,9 +1,9 @@
-import { OrdersTable } from "@/features/orders/components/orders-table";
-import { OrdersTableSkeleton } from "@/features/orders/components/orders-table-skeleton";
-import { Button } from "@ecomm/ui/button";
-import { Heading } from "@ecomm/ui/typography";
-import Link from "next/link";
-import { Suspense } from "react";
+import { OrdersTable } from '@/features/orders/components/orders-table';
+import { OrdersTableSkeleton } from '@/features/orders/components/orders-table-skeleton';
+import { Button } from '@ecomm/ui/button';
+import { Heading } from '@ecomm/ui/typography';
+import Link from 'next/link';
+import { Suspense } from 'react';
 
 export default async function Page({
   searchParams,
@@ -16,7 +16,7 @@ export default async function Page({
         Orders
       </Heading>
       <div>
-        <div className="flex gap-2 flex-wrap">
+        <div className="flex flex-wrap gap-2">
           <Button asChild>
             <Link href="/orders/create" className="mb-4 min-w-[220px]">
               Create

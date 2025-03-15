@@ -1,6 +1,6 @@
-import { v2 as cloudinary } from "cloudinary";
-import type { DAM } from "./dam-interface";
-import assert from "assert";
+import { v2 as cloudinary } from 'cloudinary';
+import type { DAM } from './dam-interface';
+import assert from 'assert';
 
 export interface Config {
   cloud_name: string;
@@ -15,9 +15,9 @@ export const getCloudinaryConfig = (): Config => {
     CLOUDINARY_API_SECRET: api_secret,
   } = process.env;
 
-  assert(cloud_name, "CLOUDINARY_CLOUD_NAME is not set");
-  assert(api_key, "CLOUDINARY_API_KEY is not set");
-  assert(api_secret, "CLOUDINARY_API_SECRET is not set");
+  assert(cloud_name, 'CLOUDINARY_CLOUD_NAME is not set');
+  assert(api_key, 'CLOUDINARY_API_KEY is not set');
+  assert(api_secret, 'CLOUDINARY_API_SECRET is not set');
 
   return {
     cloud_name,

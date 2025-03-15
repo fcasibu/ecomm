@@ -1,18 +1,18 @@
-import { Suspense } from "react";
-import { Separator } from "@ecomm/ui/separator";
+import { Suspense } from 'react';
+import { Separator } from '@ecomm/ui/separator';
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@ecomm/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@ecomm/ui/tabs";
-import { Skeleton } from "@ecomm/ui/skeleton";
-import { StoreCreateForm } from "@/features/store/components/store-create-form";
-import { getLocales } from "@ecomm/lib/locales";
-import { LocalesTable } from "@/features/store/components/locales-table";
-import { Heading } from "@ecomm/ui/typography";
+} from '@ecomm/ui/card';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@ecomm/ui/tabs';
+import { Skeleton } from '@ecomm/ui/skeleton';
+import { StoreCreateForm } from '@/features/store/components/store-create-form';
+import { getLocales } from '@ecomm/lib/locales';
+import { LocalesTable } from '@/features/store/components/locales-table';
+import { Heading } from '@ecomm/ui/typography';
 
 export default function Page({
   searchParams,
@@ -22,7 +22,7 @@ export default function Page({
   const locales = getLocales();
 
   return (
-    <div className="max-w-4xl mx-auto p-8 space-y-8 py-10">
+    <div className="mx-auto max-w-4xl space-y-8 p-8 py-10">
       <div className="flex flex-col gap-6">
         <div>
           <Heading as="h1">Locale Settings</Heading>
@@ -73,7 +73,7 @@ function LocalesListSkeleton() {
         .map((_, i) => (
           <div
             key={i}
-            className="flex items-center justify-between p-4 border rounded-md"
+            className="flex items-center justify-between rounded-md border p-4"
           >
             <div className="space-y-2">
               <Skeleton className="h-4 w-[150px]" />
