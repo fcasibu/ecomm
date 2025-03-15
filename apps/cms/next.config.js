@@ -32,7 +32,7 @@ const nextConfig = {
     ],
     dangerouslyAllowSVG: true,
   },
-  serverExternalPackages: ['pino'],
+  serverExternalPackages: ['pino', 'cloudinary'],
   webpack: (config, { isServer }) => {
     if (isServer) {
       config.plugins = [...config.plugins, new PrismaPlugin()];

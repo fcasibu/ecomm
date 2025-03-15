@@ -26,6 +26,12 @@ export function LocaleList({
   const currentStore = useStore();
 
   const [open, setOpen] = useState(false);
+  const sortedStores = stores.toSorted((a, b) => {
+    if (a.locale === currentStore.locale) return -1;
+    if (b.locale === currentStore.locale) return 1;
+
+    return 0;
+  });
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -48,7 +54,7 @@ export function LocaleList({
           />
           <CommandList>
             <CommandGroup>
-              {stores.map((store) => (
+              {sortedStores.map((store) => (
                 <div key={store.id}>
                   <CommandItem
                     onSelect={() => {

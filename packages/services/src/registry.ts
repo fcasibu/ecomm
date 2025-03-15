@@ -1,3 +1,5 @@
+import 'server-only';
+
 import { Container } from '@ecomm/lib/container';
 import { ProductsService } from './products/products-service';
 import { prismaClient } from '@ecomm/db';
@@ -22,37 +24,38 @@ import { StoreController } from './store/store-controller';
 Container.register(StoreService, [prismaClient]);
 Container.register(StoreController, [Container.resolve(StoreService)]);
 
-export const storeController = Container.resolve(StoreController);
+export const storeController = () => Container.resolve(StoreController);
 
 Container.register(CloudinaryService, [getCloudinaryConfig]);
 Container.register(ImageService, [Container.resolve(CloudinaryService)]);
 Container.register(ImageController, [Container.resolve(ImageService)]);
 
-export const imageController = Container.resolve(ImageController);
+export const imageController = () => Container.resolve(ImageController);
 
 Container.register(ProductsService, [prismaClient]);
 Container.register(ProductsController, [Container.resolve(ProductsService)]);
 
-export const productsController = Container.resolve(ProductsController);
+export const productsController = () => Container.resolve(ProductsController);
 
 Container.register(CategoriesService, [prismaClient]);
 Container.register(CategoriesController, [
   Container.resolve(CategoriesService),
 ]);
 
-export const categoriesController = Container.resolve(CategoriesController);
+export const categoriesController = () =>
+  Container.resolve(CategoriesController);
 
 Container.register(CustomersService, [prismaClient]);
 Container.register(CustomersController, [Container.resolve(CustomersService)]);
 
-export const customersController = Container.resolve(CustomersController);
+export const customersController = () => Container.resolve(CustomersController);
 
 Container.register(OrdersService, [prismaClient]);
 Container.register(OrdersController, [Container.resolve(OrdersService)]);
 
-export const ordersController = Container.resolve(OrdersController);
+export const ordersController = () => Container.resolve(OrdersController);
 
 Container.register(CartService, [prismaClient]);
 Container.register(CartController, [Container.resolve(CartService)]);
 
-export const cartController = Container.resolve(CartController);
+export const cartController = () => Container.resolve(CartController);

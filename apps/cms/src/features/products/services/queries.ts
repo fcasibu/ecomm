@@ -7,7 +7,7 @@ export const getProductById = async (locale: string, id: string) => {
   'use cache';
   cacheTag('all', 'product', `product_${id}`, `store_${locale}`);
 
-  return await executeOperation(() => productsController.getById(locale, id));
+  return await executeOperation(() => productsController().getById(locale, id));
 };
 
 export const getProducts = async (
@@ -21,5 +21,7 @@ export const getProducts = async (
   'use cache';
   cacheTag('all', 'products', `store_${locale}`);
 
-  return await executeOperation(() => productsController.getAll(locale, input));
+  return await executeOperation(() =>
+    productsController().getAll(locale, input),
+  );
 };

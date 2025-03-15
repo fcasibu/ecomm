@@ -10,7 +10,7 @@ import { STORE_CURRENT_LOCALE_COOKIE_KEY } from '../constants';
 import { getCookieCurrentLocale } from '@/lib/get-cookie-current-locale';
 
 export const createStore = async (input: StoreCreateInput) => {
-  const result = await executeOperation(() => storeController.create(input));
+  const result = await executeOperation(() => storeController().create(input));
 
   if (result.success) {
     revalidateTag(`store_${result.data.locale}`);
@@ -20,7 +20,7 @@ export const createStore = async (input: StoreCreateInput) => {
 };
 
 export const deleteStoreById = async (id: string) => {
-  const result = await executeOperation(() => storeController.delete(id));
+  const result = await executeOperation(() => storeController().delete(id));
 
   if (result.success) {
     const currentLocale = await getCookieCurrentLocale();

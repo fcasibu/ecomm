@@ -14,7 +14,7 @@ export const createProduct = async (
   input: ProductCreateInput,
 ) => {
   const result = await executeOperation(() =>
-    productsController.create(locale, input),
+    productsController().create(locale, input),
   );
 
   if (result.success) {
@@ -35,7 +35,7 @@ export const updateProductById = async (
   input: ProductUpdateInput,
 ) => {
   const result = await executeOperation(() =>
-    productsController.update(locale, id, input),
+    productsController().update(locale, id, input),
   );
 
   if (result.success) {
@@ -52,7 +52,7 @@ export const updateProductById = async (
 
 export const deleteProductById = async (locale: string, id: string) => {
   const result = await executeOperation(() =>
-    productsController.delete(locale, id),
+    productsController().delete(locale, id),
   );
 
   if (result.success) {

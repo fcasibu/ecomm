@@ -15,7 +15,7 @@ export const createCustomer = async (
   input: CustomerCreateInput,
 ) => {
   const result = await executeOperation(() =>
-    customersController.create(locale, input),
+    customersController().create(locale, input),
   );
 
   if (result.success) {
@@ -31,7 +31,7 @@ export const updateCustomerById = async (
   input: CustomerUpdateInput,
 ) => {
   const result = await executeOperation(() =>
-    customersController.update(locale, id, input),
+    customersController().update(locale, id, input),
   );
 
   if (result.success) {
@@ -44,7 +44,7 @@ export const updateCustomerById = async (
 
 export const deleteCustomerById = async (locale: string, id: string) => {
   const result = await executeOperation(() =>
-    customersController.delete(locale, id),
+    customersController().delete(locale, id),
   );
 
   if (result.success) {

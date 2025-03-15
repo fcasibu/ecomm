@@ -8,7 +8,7 @@ export const getCategoriesPath = async (locale: string, categoryId: string) => {
   cacheTag('all', 'categories_path', `store_${locale}`);
 
   return await executeOperation(() =>
-    categoriesController.getCategoriesPath(locale, categoryId),
+    categoriesController().getCategoriesPath(locale, categoryId),
   );
 };
 
@@ -24,7 +24,7 @@ export const getCategories = async (
   cacheTag('all', 'categories', `store_${locale}`);
 
   return await executeOperation(() =>
-    categoriesController.getAll(locale, input),
+    categoriesController().getAll(locale, input),
   );
 };
 
@@ -33,7 +33,7 @@ export const getRootCategories = async (locale: string) => {
   cacheTag('all', 'root_categories', `store_${locale}`);
 
   return await executeOperation(() =>
-    categoriesController.getRootCategories(locale),
+    categoriesController().getRootCategories(locale),
   );
 };
 
@@ -41,5 +41,7 @@ export const getCategoryById = async (locale: string, id: string) => {
   'use cache';
   cacheTag('all', 'category', `category_${id}`, `store_${locale}`);
 
-  return await executeOperation(() => categoriesController.getById(locale, id));
+  return await executeOperation(() =>
+    categoriesController().getById(locale, id),
+  );
 };

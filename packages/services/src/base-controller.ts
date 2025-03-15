@@ -19,7 +19,7 @@ export class BaseController {
 
     switch (prismaError?.code) {
       case 'P2025': {
-        logger.error({ error }, options?.notFoundMessage);
+        logger.warn({ error }, options?.notFoundMessage);
         throw new NotFoundError(
           options?.notFoundMessage ?? 'Resource not found',
         );
@@ -39,7 +39,12 @@ export class BaseController {
       }
     }
 
-    logger.error({ error }, options?.message);
+    if ((error as Error).name === 'NotFoundError') {
+      logger.warn({ error }, options?.message);
+    } else {
+      logger.error({ error }, options?.message);
+    }
+
     throw error;
   }
 }

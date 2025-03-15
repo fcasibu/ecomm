@@ -11,7 +11,7 @@ import { revalidateTag } from 'next/cache';
 
 export const createCart = async (locale: string, input: CartCreateInput) => {
   const result = await executeOperation(() =>
-    cartController.create(locale, input),
+    cartController().create(locale, input),
   );
 
   return result;
@@ -23,7 +23,7 @@ export const updateCartById = async (
   input: CartUpdateInput,
 ) => {
   const result = await executeOperation(() =>
-    cartController.update(locale, cartId, input),
+    cartController().update(locale, cartId, input),
   );
 
   if (result.success) {

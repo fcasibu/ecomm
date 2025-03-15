@@ -46,7 +46,7 @@ export async function LocalesTable({
     await deleteStoreById(storeId);
   };
 
-  const sortedStores = stores.sort((a, b) => {
+  const sortedStores = stores.toSorted((a, b) => {
     if (a.locale === b.locale) return 0;
     if (a.locale === 'en-US') return -1;
     if (b.locale === 'en-US') return 1;

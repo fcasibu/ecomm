@@ -11,7 +11,7 @@ import { revalidateTag } from 'next/cache';
 
 export const createOrder = async (locale: string, input: OrderCreateInput) => {
   const result = await executeOperation(() =>
-    ordersController.create(locale, input),
+    ordersController().create(locale, input),
   );
 
   if (result.success) {
@@ -28,7 +28,7 @@ export const updateOrderById = async (
   input: OrderUpdateInput,
 ) => {
   const result = await executeOperation(() =>
-    ordersController.update(locale, orderId, input),
+    ordersController().update(locale, orderId, input),
   );
 
   if (result.success) {

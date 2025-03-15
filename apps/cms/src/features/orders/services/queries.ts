@@ -9,7 +9,7 @@ export const getOrderById = async (locale: string, orderId: string) => {
   cacheTag('all', 'order', `order_${orderId}`, `store_${locale}`);
 
   return await executeOperation(() =>
-    ordersController.getById(locale, orderId),
+    ordersController().getById(locale, orderId),
   );
 };
 
@@ -23,5 +23,5 @@ export const getOrders = async (
   'use cache';
   cacheTag('all', 'orders', `store_${locale}`);
 
-  return await executeOperation(() => ordersController.getAll(locale, input));
+  return await executeOperation(() => ordersController().getAll(locale, input));
 };

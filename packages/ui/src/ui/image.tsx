@@ -34,7 +34,8 @@ export function ImageComponent({ src, loader, ...props }: CustomImageProps) {
 }
 
 const cloudinaryLoader: ImageLoader = ({ src, width, quality }) => {
-  return `https://res.cloudinary.com/dzvz2v25d/image/upload/w_${width},q_${quality || 75}/${src}`;
+  const params = ['f_auto', 'c_limit', `w_${width}`, `q_${quality || 'auto'}`];
+  return `https://res.cloudinary.com/dzvz2v25d/image/upload/${params.join(',')}/${src}`;
 };
 
 const isResolvableUrl = (src: string) => /^(https?:|\/)/.test(src);

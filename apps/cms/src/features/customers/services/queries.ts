@@ -16,7 +16,7 @@ export const getCustomers = async (
   cacheTag('all', 'customers', `store_${locale}`);
 
   return await executeOperation(() =>
-    customersController.getAll(locale, input),
+    customersController().getAll(locale, input),
   );
 };
 
@@ -24,5 +24,7 @@ export const getCustomerById = async (locale: string, id: string) => {
   'use cache';
   cacheTag('all', 'customer', `customer_${id}`, `store_${locale}`);
 
-  return await executeOperation(() => customersController.getById(locale, id));
+  return await executeOperation(() =>
+    customersController().getById(locale, id),
+  );
 };

@@ -14,7 +14,7 @@ export const createCategory = async (
   input: CategoryCreateInput,
 ) => {
   const result = await executeOperation(() =>
-    categoriesController.create(locale, input),
+    categoriesController().create(locale, input),
   );
 
   if (result.success) {
@@ -34,7 +34,7 @@ export const deleteCategoryById = async (
   categoryId: string,
 ) => {
   const result = await executeOperation(() =>
-    categoriesController.delete(locale, categoryId),
+    categoriesController().delete(locale, categoryId),
   );
 
   if (result.success) {
@@ -55,7 +55,7 @@ export const updateCategoryById = async (
   input: CategoryUpdateInput,
 ) => {
   const result = await executeOperation(() =>
-    categoriesController.update(locale, categoryId, input),
+    categoriesController().update(locale, categoryId, input),
   );
 
   if (result.success) {

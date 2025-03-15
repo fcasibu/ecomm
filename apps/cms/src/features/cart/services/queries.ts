@@ -8,5 +8,5 @@ export const getCartById = async (locale: string, cartId: string) => {
   'use cache';
   cacheTag('all', 'cart', `cart_${cartId}`, `store_${locale}`);
 
-  return await executeOperation(() => cartController.getById(locale, cartId));
+  return await executeOperation(() => cartController().getById(locale, cartId));
 };

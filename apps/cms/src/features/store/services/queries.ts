@@ -11,7 +11,7 @@ export const getStoreByLocale = async (locale: string) => {
   cacheTag('all', 'store', `store_${locale}`);
   cacheLife('max');
 
-  return await executeOperation(() => storeController.getByLocale(locale));
+  return await executeOperation(() => storeController().getByLocale(locale));
 };
 
 export const getStores = async (input: {
@@ -23,5 +23,5 @@ export const getStores = async (input: {
   cacheTag('all', 'stores');
   cacheLife('max');
 
-  return await executeOperation(() => storeController.getAll(input));
+  return await executeOperation(() => storeController().getAll(input));
 };
