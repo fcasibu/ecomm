@@ -12,7 +12,6 @@ const cartItemSchema = z.object({
 });
 
 export const orderCreateSchema = z.object({
-  currency: z.enum(["USD"]),
   customerId: z.string().uuid({ message: "You must select a customer" }),
   shippingAddressId: z.string().uuid(),
   billingAddressId: z.string().uuid(),

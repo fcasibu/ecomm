@@ -1,5 +1,7 @@
 "use client";
 
+import { format } from "date-fns";
+import { useStore } from "@/features/store/providers/store-provider";
 import { formatPrice } from "@ecomm/lib/format-price";
 import type { OrderDTO } from "@ecomm/services/orders/order-dto";
 import {
@@ -13,6 +15,7 @@ import {
 import { useRouter } from "next/navigation";
 
 export function OrdersTableClient({ orders }: { orders: OrderDTO[] }) {
+  const store = useStore();
   const router = useRouter();
 
   return (
@@ -43,10 +46,10 @@ export function OrdersTableClient({ orders }: { orders: OrderDTO[] }) {
               {order.status}
             </TableCell>
             <TableCell className="text-right">
-              {formatPrice(order.totalAmount, order.currency)}
+              {formatPrice(order.totalAmount, store.currency)}
             </TableCell>
-            <TableCell>{order.createdAt}</TableCell>
-            <TableCell>{order.updatedAt}</TableCell>
+            <TableCell>{format(order.createdAt, "MM/dd/yyyy")}</TableCell>
+            <TableCell>{format(order.updatedAt, "MM/dd/yyyy")}</TableCell>
           </TableRow>
         ))}
       </TableBody>

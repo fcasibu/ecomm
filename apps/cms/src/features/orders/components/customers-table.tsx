@@ -1,5 +1,4 @@
-"use client";
-
+import "client-only";
 import { Card, CardHeader, CardTitle, CardContent } from "@ecomm/ui/card";
 import { Button } from "@ecomm/ui/button";
 import {
@@ -30,6 +29,7 @@ import { useFormContext } from "react-hook-form";
 import type { OrderCreateInput } from "@ecomm/validations/cms/orders/orders-schema";
 import { toast } from "@ecomm/ui/hooks/use-toast";
 import { Heading, Text } from "@ecomm/ui/typography";
+import { format } from "date-fns";
 
 export function CustomersTable({
   customers,
@@ -95,6 +95,9 @@ export function CustomersTable({
                   return;
                 }
 
+                formContext.clearErrors("shippingAddressId");
+                formContext.clearErrors("billingAddressId");
+
                 onChange(customer.id);
                 formContext.setValue(
                   "shippingAddressId",
@@ -132,8 +135,8 @@ export function CustomersTable({
               <TableCell>{customer.firstName || <Minus />}</TableCell>
               <TableCell>{customer.lastName || <Minus />}</TableCell>
               <TableCell>{customer.email}</TableCell>
-              <TableCell>{customer.createdAt}</TableCell>
-              <TableCell>{customer.updatedAt}</TableCell>
+              <TableCell>{format(customer.createdAt, "MM/dd/yyyy")}</TableCell>
+              <TableCell>{format(customer.updatedAt, "MM/dd/yyyy")}</TableCell>
             </TableRow>
           );
         })}
@@ -172,7 +175,7 @@ export const CustomerAddressSelect = ({
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
-        <Heading as="h1">Customer Addresses</Heading>
+        <Heading as="h3">Customer Addresses</Heading>
         <Button variant="outline" onClick={onChangeCustomer}>
           Change Customer
         </Button>

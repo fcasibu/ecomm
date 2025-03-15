@@ -79,8 +79,9 @@ export async function LocalesTable({
                   <TableCell className="w-[20px] pr-4">
                     <form action={handleStoreDelete(store.id)}>
                       <Button
-                        aria-label="Delete store"
-                        variant="none"
+                        aria-label={`Delete ${store.locale}`}
+                        variant="outline"
+                        size="icon"
                         className="p-0"
                       >
                         <Trash className="h-4 w-4" />

@@ -15,7 +15,6 @@ export interface OrderItemDTO {
 export interface OrderDTO {
   id: string;
   totalAmount: number;
-  currency: string;
   status: OrderStatus;
   items: OrderItemDTO[];
   customer: {

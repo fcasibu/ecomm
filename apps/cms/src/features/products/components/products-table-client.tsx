@@ -1,5 +1,6 @@
 "use client";
 
+import { format } from "date-fns";
 import type { ProductDTO } from "@ecomm/services/products/product-dto";
 import {
   Table,
@@ -51,8 +52,8 @@ export function ProductsTableClient({ products }: { products: ProductDTO[] }) {
               {product.description || <Minus />}
             </TableCell>
             <TableCell>{product.category?.name || <Minus />}</TableCell>
-            <TableCell>{product.createdAt}</TableCell>
-            <TableCell>{product.updatedAt}</TableCell>
+            <TableCell>{format(product.createdAt, "MM/dd/yyyy")}</TableCell>
+            <TableCell>{format(product.updatedAt, "MM/dd/yyyy")}</TableCell>
           </TableRow>
         ))}
       </TableBody>

@@ -39,7 +39,6 @@ export class OrdersService extends BaseService {
       include: ORDER_INCLUDE,
       data: {
         totalAmount: input.cart.totalAmount,
-        currency: input.currency,
         billingAddressId: input.billingAddressId,
         shippingAddressId: input.shippingAddressId,
         items: {

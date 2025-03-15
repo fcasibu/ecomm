@@ -25,14 +25,6 @@ import {
   FormMessage,
 } from "@ecomm/ui/form";
 import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@ecomm/ui/select";
-import {
   Sheet,
   SheetTrigger,
   SheetContent,
@@ -81,18 +73,15 @@ import type {
 import { CUSTOMERS_PAGE_SIZE, PRODUCTS_PAGE_SIZE } from "@/lib/constants";
 import { useStore } from "@/features/store/providers/store-provider";
 
-type StageKey = "order-details" | "customer" | "cart";
+type StageKey = "customer" | "cart";
 
 const stages = [
-  { title: "Order details", key: "order-details" },
   { title: "Customer", key: "customer" },
   { title: "Cart", key: "cart" },
 ] as const;
 
 const stageAwareSchema = (currentStage: StageKey) => {
   switch (currentStage) {
-    case "order-details":
-      return orderCreateSchema.pick({ currency: true });
     case "customer":
       return orderCreateSchema.pick({
         customerId: true,
@@ -111,7 +100,7 @@ export function OrderCreateForm() {
 
   const store = useStore();
   const { currentStage, onNext, onPrevious, goToStage, isStageDisabled } =
-    useMultiStage(stages, "order-details");
+    useMultiStage(stages, "customer");
 
   const [isPending, startTransition] = useTransition();
   const router = useRouter();
@@ -121,7 +110,6 @@ export function OrderCreateForm() {
       stageAwareSchema(currentStage) as unknown as ZodType<OrderCreateInput>,
     ),
     defaultValues: {
-      currency: "USD",
       customerId: undefined,
       billingAddressId: undefined,
       shippingAddressId: undefined,
@@ -217,7 +205,7 @@ function StageController({
   onPrevious,
 }: StageControllerProps) {
   const router = useRouter();
-  const isFirstStage = currentStage === "order-details";
+  const isFirstStage = currentStage === "customer";
   const isLastStage = currentStage === "cart";
 
   const buttonText = isPending ? (
@@ -327,8 +315,6 @@ interface StageContentProps {
 
 function StageContent({ currentStage }: StageContentProps) {
   switch (currentStage) {
-    case "order-details":
-      return <OrderDetailsStage />;
     case "customer":
       return <CustomerStage />;
     case "cart":
@@ -346,48 +332,6 @@ function StageContent({ currentStage }: StageContentProps) {
     default:
       throw new Error("Unknown stage");
   }
-}
-
-function OrderDetailsStage() {
-  const formContext = useFormContext<OrderCreateInput>();
-
-  return (
-    <div>
-      <Heading as="h2" className="mb-4">
-        Order Details
-      </Heading>
-      <FormField
-        control={formContext.control}
-        name="currency"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>Currency</FormLabel>
-            <FormControl>
-              <div>
-                <Select
-                  defaultValue={field.value}
-                  onValueChange={field.onChange}
-                >
-                  <SelectTrigger className="w-[180px]">
-                    <SelectValue placeholder="Select currency" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectGroup>
-                      <SelectItem value="USD">USD</SelectItem>
-                    </SelectGroup>
-                  </SelectContent>
-                </Select>
-                <FormDescription>
-                  You won&apos;t be able to change the currency later
-                </FormDescription>
-              </div>
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
-    </div>
-  );
 }
 
 function CustomerStage() {
@@ -878,7 +822,6 @@ function CartDetails({ cart, formContext }: CartDetailsProps) {
             <TableHead className="text-right">Unit Price</TableHead>
             <TableHead className="text-right">Qty</TableHead>
             <TableHead className="text-right">Total</TableHead>
-            <TableHead />
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -902,13 +845,13 @@ function CartDetails({ cart, formContext }: CartDetailsProps) {
                 </div>
               </TableCell>
               <TableCell className="text-right">
-                {item.price.toFixed(2)}
+                {formatPrice(item.price, store.currency)}
               </TableCell>
               <TableCell className="text-right">{item.quantity}</TableCell>
               <TableCell className="text-right">
-                {(item.price * item.quantity).toFixed(2)}
+                {formatPrice(item.price * item.quantity, store.currency)}
               </TableCell>
-              <TableCell>
+              <TableCell className="text-right">
                 <Button
                   variant="outline"
                   size="icon"

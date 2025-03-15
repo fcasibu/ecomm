@@ -1,5 +1,6 @@
 "use client";
 
+import { format } from "date-fns";
 import type { CustomerDTO } from "@ecomm/services/customers/customer-dto";
 import {
   Table,
@@ -53,8 +54,8 @@ export function CustomersTableClient({
             <TableCell>{customer.firstName || <Minus />}</TableCell>
             <TableCell>{customer.lastName || <Minus />}</TableCell>
             <TableCell>{customer.email}</TableCell>
-            <TableCell>{customer.createdAt}</TableCell>
-            <TableCell>{customer.updatedAt}</TableCell>
+            <TableCell>{format(customer.createdAt, "MM/dd/yyyy")}</TableCell>
+            <TableCell>{format(customer.updatedAt, "MM/dd/yyyy")}</TableCell>
           </TableRow>
         ))}
       </TableBody>

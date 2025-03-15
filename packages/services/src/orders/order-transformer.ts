@@ -10,7 +10,6 @@ export class OrderTransformer extends BaseTransformer {
     return {
       id: order.id,
       totalAmount: order.totalAmount.toNumber(),
-      currency: order.currency,
       status: order.status,
       items: order.items.map((item) => this.transformerOrderItem(item)),
       customer: {

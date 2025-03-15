@@ -209,7 +209,7 @@ export function OrderUpdateForm({ order }: { order: OrderDTO }) {
                       <TableCell className="font-medium">{item.name}</TableCell>
                       <TableCell>{item.sku}</TableCell>
                       <TableCell className="text-right">
-                        {formatPrice(item.price, item.currencyCode)}
+                        {formatPrice(item.price, store.currency)}
                       </TableCell>
                       <TableCell className="text-right">
                         {item.quantity}
@@ -217,7 +217,7 @@ export function OrderUpdateForm({ order }: { order: OrderDTO }) {
                       <TableCell className="text-right">
                         {formatPrice(
                           item.price * item.quantity,
-                          item.currencyCode,
+                          store.currency,
                         )}
                       </TableCell>
                     </TableRow>
@@ -227,7 +227,7 @@ export function OrderUpdateForm({ order }: { order: OrderDTO }) {
                       Total
                     </TableCell>
                     <TableCell className="text-right font-bold">
-                      {formatPrice(order.totalAmount, order.currency)}
+                      {formatPrice(order.totalAmount, store.currency)}
                     </TableCell>
                   </TableRow>
                 </TableBody>
