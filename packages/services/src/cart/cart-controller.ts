@@ -5,14 +5,15 @@ import {
   type CartUpdateInput,
 } from "@ecomm/validations/cms/cart/cart-schema";
 import { BaseController } from "../base-controller";
-import type { Cart, CartService } from "./cart-service";
+import type { CartService } from "./cart-service";
 import { logger } from "@ecomm/lib/logger";
 import { ValidationError } from "../errors/validation-error";
 import { NotFoundError } from "../errors/not-found-error";
-import type { CartDTO } from "./cart-dto";
-import assert from "assert";
+import { CartTransformer } from "./cart-transformer";
 
 export class CartController extends BaseController {
+  private readonly transformer = new CartTransformer();
+
   constructor(private readonly cartService: CartService) {
     super();
   }
@@ -24,7 +25,7 @@ export class CartController extends BaseController {
 
       if (!result.success) throw new ValidationError(result.error);
 
-      const cart = CartController.mapCart(
+      const cart = this.transformer.toDTO(
         await this.cartService.create(result.data),
       );
 
@@ -32,11 +33,11 @@ export class CartController extends BaseController {
         throw new NotFoundError("Cart not found.");
       }
 
-      logger.info({ cart }, "Cart successfully created");
+      logger.info({ cartId: cart.id }, "Cart successfully created");
 
       return cart;
     } catch (error) {
-      this.mapError(error, {
+      this.logAndThrowError(error, {
         message: "Error creating cart",
       });
     }
@@ -51,13 +52,18 @@ export class CartController extends BaseController {
         throw new ValidationError(result.error);
       }
 
-      const updatedCart = CartController.mapCart(
+      const updatedCart = this.transformer.toDTO(
         await this.cartService.update(cartId, result.data),
       );
-      logger.info({ updatedCart }, "Cart updated successfully");
+      if (!updatedCart) {
+        throw new NotFoundError(`Cart ID "${cartId}" not found.`);
+      }
+
+      logger.info({ cartId: updatedCart.id }, "Fetched cart");
+
       return updatedCart;
     } catch (error) {
-      this.mapError(error, {
+      this.logAndThrowError(error, {
         message: `Error updating Cart`,
         notFoundMessage: `Error updating cart: Cart ID "${cartId}" not found.`,
       });
@@ -73,7 +79,7 @@ export class CartController extends BaseController {
 
       return { success: true };
     } catch (error) {
-      this.mapError(error, {
+      this.logAndThrowError(error, {
         notFoundMessage: `Error deleting cart: Cart with the ID "${cartId}" was not found.`,
       });
     }
@@ -83,61 +89,19 @@ export class CartController extends BaseController {
     try {
       logger.info({ id }, "Fetching cart");
 
-      const cart = CartController.mapCart(await this.cartService.getById(id));
+      const cart = this.transformer.toDTO(await this.cartService.getById(id));
 
       if (!cart) {
         throw new NotFoundError(`Cart ID "${id}" not found.`);
       }
 
-      logger.info({ cart }, "Fetched cart");
+      logger.info({ cartId: cart.id }, "Fetched cart");
 
       return cart;
     } catch (error) {
-      this.mapError(error, {
+      this.logAndThrowError(error, {
         message: "Error fetching cart",
       });
     }
-  }
-
-  private static mapCart(
-    cart: Cart | null | undefined,
-  ): CartDTO | null | undefined {
-    if (!cart) return cart;
-
-    const getVariant = (
-      product: Cart["items"][number]["product"],
-      sku: string,
-    ) => {
-      return product.variants.find((variant) => variant.sku === sku);
-    };
-
-    return {
-      ...cart,
-      updatedAt: cart.updatedAt.toLocaleDateString(),
-      createdAt: cart.createdAt.toLocaleDateString(),
-      totalAmount: cart.totalAmount.toNumber(),
-      items: cart.items.map((item) => {
-        const variant = getVariant(item.product, item.sku);
-
-        assert(variant, "variant should always be defined");
-        assert(
-          variant.images[0],
-          "variant should always have an image defined",
-        );
-
-        return {
-          id: item.id,
-          sku: item.sku,
-          quantity: item.quantity,
-          price: variant.price.toNumber(),
-          stock: variant.stock,
-          currencyCode: variant.currencyCode,
-          image: variant.images[0],
-          name: item.product.name,
-          updatedAt: item.updatedAt.toLocaleDateString(),
-          createdAt: item.createdAt.toLocaleDateString(),
-        };
-      }),
-    };
   }
 }

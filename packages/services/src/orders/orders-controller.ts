@@ -1,4 +1,4 @@
-import type { Order, OrdersService } from "./orders-service";
+import type { OrdersService } from "./orders-service";
 import { ValidationError } from "../errors/validation-error";
 import { BaseController } from "../base-controller";
 import { logger } from "@ecomm/lib/logger";
@@ -10,8 +10,11 @@ import {
   type OrderCreateInput,
   type OrderUpdateInput,
 } from "@ecomm/validations/cms/orders/orders-schema";
+import { OrderTransformer } from "./order-transformer";
 
 export class OrdersController extends BaseController {
+  private readonly transformer = new OrderTransformer();
+
   constructor(private readonly ordersService: OrdersService) {
     super();
   }
@@ -23,7 +26,7 @@ export class OrdersController extends BaseController {
 
       if (!result.success) throw new ValidationError(result.error);
 
-      const order = OrdersController.mapOrder(
+      const order = this.transformer.toDTO(
         await this.ordersService.create(result.data),
       );
 
@@ -31,11 +34,11 @@ export class OrdersController extends BaseController {
         throw new NotFoundError("Order not found.");
       }
 
-      logger.info({ order }, "Order successfully created");
+      logger.info({ orderId: order.id }, "Order successfully created");
 
       return order;
     } catch (error) {
-      this.mapError(error, {
+      this.logAndThrowError(error, {
         message: "Error creating order",
       });
     }
@@ -50,13 +53,18 @@ export class OrdersController extends BaseController {
         throw new ValidationError(result.error);
       }
 
-      const updatedOrder = OrdersController.mapOrder(
+      const updatedOrder = this.transformer.toDTO(
         await this.ordersService.update(orderId, result.data),
       );
-      logger.info({ updatedOrder }, "Order updated successfully");
+
+      if (!updatedOrder) {
+        throw new NotFoundError(`Order ID "${orderId}" not found.`);
+      }
+
+      logger.info({ orderId: updatedOrder.id }, "Fetched order");
       return updatedOrder;
     } catch (error) {
-      this.mapError(error, {
+      this.logAndThrowError(error, {
         message: `Error updating order`,
         notFoundMessage: `Error updating order: Order ID "${orderId}" not found.`,
       });
@@ -67,7 +75,7 @@ export class OrdersController extends BaseController {
     try {
       logger.info({ id }, "Fetching order");
 
-      const order = OrdersController.mapOrder(
+      const order = this.transformer.toDTO(
         await this.ordersService.getById(id),
       );
 
@@ -75,11 +83,11 @@ export class OrdersController extends BaseController {
         throw new NotFoundError(`Order ID "${id}" not found.`);
       }
 
-      logger.info({ order }, "Fetched order");
+      logger.info({ orderId: order.id }, "Fetched order");
 
       return order;
     } catch (error) {
-      this.mapError(error, {
+      this.logAndThrowError(error, {
         message: "Error fetching order",
       });
     }
@@ -92,7 +100,7 @@ export class OrdersController extends BaseController {
       const result = await this.ordersService.getAll(input);
 
       const transformedOrders = result.items
-        .map(OrdersController.mapOrder)
+        .map((item) => this.transformer.toDTO(item))
         .filter((order): order is OrderDTO => Boolean(order));
 
       const response = {
@@ -103,41 +111,21 @@ export class OrdersController extends BaseController {
         pageSize: result.pageSize,
       };
 
-      logger.info({ response }, "Orders fetched successfully");
+      logger.info(
+        {
+          totalCount: response.totalCount,
+          pageCount: response.pageCount,
+          currentPage: response.currentPage,
+          pageSize: response.pageSize,
+        },
+        "Orders fetched successfully",
+      );
 
       return response;
     } catch (error) {
-      this.mapError(error, {
+      this.logAndThrowError(error, {
         message: "Error fetching all orders",
       });
     }
-  }
-
-  private static mapOrder(
-    order: Order | null | undefined,
-  ): OrderDTO | null | undefined {
-    if (!order) return order;
-
-    return {
-      ...order,
-      totalAmount: order.totalAmount.toNumber(),
-      customer: {
-        email: order.customer?.email as string,
-        addresses:
-          order.customer?.addresses.map((address) => ({
-            ...address,
-            updatedAt: address.updatedAt.toLocaleDateString(),
-            createdAt: address.createdAt.toLocaleDateString(),
-          })) ?? [],
-      },
-      items: order.items.map((item) => ({
-        ...item,
-        price: item.price.toNumber(),
-        updatedAt: item.updatedAt.toLocaleDateString(),
-        createdAt: item.createdAt.toLocaleDateString(),
-      })),
-      updatedAt: order.updatedAt.toLocaleDateString(),
-      createdAt: order.createdAt.toLocaleDateString(),
-    };
   }
 }

@@ -10,7 +10,7 @@ export class ImageController extends BaseController {
     try {
       return await this.imageService.upload(file, identifier);
     } catch (error) {
-      this.mapError(error, {
+      this.logAndThrowError(error, {
         message: "Image upload failed",
       });
     }

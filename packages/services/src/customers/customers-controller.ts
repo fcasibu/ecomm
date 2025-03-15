@@ -1,4 +1,4 @@
-import type { Customer, CustomersService } from "./customers-service";
+import type { CustomersService } from "./customers-service";
 import { ValidationError } from "../errors/validation-error";
 import { BaseController } from "../base-controller";
 import { logger } from "@ecomm/lib/logger";
@@ -10,8 +10,11 @@ import {
   type CustomerUpdateInput,
 } from "@ecomm/validations/cms/customers/customers-schema";
 import type { CustomerDTO } from "./customer-dto";
+import { CustomerTransformer } from "./customer-transformer";
 
 export class CustomersController extends BaseController {
+  private readonly transformer = new CustomerTransformer();
+
   constructor(private readonly customersService: CustomersService) {
     super();
   }
@@ -23,7 +26,7 @@ export class CustomersController extends BaseController {
 
       if (!result.success) throw new ValidationError(result.error);
 
-      const customer = CustomersController.mapCustomer(
+      const customer = this.transformer.toDTO(
         await this.customersService.create(result.data),
       );
 
@@ -31,11 +34,11 @@ export class CustomersController extends BaseController {
         throw new NotFoundError("Customer not found.");
       }
 
-      logger.info({ customer }, "Customer successfully created");
+      logger.info({ customerId: customer.id }, "Customer successfully created");
 
       return customer;
     } catch (error) {
-      this.mapError(error, {
+      this.logAndThrowError(error, {
         message: "Error creating customer",
       });
     }
@@ -50,13 +53,20 @@ export class CustomersController extends BaseController {
         throw new ValidationError(result.error);
       }
 
-      const updatedCustomer = CustomersController.mapCustomer(
+      const updatedCustomer = this.transformer.toDTO(
         await this.customersService.update(customerId, result.data),
       );
-      logger.info({ updatedCustomer }, "Customer updated successfully");
+      if (!updatedCustomer) {
+        throw new NotFoundError(`Customer ID "${customerId}" not found.`);
+      }
+
+      logger.info(
+        { customerId: updatedCustomer.id },
+        "Customer updated successfully",
+      );
       return updatedCustomer;
     } catch (error) {
-      this.mapError(error, {
+      this.logAndThrowError(error, {
         message: `Error updating customer`,
         notFoundMessage: `Error updating customer: Customer ID "${customerId}" not found.`,
       });
@@ -72,7 +82,7 @@ export class CustomersController extends BaseController {
 
       return { success: true };
     } catch (error) {
-      this.mapError(error, {
+      this.logAndThrowError(error, {
         notFoundMessage: `Error deleting customer: Customer with the ID "${customerId}" was not found.`,
       });
     }
@@ -82,7 +92,7 @@ export class CustomersController extends BaseController {
     try {
       logger.info({ id }, "Fetching customer");
 
-      const customer = CustomersController.mapCustomer(
+      const customer = this.transformer.toDTO(
         await this.customersService.getById(id),
       );
 
@@ -90,11 +100,11 @@ export class CustomersController extends BaseController {
         throw new NotFoundError(`Customer ID "${id}" not found.`);
       }
 
-      logger.info({ customer }, "Fetched customer");
+      logger.info({ customerId: customer.id }, "Fetched customer");
 
       return customer;
     } catch (error) {
-      this.mapError(error, {
+      this.logAndThrowError(error, {
         message: "Error fetching customer",
       });
     }
@@ -111,7 +121,7 @@ export class CustomersController extends BaseController {
       const result = await this.customersService.getAll(input);
 
       const transformedCustomers = result.items
-        .map(CustomersController.mapCustomer)
+        .map((item) => this.transformer.toDTO(item))
         .filter((customer): customer is CustomerDTO => Boolean(customer));
 
       const response = {
@@ -122,32 +132,21 @@ export class CustomersController extends BaseController {
         pageSize: result.pageSize,
       };
 
-      logger.info({ response }, "Customers fetched successfully");
+      logger.info(
+        {
+          totalCount: response.totalCount,
+          pageCount: response.pageCount,
+          currentPage: response.currentPage,
+          pageSize: response.pageSize,
+        },
+        "Customers fetched successfully",
+      );
 
       return response;
     } catch (error) {
-      this.mapError(error, {
+      this.logAndThrowError(error, {
         message: "Error fetching all customers",
       });
     }
-  }
-
-  private static mapCustomer(
-    customer: Customer | null | undefined,
-  ): CustomerDTO | null | undefined {
-    if (!customer) return customer;
-
-    return {
-      ...customer,
-      email: customer.email!,
-      birthDate: customer.birthDate?.toLocaleDateString() ?? "",
-      updatedAt: customer.updatedAt.toLocaleDateString(),
-      createdAt: customer.createdAt.toLocaleDateString(),
-      addresses: customer.addresses.map((address) => ({
-        ...address,
-        updatedAt: address.updatedAt.toLocaleDateString(),
-        createdAt: address.createdAt.toLocaleDateString(),
-      })),
-    };
   }
 }

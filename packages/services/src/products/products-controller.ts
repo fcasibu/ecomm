@@ -4,14 +4,17 @@ import {
   type ProductCreateInput,
   type ProductUpdateInput,
 } from "@ecomm/validations/cms/products/product-schema";
-import type { Product, ProductsService } from "./products-service";
+import type { ProductsService } from "./products-service";
 import { ValidationError } from "../errors/validation-error";
 import { BaseController } from "../base-controller";
 import { logger } from "@ecomm/lib/logger";
-import type { ProductAttribute, ProductDTO } from "./product-dto";
+import type { ProductDTO } from "./product-dto";
 import { NotFoundError } from "../errors/not-found-error";
+import { ProductTransformer } from "./product-transformer";
 
 export class ProductsController extends BaseController {
+  private readonly transformer = new ProductTransformer();
+
   constructor(private readonly productsService: ProductsService) {
     super();
   }
@@ -23,7 +26,7 @@ export class ProductsController extends BaseController {
 
       if (!result.success) throw new ValidationError(result.error);
 
-      const product = ProductsController.mapProduct(
+      const product = this.transformer.toDTO(
         await this.productsService.create(result.data),
       );
 
@@ -31,11 +34,11 @@ export class ProductsController extends BaseController {
         throw new NotFoundError("Product not found.");
       }
 
-      logger.info({ product }, "Product successfully created");
+      logger.info({ productId: product.id }, "Product successfully created");
 
       return product;
     } catch (error) {
-      this.mapError(error, {
+      this.logAndThrowError(error, {
         message: "Error creating product",
       });
     }
@@ -50,13 +53,21 @@ export class ProductsController extends BaseController {
         throw new ValidationError(result.error);
       }
 
-      const updatedProduct = ProductsController.mapProduct(
+      const updatedProduct = this.transformer.toDTO(
         await this.productsService.update(productId, result.data),
       );
-      logger.info({ updatedProduct }, "Product updated successfully");
+
+      if (!updatedProduct) {
+        throw new NotFoundError("Product not found.");
+      }
+
+      logger.info(
+        { productId: updatedProduct.id },
+        "Product updated successfully",
+      );
       return updatedProduct;
     } catch (error) {
-      this.mapError(error, {
+      this.logAndThrowError(error, {
         message: `Error updating product`,
         notFoundMessage: `Error updating product: Product ID "${productId}" not found.`,
       });
@@ -72,7 +83,7 @@ export class ProductsController extends BaseController {
 
       return { success: true };
     } catch (error) {
-      this.mapError(error, {
+      this.logAndThrowError(error, {
         notFoundMessage: `Error deleting product: Product with the ID "${productId}" was not found.`,
       });
     }
@@ -82,7 +93,7 @@ export class ProductsController extends BaseController {
     try {
       logger.info({ id }, "Fetching product");
 
-      const product = ProductsController.mapProduct(
+      const product = this.transformer.toDTO(
         await this.productsService.getById(id),
       );
 
@@ -90,11 +101,11 @@ export class ProductsController extends BaseController {
         throw new NotFoundError(`Product ID "${id}" not found.`);
       }
 
-      logger.info({ product }, "Fetched product");
+      logger.info({ productId: product.id }, "Fetched product");
 
       return product;
     } catch (error) {
-      this.mapError(error, {
+      this.logAndThrowError(error, {
         message: "Error fetching product",
       });
     }
@@ -111,7 +122,7 @@ export class ProductsController extends BaseController {
       const result = await this.productsService.getAll(input);
 
       const transformedProducts = result.items
-        .map(ProductsController.mapProduct)
+        .map((item) => this.transformer.toDTO(item))
         .filter((product): product is ProductDTO => Boolean(product));
 
       const response = {
@@ -122,53 +133,21 @@ export class ProductsController extends BaseController {
         pageSize: result.pageSize,
       };
 
-      logger.info({ response }, "Products fetched successfully");
+      logger.info(
+        {
+          totalCount: response.totalCount,
+          pageCount: response.pageCount,
+          currentPage: response.currentPage,
+          pageSize: response.pageSize,
+        },
+        "Products fetched successfully",
+      );
 
       return response;
     } catch (error) {
-      this.mapError(error, {
+      this.logAndThrowError(error, {
         message: "Error fetching all products",
       });
     }
-  }
-
-  private static mapProduct(
-    product: Product | null | undefined,
-  ): ProductDTO | null | undefined {
-    if (!product) return product;
-
-    return {
-      ...product,
-      createdAt: product.createdAt.toLocaleDateString(),
-      updatedAt: product.updatedAt.toLocaleDateString(),
-      variants: product.variants.map((variant) => {
-        const attributes = variant.attributes as ProductAttribute[];
-
-        return {
-          id: variant.id,
-          images: variant.images,
-          sku: variant.sku,
-          currencyCode: variant.currencyCode,
-          createdAt: variant.createdAt.toLocaleDateString(),
-          updatedAt: variant.updatedAt.toLocaleDateString(),
-          price: variant.price.toNumber(),
-          ...Object.fromEntries(
-            attributes?.map((attribute) => [
-              attribute.title,
-              attribute.value,
-            ]) ?? [],
-          ),
-        };
-      }),
-      ...(product.category
-        ? {
-            category: {
-              ...product.category,
-              createdAt: product.category.createdAt.toLocaleDateString(),
-              updatedAt: product.category.updatedAt.toLocaleDateString(),
-            },
-          }
-        : { category: null }),
-    };
   }
 }

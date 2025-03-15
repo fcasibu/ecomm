@@ -13,6 +13,7 @@ import {
 import { Input } from "@ecomm/ui/input";
 import { MultiInput } from "@ecomm/ui/multi-input";
 import {
+  productAttributes,
   productUpdateSchema,
   productUpdateVariantSchema,
   type ProductUpdateInput,
@@ -33,11 +34,12 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@ecomm/ui/sheet";
-import type { ProductDTO } from "@ecomm/services/products/product-dto";
+import { type ProductDTO } from "@ecomm/services/products/product-dto";
 import { deleteProductById, updateProductById } from "../services/mutations";
 import { ImageComponent } from "@ecomm/ui/image";
 import { CategorySelectSkeleton } from "@/components/category-select-skeleton";
 import { MultiImageUpload } from "@/components/multi-image-upload";
+import type { z } from "zod";
 
 export function ProductUpdateForm({ product }: { product: ProductDTO }) {
   const form = useForm<ProductUpdateInput>({
@@ -47,7 +49,13 @@ export function ProductUpdateForm({ product }: { product: ProductDTO }) {
       description: product.description ?? "",
       categoryId: product.category?.id ?? undefined,
       features: product.features,
-      variants: product.variants,
+      variants: product.variants.map((variant) => ({
+        ...variant,
+        attributes: Object.keys(productAttributes).map((key) => ({
+          title: key,
+          value: variant.attributes[key as keyof typeof productAttributes],
+        })) as z.infer<typeof productUpdateVariantSchema>["attributes"],
+      })),
     },
   });
 
@@ -399,6 +407,33 @@ function ProductVariantsControl({
                 </FormItem>
               )}
             />
+            {Object.entries(productAttributes).map(
+              ([key, attribute], index) => (
+                <FormField
+                  key={key}
+                  control={form.control}
+                  name={`attributes.${index}`}
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>{attribute.title}</FormLabel>
+                      <FormControl>
+                        <Input
+                          {...field}
+                          value={field.value?.value ?? ""}
+                          onChange={(event) => {
+                            field.onChange({
+                              title: key,
+                              value: event.target.value,
+                            });
+                          }}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              ),
+            )}
             <SheetFooter className="flex gap-2">
               {currentItem && (
                 <Button

@@ -13,6 +13,7 @@ import {
 import { Input } from "@ecomm/ui/input";
 import { MultiInput } from "@ecomm/ui/multi-input";
 import {
+  productAttributes,
   productCreateSchema,
   productCreateVariantSchema,
 } from "@ecomm/validations/cms/products/product-schema";
@@ -36,7 +37,6 @@ import {
 import { ImageComponent } from "@ecomm/ui/image";
 import { CategorySelectSkeleton } from "@/components/category-select-skeleton";
 import { MultiImageUpload } from "@/components/multi-image-upload";
-import { productAttributes } from "@ecomm/services/products/product-dto";
 
 export function ProductCreateForm() {
   "use no memo";
@@ -374,31 +374,33 @@ function ProductVariantsControl({
                 </FormItem>
               )}
             />
-            {productAttributes.map((attribute, index) => (
-              <FormField
-                key={attribute.key}
-                control={form.control}
-                name={`attributes.${index}`}
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>{attribute.title}</FormLabel>
-                    <FormControl>
-                      <Input
-                        {...field}
-                        value={field.value?.value ?? ""}
-                        onChange={(event) => {
-                          field.onChange({
-                            title: attribute.key,
-                            value: event.target.value,
-                          });
-                        }}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            ))}
+            {Object.entries(productAttributes).map(
+              ([key, attribute], index) => (
+                <FormField
+                  key={key}
+                  control={form.control}
+                  name={`attributes.${index}`}
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>{attribute.title}</FormLabel>
+                      <FormControl>
+                        <Input
+                          {...field}
+                          value={field.value?.value ?? ""}
+                          onChange={(event) => {
+                            field.onChange({
+                              title: key,
+                              value: event.target.value,
+                            });
+                          }}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              ),
+            )}
             <SheetFooter className="flex gap-2">
               {currentItem && (
                 <Button

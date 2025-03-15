@@ -1,4 +1,4 @@
-import type { CategoriesService, Category } from "./categories-service";
+import type { CategoriesService } from "./categories-service";
 import { ValidationError } from "../errors/validation-error";
 import {
   type CategoryCreateInput,
@@ -10,9 +10,11 @@ import { NotFoundError } from "../errors/not-found-error";
 import { logger } from "@ecomm/lib/logger";
 import type { CategoryDTO } from "./category-dto";
 import { BaseController } from "../base-controller";
-import type { ProductVariantDTO } from "../products/product-dto";
+import { CategoryTransformer } from "./category-transformer";
 
 export class CategoriesController extends BaseController {
+  private readonly transformer = new CategoryTransformer();
+
   constructor(private readonly categoriesService: CategoriesService) {
     super();
   }
@@ -26,13 +28,18 @@ export class CategoriesController extends BaseController {
         throw new ValidationError(result.error);
       }
 
-      const category = CategoriesController.mapCategory(
+      const category = this.transformer.toDTO(
         await this.categoriesService.create(result.data),
       );
-      logger.info({ category }, "Category created successfully");
+
+      if (!category) {
+        throw new NotFoundError("Category not found.");
+      }
+
+      logger.info({ categoryId: category.id }, "Category created successfully");
       return category;
     } catch (error) {
-      this.mapError(error, {
+      this.logAndThrowError(error, {
         message: `Error creating category`,
         duplicateMessage: `Error creating category: Category slug "${input.slug}" already exists.`,
       });
@@ -48,13 +55,20 @@ export class CategoriesController extends BaseController {
         throw new ValidationError(result.error);
       }
 
-      const updatedCategory = CategoriesController.mapCategory(
+      const updatedCategory = this.transformer.toDTO(
         await this.categoriesService.update(categoryId, result.data),
       );
-      logger.info({ updatedCategory }, "Category updated successfully");
+      if (!updatedCategory) {
+        throw new NotFoundError(`Category ID "${categoryId}" not found.`);
+      }
+
+      logger.info(
+        { categoryId: updatedCategory.id },
+        "Category updated successfully",
+      );
       return updatedCategory;
     } catch (error) {
-      this.mapError(error, {
+      this.logAndThrowError(error, {
         message: `Error updating category`,
         notFoundMessage: `Error updating category: Category ID "${categoryId}" not found.`,
         duplicateMessage: `Error updating category: Category slug "${input.slug}" already exists.`,
@@ -71,7 +85,7 @@ export class CategoriesController extends BaseController {
 
       return { success: true };
     } catch (error) {
-      this.mapError(error, {
+      this.logAndThrowError(error, {
         notFoundMessage: `Error deleting category: Category with the ID "${categoryId}" was not found.`,
         constraintMessage: `Error deleting category: Cannot delete a Category with subcategories.`,
       });
@@ -82,7 +96,7 @@ export class CategoriesController extends BaseController {
     logger.info({ id }, "Fetching category by id");
 
     try {
-      const category = CategoriesController.mapCategory(
+      const category = this.transformer.toDTO(
         await this.categoriesService.getById(id),
       );
 
@@ -90,10 +104,13 @@ export class CategoriesController extends BaseController {
         throw new NotFoundError(`Category ID "${id}" not found.`);
       }
 
-      logger.info({ category }, "Category fetched by ID successfully");
+      logger.info(
+        { categoryId: category.id },
+        "Category fetched by ID successfully",
+      );
       return category;
     } catch (error) {
-      this.mapError(error, {
+      this.logAndThrowError(error, {
         message: `Error fetching category by ID "${id}"`,
       });
     }
@@ -103,7 +120,7 @@ export class CategoriesController extends BaseController {
     logger.info({ slug }, "Fetching category by slug");
 
     try {
-      const category = CategoriesController.mapCategory(
+      const category = this.transformer.toDTO(
         await this.categoriesService.getBySlug(slug),
       );
 
@@ -111,10 +128,13 @@ export class CategoriesController extends BaseController {
         throw new NotFoundError(`Category slug "${slug}"  not found.`);
       }
 
-      logger.info({ category }, "Category fetched by slug successfully");
+      logger.info(
+        { categoryId: category.id },
+        "Category fetched by slug successfully",
+      );
       return category;
     } catch (error) {
-      this.mapError(error, {
+      this.logAndThrowError(error, {
         message: `Error fetching category by slug "${slug}"`,
       });
     }
@@ -131,7 +151,7 @@ export class CategoriesController extends BaseController {
       const result = await this.categoriesService.getAll(input);
 
       const transformedCategories = result.items
-        .map(CategoriesController.mapCategory)
+        .map((item) => this.transformer.toDTO(item))
         .filter((category): category is CategoryDTO => Boolean(category));
 
       const response = {
@@ -142,11 +162,19 @@ export class CategoriesController extends BaseController {
         pageSize: result.pageSize,
       };
 
-      logger.info({ response }, "Categories fetched successfully");
+      logger.info(
+        {
+          totalCount: response.totalCount,
+          pageCount: response.pageCount,
+          currentPage: response.currentPage,
+          pageSize: response.pageSize,
+        },
+        "Categories fetched successfully",
+      );
 
       return response;
     } catch (error) {
-      this.mapError(error, {
+      this.logAndThrowError(error, {
         message: "Error fetching all categories",
       });
     }
@@ -157,12 +185,12 @@ export class CategoriesController extends BaseController {
 
     try {
       const categories = (await this.categoriesService.getRootCategories()).map(
-        CategoriesController.mapCategory,
+        this.transformer.toDTO,
       );
       logger.info({ categories }, "Root categories fetched successfully");
       return categories;
     } catch (error) {
-      this.mapError(error, {
+      this.logAndThrowError(error, {
         message: "Error fetching all root categories",
       });
     }
@@ -170,35 +198,5 @@ export class CategoriesController extends BaseController {
 
   public async getCategoriesPath(categoryId: string) {
     return await this.categoriesService.getCategoriesPath(categoryId);
-  }
-
-  private static mapCategory(
-    category: Category | null | undefined,
-  ): CategoryDTO | null | undefined {
-    if (!category) return category;
-
-    return {
-      ...category,
-      products: category.products.map((product) => ({
-        ...product,
-        updatedAt: product.updatedAt.toLocaleDateString(),
-        createdAt: product.createdAt.toLocaleDateString(),
-        variants: product.variants.map((variant) => ({
-          ...variant,
-          price: variant.price.toNumber(),
-          updatedAt: variant.updatedAt.toLocaleDateString(),
-          createdAt: variant.createdAt.toLocaleDateString(),
-          attributes:
-            variant.attributes?.valueOf() as ProductVariantDTO["attributes"],
-        })),
-      })),
-      children: category.children.map((child) => ({
-        ...child,
-        updatedAt: child.updatedAt.toLocaleDateString(),
-        createdAt: child.createdAt.toLocaleDateString(),
-      })),
-      updatedAt: category.updatedAt.toLocaleDateString(),
-      createdAt: category.createdAt.toLocaleDateString(),
-    };
   }
 }

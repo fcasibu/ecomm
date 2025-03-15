@@ -11,7 +11,7 @@ export interface ErrorOptions {
 }
 
 export class BaseController {
-  protected mapError(error: unknown, options?: ErrorOptions): never {
+  protected logAndThrowError(error: unknown, options?: ErrorOptions): never {
     const prismaError = error as {
       code?: string;
       meta?: { target?: string[] };

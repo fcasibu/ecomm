@@ -1,4 +1,3 @@
-import assert from "assert";
 import { InvalidImageFormatError } from "../errors/invalid-image-format-error";
 import { ImageUploadError } from "../errors/image-upload-error";
 import type { DAM } from "../dam/dam-interface";
@@ -8,9 +7,7 @@ export interface BaseImageService {
 }
 
 export class ImageService implements BaseImageService {
-  constructor(private readonly damService: DAM) {
-    assert(damService, "DAM service is required");
-  }
+  constructor(private readonly damService: DAM) {}
 
   public async upload(file: string, identifier: string): Promise<string> {
     if (!this.validateImageFormat(file)) {
