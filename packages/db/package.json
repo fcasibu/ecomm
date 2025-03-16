@@ -4,20 +4,25 @@
   "devDependencies": {
     "@ecomm/eslint-config": "workspace:*",
     "@ecomm/typescript-config": "workspace:*",
+    "@fast-csv/parse": "^5.0.2",
     "@types/node": "^22.13.0",
     "eslint": "^9.20.0",
+    "tsx": "^4.19.3",
     "typescript": "5.7.3"
   },
   "exports": {
     ".": "./prisma/client.ts"
   },
   "private": true,
+  "prisma": {
+    "seed": "tsx ./seed/index.ts"
+  },
   "scripts": {
-    "build": "bun run postinstall",
+    "build": "prisma generate",
     "lint": "eslint . --max-warnings 0",
+    "prisma:seed": "prisma db seed",
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate",
-    "postinstall": "prisma generate",
     "check-types": "tsc --noEmit"
   },
   "dependencies": {

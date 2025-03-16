@@ -3,6 +3,17 @@ export interface ProductAttribute {
   title?: string;
 }
 
+export interface DeliveryPromiseDTO {
+  id: string;
+  shippingMethod: 'STANDARD' | 'EXPRESS' | 'NEXT_DAY';
+  estimatedMinDays: number;
+  estimatedMaxDays: number;
+  price: number;
+  requiresShippingFee: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
 export interface ProductVariantDTO {
   id: string;
   createdAt: string;
@@ -37,4 +48,5 @@ export interface ProductDTO {
     tier: number | null;
   } | null;
   variants: ProductVariantDTO[];
+  deliveryPromises: DeliveryPromiseDTO[];
 }

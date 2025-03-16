@@ -1,5 +1,6 @@
 import { BaseTransformer } from '../base-transformer';
 import type {
+  DeliveryPromiseDTO,
   ProductAttribute,
   ProductDTO,
   ProductVariantDTO,
@@ -20,6 +21,9 @@ export class ProductTransformer extends BaseTransformer {
       updatedAt: this.formatDateToISO(product.updatedAt),
       variants: product.variants.map((variant) =>
         this.transformVariant(variant),
+      ),
+      deliveryPromises: product.deliveryPromises.map((deliveryPromise) =>
+        this.transformDeliveryPromise(deliveryPromise),
       ),
       category: this.transformCategory(product.category),
     };
@@ -42,6 +46,21 @@ export class ProductTransformer extends BaseTransformer {
         attributes?.map((attribute) => [attribute.title, attribute.value]) ??
           [],
       ),
+    };
+  }
+
+  private transformDeliveryPromise(
+    deliveryPromise: Product['deliveryPromises'][number],
+  ): DeliveryPromiseDTO {
+    return {
+      id: deliveryPromise.id,
+      price: deliveryPromise.price.toNumber(),
+      shippingMethod: deliveryPromise.shippingMethod,
+      estimatedMinDays: deliveryPromise.estimatedMinDays,
+      estimatedMaxDays: deliveryPromise.estimatedMaxDays,
+      requiresShippingFee: deliveryPromise.requiresShippingFee,
+      createdAt: this.formatDateToISO(deliveryPromise.createdAt),
+      updatedAt: this.formatDateToISO(deliveryPromise.updatedAt),
     };
   }
 

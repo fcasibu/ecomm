@@ -53,6 +53,48 @@ export const productUpdateVariantSchema = z.object({
   attributes: variantAttributeSchema,
 });
 
+export const productDeliveryPromiseCreateSchema = z
+  .object({
+    shippingMethod: z.enum(['STANDARD', 'EXPRESS', 'NEXT_DAY']),
+    price: z.number(),
+    estimatedMinDays: z.number(),
+    estimatedMaxDays: z.number(),
+    requiresShippingFee: z.boolean().optional(),
+    enabled: z.boolean(),
+  })
+  .superRefine((deliveryPromise, ctx) => {
+    if (!deliveryPromise.enabled) {
+      return;
+    }
+
+    if (deliveryPromise.price === 0) {
+      ctx.addIssue({
+        code: 'custom',
+        message: 'Delivery promise price cannot be 0',
+        path: ['price'],
+      });
+    }
+
+    if (deliveryPromise.shippingMethod === 'NEXT_DAY') {
+      return;
+    }
+
+    if (deliveryPromise.estimatedMinDays >= deliveryPromise.estimatedMaxDays) {
+      ctx.addIssue({
+        code: 'custom',
+        message:
+          'Delivery promise estimated min days must be less than the estimated max days',
+        path: ['estimatedMinDays'],
+      });
+    }
+  });
+
+export const productDeliveryPromiseUpdateSchema = z
+  .object({
+    id: z.string().uuid().optional(),
+  })
+  .and(productDeliveryPromiseCreateSchema);
+
 export const productCreateSchema = z.object({
   name: z.string().min(1, 'Product name is required'),
   description: z.string().optional(),
@@ -61,6 +103,7 @@ export const productCreateSchema = z.object({
   variants: z
     .array(productCreateVariantSchema)
     .min(1, 'A product must have a variant'),
+  deliveryPromises: z.array(productDeliveryPromiseCreateSchema),
 });
 
 export const productUpdateSchema = z.object({
@@ -71,6 +114,7 @@ export const productUpdateSchema = z.object({
   variants: z
     .array(productUpdateVariantSchema)
     .min(1, 'A product must have a variant'),
+  deliveryPromises: z.array(productDeliveryPromiseUpdateSchema),
 });
 
 export type ProductCreateInput = z.infer<typeof productCreateSchema>;
@@ -80,4 +124,12 @@ export type ProductVariantCreateInput = z.infer<
 export type ProductUpdateInput = z.infer<typeof productUpdateSchema>;
 export type ProductVariantUpdateInput = z.infer<
   typeof productUpdateVariantSchema
+>;
+
+export type ProductDeliveryPromiseCreateInput = z.infer<
+  typeof productDeliveryPromiseCreateSchema
+>;
+
+export type ProductDeliveryPromiseUpdateInput = z.infer<
+  typeof productDeliveryPromiseUpdateSchema
 >;

@@ -9,6 +9,7 @@ import {
   FormControl,
   FormMessage,
   Form,
+  FormDescription,
 } from '@ecomm/ui/form';
 import { Input } from '@ecomm/ui/input';
 import { MultiInput } from '@ecomm/ui/multi-input';
@@ -16,16 +17,26 @@ import {
   productAttributes,
   productUpdateSchema,
   productUpdateVariantSchema,
+  type ProductCreateInput,
+  type ProductDeliveryPromiseUpdateInput,
   type ProductUpdateInput,
   type ProductVariantUpdateInput,
 } from '@ecomm/validations/cms/products/product-schema';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Loader, Plus } from 'lucide-react';
-import { useForm } from 'react-hook-form';
+import {
+  BoxSelectIcon,
+  CheckSquare2,
+  Clock,
+  Loader,
+  Plus,
+  Truck,
+  Zap,
+} from 'lucide-react';
+import { useForm, useFormContext } from 'react-hook-form';
 import { Suspense, useState, useTransition } from 'react';
 import { toast } from '@ecomm/ui/hooks/use-toast';
 import { useRouter } from 'next/navigation';
-import { Heading } from '@ecomm/ui/typography';
+import { Heading, Text } from '@ecomm/ui/typography';
 import {
   Sheet,
   SheetContent,
@@ -41,8 +52,35 @@ import { CategorySelectSkeleton } from '@/components/category-select-skeleton';
 import { MultiImageUpload } from '@/components/multi-image-upload';
 import type { z } from 'zod';
 import { useStore } from '@/features/store/providers/store-provider';
+import { ToggleGroup, ToggleGroupItem } from '@ecomm/ui/toggle-group';
+import { Card } from '@ecomm/ui/card';
+import { cn } from '@ecomm/ui/lib/utils';
+import { Switch } from '@ecomm/ui/switch';
+
+const deliveryPromises = [
+  {
+    title: 'Standard Delivery',
+    value: 'STANDARD',
+    icon: Truck,
+  },
+  {
+    title: 'Express Delivery',
+    value: 'EXPRESS',
+    icon: Zap,
+  },
+  {
+    title: 'Next Day Delivery',
+    value: 'NEXT_DAY',
+    icon: Clock,
+  },
+] as const satisfies {
+  title: string;
+  value: ProductDeliveryPromiseUpdateInput['shippingMethod'];
+  icon: React.ElementType;
+}[];
 
 export function ProductUpdateForm({ product }: { product: ProductDTO }) {
+  console.log(product);
   const store = useStore();
   const form = useForm<ProductUpdateInput>({
     resolver: zodResolver(productUpdateSchema),
@@ -58,6 +96,33 @@ export function ProductUpdateForm({ product }: { product: ProductDTO }) {
           value: variant.attributes[key as keyof typeof productAttributes],
         })) as z.infer<typeof productUpdateVariantSchema>['attributes'],
       })),
+      deliveryPromises: deliveryPromises.map((item) => {
+        const deliveryPromise = product.deliveryPromises.find(
+          (deliveryPromise) => deliveryPromise.shippingMethod === item.value,
+        );
+
+        if (!deliveryPromise) {
+          return {
+            id: undefined,
+            shippingMethod: item.value,
+            price: 0,
+            estimatedMinDays: 0,
+            estimatedMaxDays: 0,
+            requiresShippingFee: false,
+            enabled: false,
+          };
+        }
+
+        return {
+          id: deliveryPromise.id,
+          shippingMethod: deliveryPromise.shippingMethod,
+          price: deliveryPromise.price,
+          estimatedMinDays: deliveryPromise.estimatedMinDays,
+          estimatedMaxDays: deliveryPromise.estimatedMaxDays,
+          requiresShippingFee: deliveryPromise.requiresShippingFee,
+          enabled: true,
+        };
+      }),
     },
   });
 
@@ -198,6 +263,23 @@ export function ProductUpdateForm({ product }: { product: ProductDTO }) {
             )}
           />
 
+          <FormField
+            control={form.control}
+            name="deliveryPromises"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Delivery Promise</FormLabel>
+                <FormDescription>
+                  Set up delivery options for this product
+                </FormDescription>
+                <FormControl>
+                  <DeliveryPromisesControl {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
           <div className="flex justify-end gap-4">
             <Button
               variant="outline"
@@ -234,6 +316,180 @@ export function ProductUpdateForm({ product }: { product: ProductDTO }) {
         </form>
       </Form>
     </div>
+  );
+}
+
+interface DeliveryPromisesControlProps {
+  value: ProductDeliveryPromiseUpdateInput[];
+  onChange: (value: ProductDeliveryPromiseUpdateInput[]) => void;
+}
+
+function DeliveryPromisesControl({
+  value,
+  onChange,
+  ...props
+}: DeliveryPromisesControlProps) {
+  const [selectedShippingMethods, setSelectedShippingMethods] = useState<
+    string[]
+  >(value.filter((item) => item.enabled).map((item) => item.shippingMethod));
+  const formContext = useFormContext<ProductCreateInput>();
+
+  const isDisabled = (shippingMethod: string) => {
+    return (
+      !selectedShippingMethods.length ||
+      !selectedShippingMethods.includes(shippingMethod)
+    );
+  };
+
+  const updatedDeliveryPromises = formContext.watch('deliveryPromises');
+
+  return (
+    <ToggleGroup
+      {...props}
+      aria-label="Delivery Promise Selection"
+      value={selectedShippingMethods}
+      onValueChange={(
+        data: ProductDeliveryPromiseUpdateInput['shippingMethod'][],
+      ) => {
+        setSelectedShippingMethods(data);
+        onChange(
+          updatedDeliveryPromises.map((item) => ({
+            ...item,
+            enabled: data.includes(item.shippingMethod),
+          })),
+        );
+      }}
+      type="multiple"
+      className="items-stretch gap-3"
+    >
+      {deliveryPromises.map(({ value, title, icon: Icon }, index) => (
+        <Card
+          key={value}
+          className={cn('flex-1 space-y-2 p-4', {
+            'bg-gray-100/50': isDisabled(value),
+          })}
+        >
+          <div className="flex justify-between">
+            <div className="flex items-center gap-2">
+              <Icon className="h-5 w-5" />
+              <Text as="span" size="sm">
+                {title}
+              </Text>
+            </div>
+            <ToggleGroupItem value={value} className="p-0">
+              {!selectedShippingMethods.includes(value) ? (
+                <BoxSelectIcon />
+              ) : (
+                <CheckSquare2 />
+              )}
+            </ToggleGroupItem>
+          </div>
+          <FormField
+            control={formContext.control}
+            name={`deliveryPromises.${index}.price`}
+            render={({ field }) => (
+              <FormItem>
+                <Text asChild size="xs">
+                  <FormLabel>Delivery Price</FormLabel>
+                </Text>
+                <FormControl>
+                  <Input
+                    {...field}
+                    type="number"
+                    disabled={isDisabled(value)}
+                    value={field.value || 0}
+                    min={0}
+                    onChange={(event) =>
+                      field.onChange(event.target.valueAsNumber)
+                    }
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          {value !== 'NEXT_DAY' && (
+            <div>
+              <FormField
+                control={formContext.control}
+                name={`deliveryPromises.${index}.estimatedMinDays`}
+                render={({ field }) => (
+                  <FormItem>
+                    <Text asChild size="xs">
+                      <FormLabel>Min Days</FormLabel>
+                    </Text>
+                    <FormControl>
+                      <Input
+                        {...field}
+                        type="number"
+                        disabled={isDisabled(value)}
+                        value={field.value || 0}
+                        min={0}
+                        onChange={(event) =>
+                          field.onChange(event.target.valueAsNumber)
+                        }
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={formContext.control}
+                name={`deliveryPromises.${index}.estimatedMaxDays`}
+                render={({ field }) => (
+                  <FormItem>
+                    <Text asChild size="xs">
+                      <FormLabel>Max Days</FormLabel>
+                    </Text>
+                    <FormControl>
+                      <Input
+                        {...field}
+                        type="number"
+                        disabled={isDisabled(value)}
+                        value={field.value || 0}
+                        min={0}
+                        onChange={(event) =>
+                          field.onChange(event.target.valueAsNumber)
+                        }
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+          )}
+          <FormField
+            control={formContext.control}
+            name={`deliveryPromises.${index}.requiresShippingFee`}
+            render={({ field }) => (
+              <FormItem>
+                <FormControl>
+                  <div className="mt-4">
+                    <div className="mb-2 flex items-center gap-2">
+                      <Switch
+                        checked={field.value}
+                        onCheckedChange={field.onChange}
+                        disabled={isDisabled(value)}
+                      />
+                      <Text asChild size="xs">
+                        <FormLabel>Required Shipping Fee</FormLabel>
+                      </Text>
+                    </div>
+                    <FormDescription>
+                      Check this if the delivery fee is mandatory for this
+                      shipping method
+                    </FormDescription>
+                  </div>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </Card>
+      ))}
+    </ToggleGroup>
   );
 }
 

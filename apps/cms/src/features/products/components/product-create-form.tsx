@@ -9,23 +9,36 @@ import {
   FormControl,
   FormMessage,
   Form,
+  FormDescription,
 } from '@ecomm/ui/form';
 import { Input } from '@ecomm/ui/input';
+import { ToggleGroup, ToggleGroupItem } from '@ecomm/ui/toggle-group';
 import { MultiInput } from '@ecomm/ui/multi-input';
 import {
   productAttributes,
   productCreateSchema,
   productCreateVariantSchema,
+  type ProductCreateInput,
+  type ProductDeliveryPromiseCreateInput,
+  type ProductVariantCreateInput,
 } from '@ecomm/validations/cms/products/product-schema';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Loader, Plus } from 'lucide-react';
-import { useForm } from 'react-hook-form';
+import {
+  BoxSelectIcon,
+  CheckSquare2,
+  Clock,
+  Loader,
+  Plus,
+  Truck,
+  Zap,
+} from 'lucide-react';
+import { useForm, useFormContext } from 'react-hook-form';
 import type { z } from 'zod';
 import { Suspense, useState, useTransition } from 'react';
 import { createProduct } from '../services/mutations';
 import { toast } from '@ecomm/ui/hooks/use-toast';
 import { useRouter } from 'next/navigation';
-import { Heading } from '@ecomm/ui/typography';
+import { Heading, Text } from '@ecomm/ui/typography';
 import {
   Sheet,
   SheetContent,
@@ -38,6 +51,31 @@ import { ImageComponent } from '@ecomm/ui/image';
 import { CategorySelectSkeleton } from '@/components/category-select-skeleton';
 import { MultiImageUpload } from '@/components/multi-image-upload';
 import { useStore } from '@/features/store/providers/store-provider';
+import { Card } from '@ecomm/ui/card';
+import { cn } from '@ecomm/ui/lib/utils';
+import { Switch } from '@ecomm/ui/switch';
+
+const deliveryPromises = [
+  {
+    title: 'Standard Delivery',
+    value: 'STANDARD',
+    icon: Truck,
+  },
+  {
+    title: 'Express Delivery',
+    value: 'EXPRESS',
+    icon: Zap,
+  },
+  {
+    title: 'Next Day Delivery',
+    value: 'NEXT_DAY',
+    icon: Clock,
+  },
+] as const satisfies {
+  title: string;
+  value: ProductDeliveryPromiseCreateInput['shippingMethod'];
+  icon: React.ElementType;
+}[];
 
 export function ProductCreateForm() {
   'use no memo';
@@ -51,6 +89,14 @@ export function ProductCreateForm() {
       categoryId: undefined,
       features: [],
       variants: [],
+      deliveryPromises: deliveryPromises.map((item) => ({
+        shippingMethod: item.value,
+        price: 0,
+        estimatedMinDays: 0,
+        estimatedMaxDays: 0,
+        requiredShippingFee: false,
+        enabled: false,
+      })),
     },
   });
 
@@ -176,6 +222,23 @@ export function ProductCreateForm() {
             )}
           />
 
+          <FormField
+            control={form.control}
+            name="deliveryPromises"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Delivery Promise</FormLabel>
+                <FormDescription>
+                  Set up delivery options for this product
+                </FormDescription>
+                <FormControl>
+                  <DeliveryPromisesControl {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
           <div className="flex justify-end gap-4">
             <Button
               variant="outline"
@@ -202,11 +265,183 @@ export function ProductCreateForm() {
   );
 }
 
-type ProductVariant = z.infer<typeof productCreateVariantSchema>;
+interface DeliveryPromisesControlProps {
+  value: ProductDeliveryPromiseCreateInput[];
+  onChange: (value: ProductDeliveryPromiseCreateInput[]) => void;
+}
+
+function DeliveryPromisesControl({
+  value,
+  onChange,
+  ...props
+}: DeliveryPromisesControlProps) {
+  const [selectedShippingMethods, setSelectedShippingMethods] = useState<
+    string[]
+  >([]);
+  const formContext = useFormContext<ProductCreateInput>();
+
+  const isDisabled = (shippingMethod: string) => {
+    return (
+      !selectedShippingMethods.length ||
+      !selectedShippingMethods.includes(shippingMethod)
+    );
+  };
+
+  const updatedDeliveryPromises = formContext.watch('deliveryPromises');
+
+  return (
+    <ToggleGroup
+      {...props}
+      aria-label="Delivery Promise Selection"
+      value={selectedShippingMethods}
+      onValueChange={(
+        data: ProductDeliveryPromiseCreateInput['shippingMethod'][],
+      ) => {
+        setSelectedShippingMethods(data);
+        onChange(
+          updatedDeliveryPromises.map((item) => ({
+            ...item,
+            enabled: data.includes(item.shippingMethod),
+          })),
+        );
+      }}
+      type="multiple"
+      className="items-stretch gap-3"
+    >
+      {deliveryPromises.map(({ value, title, icon: Icon }, index) => (
+        <Card
+          key={value}
+          className={cn('flex-1 space-y-2 p-4', {
+            'bg-gray-100/50': isDisabled(value),
+          })}
+        >
+          <div className="flex justify-between">
+            <div className="flex items-center gap-2">
+              <Icon className="h-5 w-5" />
+              <Text as="span" size="sm">
+                {title}
+              </Text>
+            </div>
+            <ToggleGroupItem value={value} className="p-0">
+              {!selectedShippingMethods.includes(value) ? (
+                <BoxSelectIcon />
+              ) : (
+                <CheckSquare2 />
+              )}
+            </ToggleGroupItem>
+          </div>
+          <FormField
+            control={formContext.control}
+            name={`deliveryPromises.${index}.price`}
+            render={({ field }) => (
+              <FormItem>
+                <Text asChild size="xs">
+                  <FormLabel>Delivery Price</FormLabel>
+                </Text>
+                <FormControl>
+                  <Input
+                    {...field}
+                    type="number"
+                    disabled={isDisabled(value)}
+                    value={field.value || 0}
+                    min={0}
+                    onChange={(event) =>
+                      field.onChange(event.target.valueAsNumber)
+                    }
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          {value !== 'NEXT_DAY' && (
+            <div>
+              <FormField
+                control={formContext.control}
+                name={`deliveryPromises.${index}.estimatedMinDays`}
+                render={({ field }) => (
+                  <FormItem>
+                    <Text asChild size="xs">
+                      <FormLabel>Min Days</FormLabel>
+                    </Text>
+                    <FormControl>
+                      <Input
+                        {...field}
+                        type="number"
+                        disabled={isDisabled(value)}
+                        value={field.value || 0}
+                        min={0}
+                        onChange={(event) =>
+                          field.onChange(event.target.valueAsNumber)
+                        }
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={formContext.control}
+                name={`deliveryPromises.${index}.estimatedMaxDays`}
+                render={({ field }) => (
+                  <FormItem>
+                    <Text asChild size="xs">
+                      <FormLabel>Max Days</FormLabel>
+                    </Text>
+                    <FormControl>
+                      <Input
+                        {...field}
+                        type="number"
+                        disabled={isDisabled(value)}
+                        value={field.value || 0}
+                        min={0}
+                        onChange={(event) =>
+                          field.onChange(event.target.valueAsNumber)
+                        }
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+          )}
+          <FormField
+            control={formContext.control}
+            name={`deliveryPromises.${index}.requiresShippingFee`}
+            render={({ field }) => (
+              <FormItem>
+                <FormControl>
+                  <div className="mt-4">
+                    <div className="mb-2 flex items-center gap-2">
+                      <Switch
+                        checked={field.value}
+                        onCheckedChange={field.onChange}
+                        disabled={isDisabled(value)}
+                      />
+                      <Text asChild size="xs">
+                        <FormLabel>Required Shipping Fee</FormLabel>
+                      </Text>
+                    </div>
+                    <FormDescription>
+                      Check this if the delivery fee is mandatory for this
+                      shipping method
+                    </FormDescription>
+                  </div>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </Card>
+      ))}
+    </ToggleGroup>
+  );
+}
 
 interface ProductVariantsControlProps {
-  value: ProductVariant[];
-  onChange: (value: ProductVariant[]) => void;
+  value: ProductVariantCreateInput[];
+  onChange: (value: ProductVariantCreateInput[]) => void;
 }
 
 function ProductVariantsControl({
@@ -215,14 +450,15 @@ function ProductVariantsControl({
   ...props
 }: ProductVariantsControlProps) {
   const [isOpen, setIsOpen] = useState(false);
-  const [currentItem, setCurrentItem] = useState<ProductVariant | null>(null);
+  const [currentItem, setCurrentItem] =
+    useState<ProductVariantCreateInput | null>(null);
 
-  const form = useForm<ProductVariant>({
+  const form = useForm<ProductVariantCreateInput>({
     resolver: zodResolver(productCreateVariantSchema),
     defaultValues: {},
   });
 
-  const handleSubmit = (data: ProductVariant) => {
+  const handleSubmit = (data: ProductVariantCreateInput) => {
     onChange(
       currentItem
         ? value.map((item) =>
@@ -251,7 +487,7 @@ function ProductVariantsControl({
     setCurrentItem(null);
   };
 
-  const handleVariantClick = (item: ProductVariant) => {
+  const handleVariantClick = (item: ProductVariantCreateInput) => {
     form.reset(item);
     setCurrentItem(item);
   };

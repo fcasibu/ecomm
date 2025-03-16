@@ -2,6 +2,7 @@ import { PrismaClient } from '@ecomm/db';
 import type { Prisma } from '@ecomm/db';
 import type {
   ProductCreateInput,
+  ProductDeliveryPromiseCreateInput,
   ProductUpdateInput,
 } from '@ecomm/validations/cms/products/product-schema';
 import type { SearchOptions } from '../base-service';
@@ -12,17 +13,20 @@ import {
   createNestedTextSearchCondition,
   combineSearchConditions,
 } from '../utils/prisma-helpers';
+import { omitFields } from '@ecomm/lib/omit-fields';
 
 export type Product = Prisma.ProductGetPayload<{
   include: {
     category: true;
     variants: true;
+    deliveryPromises: true;
   };
 }>;
 
 const PRODUCT_INCLUDE = {
   category: true,
   variants: true,
+  deliveryPromises: true,
 } as const satisfies Prisma.ProductInclude;
 
 export class ProductsService extends BaseService {
@@ -46,6 +50,15 @@ export class ProductsService extends BaseService {
                 ...variant,
                 sku: generateVariantSku(sku),
               })) ?? [],
+          },
+        },
+        deliveryPromises: {
+          createMany: {
+            data: input.deliveryPromises
+              .filter((deliveryPromise) => deliveryPromise.enabled)
+              .map((deliveryPromise) =>
+                omitFields(deliveryPromise, ['enabled']),
+              ),
           },
         },
         ...(input.categoryId
@@ -110,12 +123,47 @@ export class ProductsService extends BaseService {
       const variantsToUpdate = input.variants.filter((variant) => variant.sku);
       const variantsToCreate = input.variants.filter((variant) => !variant.sku);
 
+      const existingDeliveryPromiseIds = input.deliveryPromises
+        .filter(
+          (
+            deliveryPromise,
+          ): deliveryPromise is ProductDeliveryPromiseCreateInput & {
+            id: string;
+          } => Boolean(deliveryPromise.id) && deliveryPromise.enabled,
+        )
+        .map((deliveryPromise) => deliveryPromise.id);
+
+      const deliveryPromisesToUpdate = input.deliveryPromises
+        .filter(
+          (deliveryPromise) => deliveryPromise.enabled && deliveryPromise.id,
+        )
+        .map((deliveryPromise) => omitFields(deliveryPromise, ['enabled']));
+
+      const deliveryPromisesToCreate = input.deliveryPromises
+        .filter(
+          (deliveryPromise) => deliveryPromise.enabled && !deliveryPromise.id,
+        )
+        .map((deliveryPromise) => omitFields(deliveryPromise, ['enabled']));
+
       return await tx.product.update({
         where: { id: productId, locale },
         data: {
           features: input.features,
           name: input.name,
           description: input.description,
+          deliveryPromises: {
+            deleteMany: {
+              productId,
+              id: { notIn: existingDeliveryPromiseIds },
+            },
+            updateMany: deliveryPromisesToUpdate.map((deliveryPromise) => ({
+              where: { id: deliveryPromise.id as string },
+              data: deliveryPromise,
+            })),
+            createMany: {
+              data: deliveryPromisesToCreate,
+            },
+          },
           variants: {
             deleteMany: {
               productId,

@@ -73,19 +73,20 @@ model Address {
 }
 
 model Product {
-  id          String           @id @default(uuid())
-  sku         String           @unique
-  name        String
-  description String?
-  features    String[]
-  category    Category?        @relation(fields: [categoryId], references: [id], onDelete: SetNull)
-  categoryId  String?
-  createdAt   DateTime         @default(now())
-  updatedAt   DateTime         @updatedAt
-  variants    ProductVariant[]
-  cartItems   CartItem[]
-  store       Store            @relation(fields: [locale], references: [locale], onDelete: Cascade)
-  locale      String
+  id               String            @id @default(uuid())
+  sku              String            @unique
+  name             String
+  description      String?
+  features         String[]
+  category         Category?         @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  categoryId       String?
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
+  variants         ProductVariant[]
+  cartItems        CartItem[]
+  deliveryPromises DeliveryPromise[]
+  store            Store             @relation(fields: [locale], references: [locale], onDelete: Cascade)
+  locale           String
 
   @@index([locale])
 }
@@ -102,6 +103,25 @@ model ProductVariant {
   attributes Json?
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
+}
+
+enum DeliveryPromiseShippingMethod {
+  STANDARD
+  EXPRESS
+  NEXT_DAY
+}
+
+model DeliveryPromise {
+  id                  String                        @id @default(uuid())
+  product             Product                       @relation(fields: [productId], references: [id], onDelete: Cascade)
+  productId           String
+  price               Decimal
+  estimatedMinDays    Int
+  estimatedMaxDays    Int
+  shippingMethod      DeliveryPromiseShippingMethod @default(STANDARD)
+  requiresShippingFee Boolean                       @default(false)
+  createdAt           DateTime                      @default(now())
+  updatedAt           DateTime                      @updatedAt
 }
 
 model Category {
