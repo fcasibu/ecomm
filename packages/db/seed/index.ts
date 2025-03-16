@@ -119,7 +119,7 @@ async function main() {
   const storeLocale = store?.locale ?? 'en-US';
 
   await prisma.$transaction(async (tx) => {
-    const insertedCategories = new Map<string, boolean>();
+    const insertedCategories = new Set<string>();
     let remainingCategories = [...categories];
 
     while (remainingCategories.length > 0) {
@@ -148,7 +148,7 @@ async function main() {
               store: { connect: { locale: storeLocale } },
             },
           });
-          insertedCategories.set(category.id, true);
+          insertedCategories.add(category.id);
         }),
       );
 
