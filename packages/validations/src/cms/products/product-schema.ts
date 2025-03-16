@@ -67,14 +67,6 @@ export const productDeliveryPromiseCreateSchema = z
       return;
     }
 
-    if (deliveryPromise.price === 0) {
-      ctx.addIssue({
-        code: 'custom',
-        message: 'Delivery promise price cannot be 0',
-        path: ['price'],
-      });
-    }
-
     if (deliveryPromise.shippingMethod === 'NEXT_DAY') {
       return;
     }

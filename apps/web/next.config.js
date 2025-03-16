@@ -5,7 +5,8 @@ import withBundleAnalyzer from '@next/bundle-analyzer';
 import createJiti from 'jiti';
 const jiti = createJiti(fileURLToPath(import.meta.url));
 
-jiti.import('./src/env.ts');
+jiti.import('./src/env/client.ts');
+jiti.import('./src/env/server.ts');
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {

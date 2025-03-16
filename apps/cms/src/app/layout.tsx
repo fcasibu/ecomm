@@ -61,7 +61,7 @@ export default function RootLayout({
           <Providers>
             <Toaster />
             <Header />
-            <div className="bg-background text-foreground flex h-screen">
+            <div className="bg-background text-foreground flex h-full">
               <Sidebar />
               <main className="flex-1 overflow-y-auto p-8">{children}</main>
             </div>

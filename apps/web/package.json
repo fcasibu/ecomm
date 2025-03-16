@@ -9,6 +9,8 @@
     "build:analyze": "ANALYZE=true next build",
     "start": "next start",
     "lint": "next lint --max-warnings 0",
+    "sanity:schema-extract": "sanity schema extract",
+    "sanity:generate-types": "sanity typegen generate",
     "check-types": "tsc --noEmit"
   },
   "dependencies": {
@@ -19,6 +21,8 @@
     "@faceless-ui/window-info": "^3.0.1",
     "@hookform/resolvers": "^4.1.2",
     "@prisma/nextjs-monorepo-workaround-plugin": "^6.4.1",
+    "@sanity/image-url": "^1.1.0",
+    "@sanity/vision": "^3.79.0",
     "@sentry/nextjs": "^9",
     "@t3-oss/env-nextjs": "^0.12.0",
     "autoprefixer": "^10.4.20",
@@ -29,6 +33,7 @@
     "linkedom": "^0.18.9",
     "lucide-react": "^0.475.0",
     "next": "canary",
+    "next-sanity": "^9.9.4",
     "nuqs": "latest",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
@@ -44,11 +49,11 @@
     "@types/node": "^22",
     "@types/react": "19.0.8",
     "@types/react-dom": "19.0.3",
+    "eslint": "^9.20.0",
     "postcss": "^8",
     "tailwind-merge": "^3.0.1",
     "tailwindcss": "^3.4.1",
     "tailwindcss-animate": "^1.0.7",
-    "eslint": "^9.20.0",
     "typescript": "5.7.3"
   }
 }
