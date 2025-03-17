@@ -12,6 +12,8 @@ import { structureTool } from 'sanity/structure';
 import { schema } from './src/sanity/schemaTypes';
 import { structure } from './src/sanity/structure';
 import { clientEnv } from '@/env/client';
+import { documentInternationalization } from '@sanity/document-internationalization';
+import { AVAILABLE_LOCALES } from '@/lib/utils/locale-helper';
 
 export default defineConfig({
   basePath: '/studio',
@@ -24,5 +26,13 @@ export default defineConfig({
     // Vision is for querying with GROQ from inside the Studio
     // https://www.sanity.io/docs/the-vision-plugin
     visionTool({ defaultApiVersion: clientEnv.NEXT_PUBLIC_SANITY_API_VERSION }),
+    documentInternationalization({
+      supportedLanguages: AVAILABLE_LOCALES.map((locale) => ({
+        id: locale,
+        name: locale.replace('-', '_'),
+        title: locale.toUpperCase(),
+      })),
+      schemaTypes: ['header'],
+    }),
   ],
 });

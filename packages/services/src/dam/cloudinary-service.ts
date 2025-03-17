@@ -43,4 +43,12 @@ export class CloudinaryService implements DAM {
 
     return result.public_id;
   }
+
+  public async getImages(): Promise<string[]> {
+    const result = (await this.cloudinary.api.resources({
+      resource_type: 'image',
+    })) as { resources: { secure_url: string }[] };
+
+    return result.resources.map((resource) => resource.secure_url);
+  }
 }

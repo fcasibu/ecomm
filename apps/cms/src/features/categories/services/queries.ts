@@ -41,6 +41,12 @@ export const getCategoryById = async (locale: string, id: string) => {
   'use cache';
   cacheTag('all', 'category', `category_${id}`, `store_${locale}`);
 
+  const resu = await categoriesController().getHierarhchyOfCategoryIds(locale, [
+    id,
+  ]);
+
+  console.log(resu);
+
   return await executeOperation(() =>
     categoriesController().getById(locale, id),
   );

@@ -1,6 +1,5 @@
 'use server';
 
-import 'server-only';
 import { executeOperation } from '@ecomm/lib/execute-operation';
 import { storeController } from '@ecomm/services/registry';
 import { revalidateTag } from 'next/cache';

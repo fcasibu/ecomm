@@ -15,4 +15,14 @@ export class ImageController extends BaseController {
       });
     }
   }
+
+  public async getImages() {
+    try {
+      return await this.imageService.getImages();
+    } catch (error) {
+      this.logAndThrowError(error, {
+        message: 'Image upload failed',
+      });
+    }
+  }
 }

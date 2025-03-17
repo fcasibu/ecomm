@@ -4,6 +4,7 @@ import type { DAM } from '../dam/dam-interface';
 
 export interface BaseImageService {
   upload(file: string, identifier: string): Promise<string>;
+  getImages(): Promise<string[]>;
 }
 
 export class ImageService implements BaseImageService {
@@ -19,6 +20,10 @@ export class ImageService implements BaseImageService {
     } catch (error) {
       throw new ImageUploadError((error as Error).message);
     }
+  }
+
+  public async getImages(): Promise<string[]> {
+    return await this.damService.getImages();
   }
 
   private validateImageFormat(file: string) {

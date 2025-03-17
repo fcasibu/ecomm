@@ -137,6 +137,26 @@ export class CategoriesService extends BaseService {
     });
   }
 
+  public async getHierarchyOfCategoryIds(locale: string, ids: string[]) {
+    return await this.prismaClient.category.findMany({
+      where: { id: { in: ids }, locale },
+      include: {
+        ...CATEGORY_INCLUDE,
+        children: {
+          include: {
+            ...CATEGORY_INCLUDE,
+            children: {
+              include: {
+                ...CATEGORY_INCLUDE,
+                children: false,
+              },
+            },
+          },
+        },
+      },
+    });
+  }
+
   public async getCategoriesPath(locale: string, categoryId: string) {
     const path: {
       id: string;

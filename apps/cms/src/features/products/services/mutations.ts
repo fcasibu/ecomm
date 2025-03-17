@@ -7,7 +7,6 @@ import type {
   ProductUpdateInput,
 } from '@ecomm/validations/cms/products/product-schema';
 import { revalidateTag } from 'next/cache';
-import 'server-only';
 
 export const createProduct = async (
   locale: string,

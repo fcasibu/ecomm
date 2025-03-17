@@ -193,13 +193,34 @@ export class CategoriesController extends BaseController {
     try {
       const categories = (
         await this.categoriesService.getRootCategories(locale)
-      ).map((category) => this.transformer.toDTO(category));
+      )
+        .map((category) => this.transformer.toDTO(category))
+        .filter((category): category is CategoryDTO => Boolean(category));
 
-      logger.info({ categories }, 'Root categories fetched successfully');
+      logger.info('Root categories fetched successfully');
       return categories;
     } catch (error) {
       this.logAndThrowError(error, {
         message: 'Error fetching all root categories',
+      });
+    }
+  }
+
+  public async getHierarhchyOfCategoryIds(locale: string, ids: string[]) {
+    logger.info({ ids }, 'Fetching categories hierarchy');
+
+    try {
+      const categories = (
+        await this.categoriesService.getHierarchyOfCategoryIds(locale, ids)
+      )
+        .map((category) => this.transformer.toDTO(category))
+        .filter((category): category is CategoryDTO => Boolean(category));
+
+      logger.info('Categories hierarchy fetched successfully');
+      return categories;
+    } catch (error) {
+      this.logAndThrowError(error, {
+        message: 'Error fetching categories',
       });
     }
   }

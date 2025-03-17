@@ -1,6 +1,5 @@
 'use server';
 
-import 'server-only';
 import { categoriesController } from '@ecomm/services/registry';
 import type {
   CategoryCreateInput,

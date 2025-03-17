@@ -26,7 +26,9 @@ export class CategoryTransformer extends BaseTransformer {
   }
 
   private transformCategoryChild(
-    category: Category['children'][number],
+    category: Category['children'][number] & {
+      children?: Category['children'];
+    },
   ): CategoryDTO['children'][number] {
     return {
       slug: category.slug,
@@ -35,6 +37,12 @@ export class CategoryTransformer extends BaseTransformer {
       id: category.id,
       name: category.name,
       description: category.description,
+      children:
+        category.children
+          ?.map((child) => (child ? this.transformCategoryChild(child) : null))
+          .filter((child): child is CategoryDTO['children'][number] =>
+            Boolean(child),
+          ) ?? [],
       createdAt: this.formatDateToISO(category.createdAt),
       updatedAt: this.formatDateToISO(category.updatedAt),
     };

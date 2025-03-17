@@ -6,6 +6,9 @@ export const serverEnv = createEnv({
     DATABASE_URL: z.string(),
     SENTRY_AUTH_TOKEN: z.string(),
     SANITY_TOKEN: z.string(),
+    CLOUDINARY_CLOUD_NAME: z.string(),
+    CLOUDINARY_API_KEY: z.string(),
+    CLOUDINARY_API_SECRET: z.string(),
   },
   experimental__runtimeEnv: process.env,
 });

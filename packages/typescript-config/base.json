@@ -11,8 +11,6 @@
     "strict": true,
     "noUncheckedIndexedAccess": true,
     "noImplicitOverride": true,
-    "declaration": true,
-    "composite": true,
     "sourceMap": true,
     "declarationMap": true
   }

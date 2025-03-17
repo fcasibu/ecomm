@@ -1,7 +1,5 @@
 'use server';
 
-import 'server-only';
-
 import { executeOperation } from '@ecomm/lib/execute-operation';
 import { customersController } from '@ecomm/services/registry';
 import type {
