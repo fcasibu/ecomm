@@ -1,4 +1,4 @@
-// This is your Prisma schema file,
+// This is your Prisma schema file,schema
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 // Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
@@ -14,17 +14,18 @@ datasource db {
 }
 
 model Store {
-  id         String     @id @default(uuid())
-  currency   String     @default("USD")
-  locale     String     @unique @default("en-US")
-  customers  Customer[]
-  products   Product[]
-  categories Category[]
-  orders     Order[]
-  carts      Cart[]
-  payments   Payment[]
-  createdAt  DateTime   @default(now())
-  updatedAt  DateTime   @updatedAt
+  id                    String     @id @default(uuid())
+  currency              String     @default("USD")
+  locale                String     @unique @default("en-US")
+  freeShippingThreshold Decimal    @default(500.00)
+  customers             Customer[]
+  products              Product[]
+  categories            Category[]
+  orders                Order[]
+  carts                 Cart[]
+  payments              Payment[]
+  createdAt             DateTime   @default(now())
+  updatedAt             DateTime   @updatedAt
 
   @@index([locale])
 }

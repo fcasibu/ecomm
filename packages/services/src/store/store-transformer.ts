@@ -10,6 +10,7 @@ export class StoreTransformer extends BaseTransformer {
       id: store.id,
       locale: store.locale,
       currency: store.currency,
+      freeShippingThreshold: store.freeShippingThreshold.toNumber(),
       createdAt: this.formatDateToISO(store.createdAt),
       updatedAt: this.formatDateToISO(store.updatedAt),
     };

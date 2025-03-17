@@ -1,6 +1,9 @@
 import { PrismaClient } from '@ecomm/db';
 import { BaseService, type SearchOptions } from '../base-service';
-import type { StoreCreateInput } from '@ecomm/validations/cms/store/store-schema';
+import type {
+  StoreCreateInput,
+  StoreUpdateInput,
+} from '@ecomm/validations/cms/store/store-schema';
 import { createTextSearchCondition } from '../utils/prisma-helpers';
 
 export class StoreService extends BaseService {
@@ -13,6 +16,15 @@ export class StoreService extends BaseService {
       data: {
         locale: input.locale,
         currency: input.currency,
+      },
+    });
+  }
+
+  public async update(storeId: string, input: StoreUpdateInput) {
+    return await this.prismaClient.store.update({
+      where: { id: storeId },
+      data: {
+        freeShippingThreshold: input.freeShippingThreshold,
       },
     });
   }

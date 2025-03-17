@@ -4,7 +4,10 @@ import 'server-only';
 import { executeOperation } from '@ecomm/lib/execute-operation';
 import { storeController } from '@ecomm/services/registry';
 import { revalidateTag } from 'next/cache';
-import type { StoreCreateInput } from '@ecomm/validations/cms/store/store-schema';
+import type {
+  StoreCreateInput,
+  StoreUpdateInput,
+} from '@ecomm/validations/cms/store/store-schema';
 import { cookies } from 'next/headers';
 import { STORE_CURRENT_LOCALE_COOKIE_KEY } from '../constants';
 import { getCookieCurrentLocale } from '@/lib/get-cookie-current-locale';
@@ -14,6 +17,23 @@ export const createStore = async (input: StoreCreateInput) => {
 
   if (result.success) {
     revalidateTag(`store_${result.data.locale}`);
+    revalidateTag('stores');
+  }
+
+  return result;
+};
+
+export const updateStoreById = async (
+  storeId: string,
+  input: StoreUpdateInput,
+) => {
+  const result = await executeOperation(() =>
+    storeController().update(storeId, input),
+  );
+
+  if (result.success) {
+    revalidateTag(`store_${result.data.locale}`);
+    revalidateTag('stores');
   }
 
   return result;

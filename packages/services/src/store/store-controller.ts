@@ -4,7 +4,9 @@ import { BaseController } from '../base-controller';
 import { logger } from '@ecomm/lib/logger';
 import {
   storeCreateSchema,
+  storeUpdateSchema,
   type StoreCreateInput,
+  type StoreUpdateInput,
 } from '@ecomm/validations/cms/store/store-schema';
 import { StoreTransformer } from './store-transformer';
 import type { StoreDTO } from './store-dto';
@@ -36,6 +38,30 @@ export class StoreController extends BaseController {
     } catch (error) {
       this.logAndThrowError(error, {
         message: 'Error creating store',
+      });
+    }
+  }
+
+  public async update(storeId: string, input: StoreUpdateInput) {
+    try {
+      logger.info({ storeId, input }, 'Updating store');
+
+      const result = storeUpdateSchema.safeParse(input);
+
+      if (!result.success) throw new ValidationError(result.error);
+
+      const store = this.transformer.toDTO(
+        await this.storeService.update(storeId, result.data),
+      );
+      if (!store) {
+        throw new Error('Store not found');
+      }
+
+      logger.info({ storeId: store.id }, 'Store successfully updated');
+      return store;
+    } catch (error) {
+      this.logAndThrowError(error, {
+        message: 'Error updating store',
       });
     }
   }

@@ -35,6 +35,8 @@ import {
 import { ProductVariantsControl } from './product-variants-control';
 
 export function ProductCreateForm() {
+  'use no memo';
+
   const store = useStore();
   const router = useRouter();
   const [isPending, startTransition] = useTransition();

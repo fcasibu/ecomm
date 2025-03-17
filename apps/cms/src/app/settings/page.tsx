@@ -13,6 +13,7 @@ import { StoreCreateForm } from '@/features/store/components/store-create-form';
 import { getLocales } from '@ecomm/lib/locales';
 import { LocalesTable } from '@/features/store/components/locales-table';
 import { Heading } from '@ecomm/ui/typography';
+import { StoreUpdateForm } from '@/features/store/components/store-update-form';
 
 export default function Page({
   searchParams,
@@ -29,11 +30,22 @@ export default function Page({
         </div>
         <Separator />
 
-        <Tabs defaultValue="locales" className="w-full">
+        <Tabs defaultValue="store" className="w-full">
           <TabsList>
+            <TabsTrigger value="store">Store</TabsTrigger>
             <TabsTrigger value="locales">Locales</TabsTrigger>
             <TabsTrigger value="create">Create New</TabsTrigger>
           </TabsList>
+          <TabsContent value="store">
+            <Card>
+              <CardHeader>
+                <CardTitle>Store settings</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <StoreUpdateForm />
+              </CardContent>
+            </Card>
+          </TabsContent>
           <TabsContent value="locales">
             <Card>
               <CardHeader>
