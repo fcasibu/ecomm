@@ -118,77 +118,82 @@ async function main() {
 
   const storeLocale = store?.locale ?? 'en-US';
 
-  await prisma.$transaction(async (tx) => {
-    const insertedCategories = new Set<string>();
-    let remainingCategories = [...categories];
+  await prisma.$transaction(
+    async (tx) => {
+      const insertedCategories = new Set<string>();
+      let remainingCategories = [...categories];
 
-    while (remainingCategories.length > 0) {
-      const batch = remainingCategories.filter(
-        (category) =>
-          !category.parentId || insertedCategories.has(category.parentId),
-      );
+      while (remainingCategories.length > 0) {
+        const batch = remainingCategories.filter(
+          (category) =>
+            !category.parentId || insertedCategories.has(category.parentId),
+        );
 
-      if (batch.length === 0) {
-        throw new Error('Circular dependency detected in categories');
+        if (batch.length === 0) {
+          throw new Error('Circular dependency detected in categories');
+        }
+
+        await Promise.all(
+          batch.map(async (category) => {
+            await tx.category.create({
+              data: {
+                id: category.id,
+                name: category.name,
+                slug: category.slug,
+                description: category.description,
+                image: category.image,
+                tier: category.tier,
+                ...(category.parentId
+                  ? { parent: { connect: { id: category.parentId } } }
+                  : {}),
+                store: { connect: { locale: storeLocale } },
+              },
+            });
+            insertedCategories.add(category.id);
+          }),
+        );
+
+        remainingCategories = remainingCategories.filter(
+          (category) => !insertedCategories.has(category.id),
+        );
       }
 
       await Promise.all(
-        batch.map(async (category) => {
-          await tx.category.create({
+        products.map((product) =>
+          tx.product.create({
             data: {
-              id: category.id,
-              name: category.name,
-              slug: category.slug,
-              description: category.description,
-              image: category.image,
-              tier: category.tier,
-              ...(category.parentId
-                ? { parent: { connect: { id: category.parentId } } }
-                : {}),
+              id: product.id,
+              name: product.name,
+              description: product.description,
+              features: product.features,
+              sku: product.sku,
+              category: { connect: { id: product.categoryId } },
               store: { connect: { locale: storeLocale } },
             },
-          });
-          insertedCategories.add(category.id);
-        }),
+          }),
+        ),
       );
 
-      remainingCategories = remainingCategories.filter(
-        (category) => !insertedCategories.has(category.id),
+      await Promise.all(
+        productVariants.map((variant) =>
+          tx.productVariant.create({
+            data: {
+              id: variant.id,
+              sku: variant.sku,
+              price: variant.price,
+              stock: variant.stock,
+              images: variant.images,
+              attributes: variant.attributes,
+              product: { connect: { id: variant.productId } },
+            },
+          }),
+        ),
       );
-    }
-
-    await Promise.all(
-      products.map((product) =>
-        tx.product.create({
-          data: {
-            id: product.id,
-            name: product.name,
-            description: product.description,
-            features: product.features,
-            sku: product.sku,
-            category: { connect: { id: product.categoryId } },
-            store: { connect: { locale: storeLocale } },
-          },
-        }),
-      ),
-    );
-
-    await Promise.all(
-      productVariants.map((variant) =>
-        tx.productVariant.create({
-          data: {
-            id: variant.id,
-            sku: variant.sku,
-            price: variant.price,
-            stock: variant.stock,
-            images: variant.images,
-            attributes: variant.attributes,
-            product: { connect: { id: variant.productId } },
-          },
-        }),
-      ),
-    );
-  });
+    },
+    {
+      timeout: 10_000,
+    },
+  );
 }
 
 main()
