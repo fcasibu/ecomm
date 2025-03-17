@@ -1,6 +1,7 @@
+import './globals.css';
+
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
-import './globals.css';
 import { NuqsAdapter } from 'nuqs/adapters/next/app';
 import { Toaster } from '@ecomm/ui/toaster';
 import { WindowInfoProvider } from '@faceless-ui/window-info';
@@ -19,23 +20,21 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <html lang="en">
-        <body className={inter.className}>
-          <NuqsAdapter>
-            <WindowInfoProvider
-              breakpoints={{
-                s: '(min-width: 640px)',
-                m: '(min-width: 768px)',
-                l: '(min-width: 1024px)',
-                xl: '(min-width: 1280px)',
-              }}
-            >
-              <Toaster />
-              {children}
-            </WindowInfoProvider>
-          </NuqsAdapter>
-        </body>
-      </html>
+      <body className={inter.className}>
+        <NuqsAdapter>
+          <WindowInfoProvider
+            breakpoints={{
+              s: '(min-width: 640px)',
+              m: '(min-width: 768px)',
+              l: '(min-width: 1024px)',
+              xl: '(min-width: 1280px)',
+            }}
+          >
+            <Toaster />
+            {children}
+          </WindowInfoProvider>
+        </NuqsAdapter>
+      </body>
     </html>
   );
 }
