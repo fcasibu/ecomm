@@ -5,12 +5,12 @@ export const dynamic = 'force-static';
 
 function getHostname() {
   if (process.env.NODE_ENV === 'development') {
-    return 'localhost:3000';
+    return 'localhost:3001';
   }
   if (process.env.VERCEL_ENV === 'production') {
     return process.env.VERCEL_PROJECT_PRODUCTION_URL;
   }
-  return process.env.VERCEL_BRANCH_URL ?? 'localhost:3000';
+  return process.env.VERCEL_BRANCH_URL ?? 'localhost:3001';
 }
 
 const HOSTNAME = getHostname();

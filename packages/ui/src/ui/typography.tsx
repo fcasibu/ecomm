@@ -38,7 +38,7 @@ export function Heading<T extends Headings>({
 const text = cva('m-0 font-normal leading-[1.5] last:m-0', {
   variants: {
     size: {
-      xs: 'text-[0.6]rem',
+      xs: 'text-[0.6rem]',
       sm: 'text-[0.8rem]',
       md: 'text-[1rem]',
     },

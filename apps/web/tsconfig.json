@@ -10,8 +10,8 @@
       "@/*": [
         "./src/*"
       ],
-      "@/sanity-types": [
-        "./sanity.types.ts"
+      "@/sanity.*": [
+        "./sanity.*.ts"
       ]
     },
     "lib": [

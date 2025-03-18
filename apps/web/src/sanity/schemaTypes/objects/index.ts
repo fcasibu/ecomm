@@ -8,9 +8,22 @@ export const rootCategorySelect = defineType({
   type: 'object',
   fields: [
     defineField({
-      name: 'id',
-      title: 'Category ID',
-      type: 'string',
+      name: 'category',
+      title: 'Category',
+      type: 'object',
+      fields: [
+        defineField({
+          name: 'id',
+          title: 'Category ID',
+          type: 'string',
+        }),
+        defineField({
+          name: 'name',
+          title: 'Category Name',
+          type: 'string',
+          readOnly: true,
+        }),
+      ],
       components: {
         input: RootCategorySelect,
       },

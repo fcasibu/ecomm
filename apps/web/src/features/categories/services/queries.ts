@@ -12,3 +12,13 @@ export async function getRootCategories(locale: string) {
     categoriesController().getRootCategories(locale),
   );
 }
+
+export async function getCategoriesHierarchy(locale: string, ids: string[]) {
+  'use cache';
+
+  cacheTag('categories_hierarchy');
+
+  return await executeOperation(() =>
+    categoriesController().getHierarhchyOfCategoryIds(locale, ids),
+  );
+}

@@ -16,7 +16,7 @@ import { documentInternationalization } from '@sanity/document-internationalizat
 import { AVAILABLE_LOCALES } from '@/lib/utils/locale-helper';
 
 export default defineConfig({
-  basePath: '/studio',
+  basePath: '/en-US/studio',
   projectId: clientEnv.NEXT_PUBLIC_SANITY_PROJECT_ID,
   dataset: clientEnv.NEXT_PUBLIC_SANITY_DATASET,
   // Add and edit the content schema in the './sanity/schemaTypes' folder

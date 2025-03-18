@@ -1,3 +1,5 @@
+import type { CategoryDTO } from '@ecomm/services/categories/category-dto';
+
 export interface HeaderDTO {
   navigation: HeaderNavigation;
 }
@@ -32,9 +34,10 @@ export interface HeaderPromotionalBanner {
   cta: Link | null | undefined;
 }
 
-export interface HeaderCategoryNavigationItem {
+export interface HeaderCategoryNavigationItem extends Partial<CategoryDTO> {
   type: 'categoryNavigationItem';
   id: string;
+  name: string;
 }
 
 // TODO(fcasibu): move to a different place

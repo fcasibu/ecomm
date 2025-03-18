@@ -1,4 +1,4 @@
-import type { Header } from '@/sanity-types';
+import type { Header } from '@/sanity.types';
 import type {
   HeaderCategoryNavigationItem,
   HeaderDTO,
@@ -7,12 +7,19 @@ import type {
   HeaderTier3NavigationItem,
 } from './types';
 import type { ExtractType } from '@/types';
+import type { CategoryDTO } from '@ecomm/services/categories/category-dto';
 
-export function transformHeader(header: Header): HeaderDTO {
+export function transformHeader(
+  header: Header,
+  categoriesHierarchy: CategoryDTO[],
+): HeaderDTO {
   const navigationItems =
     header.navigation?.navigationItems?.map((navigationItem) => {
-      if (navigationItem._type === 'rootCategorySelect') {
-        return transformCategoryNavigationItem(navigationItem);
+      if (navigationItem._type !== 'navigationItem') {
+        return transformCategoryNavigationItem(
+          navigationItem,
+          categoriesHierarchy,
+        );
       }
 
       return transformTier1NavigationItem(navigationItem);
@@ -33,12 +40,28 @@ export function transformHeader(header: Header): HeaderDTO {
 
 function transformCategoryNavigationItem(
   navigationItem: ExtractType<Header, 'navigation.navigationItems[number]'>,
-): HeaderCategoryNavigationItem | null {
-  if (navigationItem._type !== 'rootCategorySelect') return null;
+  categoriesHierarchy: CategoryDTO[],
+): HeaderCategoryNavigationItem | CategoryDTO | null {
+  if (navigationItem._type === 'navigationItem') return null;
+
+  if (!navigationItem.category?.id || !navigationItem.category?.name)
+    return null;
+
+  const category = categoriesHierarchy.find(
+    (category) => category.id === navigationItem.category?.id,
+  );
+
+  if (!category) {
+    return {
+      type: 'categoryNavigationItem',
+      id: navigationItem.category.id,
+      name: navigationItem.category.name,
+    };
+  }
 
   return {
+    ...category,
     type: 'categoryNavigationItem',
-    id: navigationItem._type,
   };
 }
 

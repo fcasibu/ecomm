@@ -1,7 +1,8 @@
 'use client';
 
-import type { InputProps } from 'sanity';
-import { set } from 'sanity';
+import { useGetRootCategories } from '@/features/categories/hooks/use-get-root-categories';
+import type { CategoryDTO } from '@ecomm/services/categories/category-dto';
+import { Button } from '@ecomm/ui/button';
 import {
   Command,
   CommandEmpty,
@@ -10,28 +11,36 @@ import {
   CommandItem,
   CommandList,
 } from '@ecomm/ui/command';
-import { Popover, PopoverContent, PopoverTrigger } from '@ecomm/ui/popover';
-import { Button } from '@ecomm/ui/button';
-import { useGetRootCategories } from '@/features/categories/hooks/use-get-root-categories';
-import { useState } from 'react';
 import { cn } from '@ecomm/ui/lib/utils';
-import { ChevronsUpDown, Check } from 'lucide-react';
-import type { CategoryDTO } from '@ecomm/services/categories/category-dto';
+import { Popover, PopoverContent, PopoverTrigger } from '@ecomm/ui/popover';
+import { Check, ChevronsUpDown } from 'lucide-react';
+import { useState } from 'react';
+import type { ObjectInputProps } from 'sanity';
+import { set, unset } from 'sanity';
 
-export function RootCategorySelect(props: InputProps) {
-  const { onChange } = props;
+export function RootCategorySelect(props: ObjectInputProps) {
+  const { onChange, value } = props;
+  console.log(value);
 
   const [open, setOpen] = useState(false);
-  const [selectedCategory, setSelectedCategory] = useState<CategoryDTO | null>(
-    null,
-  );
+  const [selectedCategory, setSelectedCategory] = useState<Pick<
+    CategoryDTO,
+    'name' | 'id'
+  > | null>(value as Pick<CategoryDTO, 'name' | 'id'>);
   const { data: result } = useGetRootCategories();
 
   const categories = result?.success ? result.data : [];
 
-  const handleSelect = (category: CategoryDTO) => {
-    setSelectedCategory(category);
-    onChange(set(category.id));
+  const handleSelect = (category: Pick<CategoryDTO, 'name' | 'id'>) => {
+    const hasBeenSelected = selectedCategory?.id === category.id;
+
+    setSelectedCategory(hasBeenSelected ? null : category);
+
+    const patches = hasBeenSelected
+      ? [unset(['id']), unset(['name'])]
+      : [set(category.id, ['id']), set(category.name, ['name'])];
+
+    onChange(patches);
     setOpen(false);
   };
 
@@ -60,7 +69,11 @@ export function RootCategorySelect(props: InputProps) {
             <CommandGroup>
               {categories.map((category) => (
                 <div key={category.id}>
-                  <CommandItem onSelect={() => handleSelect(category)}>
+                  <CommandItem
+                    onSelect={() =>
+                      handleSelect({ id: category.id, name: category.name })
+                    }
+                  >
                     <Check
                       className={cn(
                         'mr-2 h-4 w-4',

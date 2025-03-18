@@ -9,8 +9,6 @@
     "build:analyze": "ANALYZE=true next build",
     "start": "next start",
     "lint": "next lint --max-warnings 0",
-    "sanity:schema-extract": "sanity schema extract",
-    "sanity:generate-types": "sanity typegen generate",
     "check-types": "tsc --noEmit"
   },
   "dependencies": {

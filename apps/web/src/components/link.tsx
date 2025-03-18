@@ -4,6 +4,8 @@ import type { LinkProps } from 'next/link';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useRef } from 'react';
+import { Slot } from '@ecomm/ui/slot';
+import { cn } from '@ecomm/ui/lib/utils';
 
 type PrefetchImage = {
   srcset: string;
@@ -44,14 +46,21 @@ const imageCache = new Map<string, PrefetchImage[]>();
 
 interface NextLinkProps extends LinkProps {
   children: React.ReactNode;
+  className?: string;
+  newTab?: boolean;
 }
 
-export const NextLink = ({ children, ...props }: NextLinkProps) => {
+export const NextLink = ({
+  children,
+  className,
+  newTab,
+  ...props
+}: NextLinkProps) => {
   const linkRef = useRef<HTMLAnchorElement>(null);
   const router = useRouter();
 
   useEffect(() => {
-    if (!props.prefetch) return;
+    if (!props.prefetch || newTab) return;
 
     const linkElement = linkRef.current;
     if (!linkElement) return;
@@ -92,13 +101,20 @@ export const NextLink = ({ children, ...props }: NextLinkProps) => {
         clearTimeout(prefetchTimeout);
       }
     };
-  }, [props.href, props.prefetch, router]);
+  }, [props.href, props.prefetch, router, newTab]);
 
   return (
     <Link
       ref={linkRef}
       prefetch={false}
+      className={cn('underline-offset-2 hover:underline', className)}
+      {...(newTab && {
+        target: '_blank',
+        rel: 'noopener noreferrer',
+      })}
       onMouseEnter={() => {
+        if (newTab) return;
+
         router.prefetch(String(props.href));
         const images = imageCache.get(String(props.href)) || [];
 
@@ -107,6 +123,8 @@ export const NextLink = ({ children, ...props }: NextLinkProps) => {
         }
       }}
       onClick={(e) => {
+        if (newTab) return;
+
         const url = new URL(String(props.href), window.location.href);
         if (
           url.origin === window.location.origin &&
@@ -124,6 +142,22 @@ export const NextLink = ({ children, ...props }: NextLinkProps) => {
     >
       {children}
     </Link>
+  );
+};
+
+export const ConditionalLink = ({
+  children,
+  href,
+  ...props
+}: Omit<NextLinkProps, 'href'> & {
+  href: LinkProps['href'] | null | undefined;
+}) => {
+  if (!href) return <Slot {...props}>{children}</Slot>;
+
+  return (
+    <NextLink href={href} {...props}>
+      {children}
+    </NextLink>
   );
 };
 
