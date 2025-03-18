@@ -20,7 +20,6 @@ import { set, unset } from 'sanity';
 
 export function RootCategorySelect(props: ObjectInputProps) {
   const { onChange, value } = props;
-  console.log(value);
 
   const [open, setOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<Pick<

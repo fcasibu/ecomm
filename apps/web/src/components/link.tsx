@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import React, { useEffect, useRef } from 'react';
 import { Slot } from '@ecomm/ui/slot';
 import { cn } from '@ecomm/ui/lib/utils';
+import { useCurrentLocale } from '@/locales/client';
 
 type PrefetchImage = {
   srcset: string;
@@ -58,6 +59,10 @@ export const NextLink = ({
 }: NextLinkProps) => {
   const linkRef = useRef<HTMLAnchorElement>(null);
   const router = useRouter();
+  const locale = useCurrentLocale();
+  const href = String(props.href).startsWith('/')
+    ? `/${locale}${props.href}`
+    : String(props.href);
 
   useEffect(() => {
     if (!props.prefetch || newTab) return;
@@ -72,14 +77,14 @@ export const NextLink = ({
         const entry = entries[0];
         if (entry?.isIntersecting) {
           prefetchTimeout = setTimeout(async () => {
-            router.prefetch(String(props.href));
+            router.prefetch(href);
             await sleep(0);
 
-            if (!imageCache.has(String(props.href))) {
-              prefetchImages(String(props.href)).then((images) => {
+            if (!imageCache.has(href)) {
+              prefetchImages(href).then((images) => {
                 if (!images.length) return;
 
-                imageCache.set(String(props.href), images ?? []);
+                imageCache.set(href, images ?? []);
               }, console.error);
             }
 
@@ -101,7 +106,7 @@ export const NextLink = ({
         clearTimeout(prefetchTimeout);
       }
     };
-  }, [props.href, props.prefetch, router, newTab]);
+  }, [href, props.prefetch, router, newTab]);
 
   return (
     <Link
@@ -115,8 +120,8 @@ export const NextLink = ({
       onMouseEnter={() => {
         if (newTab) return;
 
-        router.prefetch(String(props.href));
-        const images = imageCache.get(String(props.href)) || [];
+        router.prefetch(href);
+        const images = imageCache.get(href) || [];
 
         for (const image of images) {
           prefetchImage(image);
@@ -125,7 +130,7 @@ export const NextLink = ({
       onClick={(e) => {
         if (newTab) return;
 
-        const url = new URL(String(props.href), window.location.href);
+        const url = new URL(href, window.location.href);
         if (
           url.origin === window.location.origin &&
           e.button === 0 &&
@@ -135,7 +140,7 @@ export const NextLink = ({
           !e.shiftKey
         ) {
           e.preventDefault();
-          router.push(String(props.href));
+          router.push(href);
         }
       }}
       {...props}
@@ -148,6 +153,7 @@ export const NextLink = ({
 export const ConditionalLink = ({
   children,
   href,
+  prefetch,
   ...props
 }: Omit<NextLinkProps, 'href'> & {
   href: LinkProps['href'] | null | undefined;
@@ -155,7 +161,7 @@ export const ConditionalLink = ({
   if (!href) return <Slot {...props}>{children}</Slot>;
 
   return (
-    <NextLink href={href} {...props}>
+    <NextLink prefetch={prefetch} href={href} {...props}>
       {children}
     </NextLink>
   );

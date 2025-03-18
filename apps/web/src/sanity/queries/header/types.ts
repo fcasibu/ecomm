@@ -38,6 +38,7 @@ export interface HeaderCategoryNavigationItem extends Partial<CategoryDTO> {
   type: 'categoryNavigationItem';
   id: string;
   name: string;
+  promotionalBanner: HeaderPromotionalBanner | null | undefined;
 }
 
 // TODO(fcasibu): move to a different place

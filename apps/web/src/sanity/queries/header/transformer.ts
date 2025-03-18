@@ -44,24 +44,45 @@ function transformCategoryNavigationItem(
 ): HeaderCategoryNavigationItem | CategoryDTO | null {
   if (navigationItem._type === 'navigationItem') return null;
 
-  if (!navigationItem.category?.id || !navigationItem.category?.name)
+  if (
+    !navigationItem.category?.category?.id ||
+    !navigationItem.category?.category?.name
+  )
     return null;
 
   const category = categoriesHierarchy.find(
-    (category) => category.id === navigationItem.category?.id,
+    (category) => category.id === navigationItem.category?.category?.id,
   );
+
+  const promoBanner = navigationItem.promotionalBanner?.image
+    ? {
+        name: navigationItem.promotionalBanner.name,
+        cta: {
+          url: navigationItem.promotionalBanner.cta?.url ?? '',
+          title: navigationItem.promotionalBanner.cta?.title,
+          newTab: navigationItem.promotionalBanner.cta?.newTab ?? false,
+        },
+        image: {
+          url: navigationItem.promotionalBanner.image?.image,
+          alt: navigationItem.promotionalBanner.image?.alt,
+        },
+        description: navigationItem.promotionalBanner.description,
+      }
+    : null;
 
   if (!category) {
     return {
       type: 'categoryNavigationItem',
-      id: navigationItem.category.id,
-      name: navigationItem.category.name,
+      id: navigationItem.category.category.id,
+      name: navigationItem.category.category.name,
+      promotionalBanner: promoBanner,
     };
   }
 
   return {
     ...category,
     type: 'categoryNavigationItem',
+    promotionalBanner: promoBanner,
   };
 }
 
@@ -78,19 +99,21 @@ function transformTier1NavigationItem(
       title: navigationItem.link?.title,
       newTab: navigationItem.link?.newTab ?? false,
     },
-    promotionalBanner: {
-      name: navigationItem.promotionalBanner?.name,
-      description: navigationItem.promotionalBanner?.description,
-      image: {
-        url: navigationItem.promotionalBanner?.image?.image,
-        alt: navigationItem.promotionalBanner?.image?.alt,
-      },
-      cta: {
-        url: navigationItem.promotionalBanner?.cta?.url ?? '',
-        title: navigationItem.promotionalBanner?.cta?.title,
-        newTab: navigationItem.promotionalBanner?.cta?.newTab ?? false,
-      },
-    },
+    promotionalBanner: navigationItem.promotionalBanner?.image
+      ? {
+          name: navigationItem.promotionalBanner.name,
+          description: navigationItem.promotionalBanner.description,
+          image: {
+            url: navigationItem.promotionalBanner.image?.image,
+            alt: navigationItem.promotionalBanner.image?.alt,
+          },
+          cta: {
+            url: navigationItem.promotionalBanner.cta?.url ?? '',
+            title: navigationItem.promotionalBanner.cta?.title,
+            newTab: navigationItem.promotionalBanner.cta?.newTab ?? false,
+          },
+        }
+      : null,
     children: navigationItem.children?.map(transformTier2NavigationItem) ?? [],
   };
 }

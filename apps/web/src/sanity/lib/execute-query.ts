@@ -19,6 +19,13 @@ export async function executeQuery<T, V>(
   try {
     const data = await operation();
 
+    if (!data) {
+      return {
+        success: false,
+        error: new Error('Resource not found'),
+      };
+    }
+
     return {
       success: true,
       data: (transformFn ? transformFn(data) : data) as V extends unknown

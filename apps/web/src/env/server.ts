@@ -4,7 +4,6 @@ import { z } from 'zod';
 export const serverEnv = createEnv({
   server: {
     DATABASE_URL: z.string(),
-    SENTRY_AUTH_TOKEN: z.string(),
     SANITY_TOKEN: z.string(),
     CLOUDINARY_CLOUD_NAME: z.string(),
     CLOUDINARY_API_KEY: z.string(),

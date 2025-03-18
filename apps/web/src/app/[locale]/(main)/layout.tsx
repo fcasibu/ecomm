@@ -4,10 +4,12 @@ import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import { NuqsAdapter } from 'nuqs/adapters/next/app';
 import { Toaster } from '@ecomm/ui/toaster';
-import { WindowInfoProvider } from '@faceless-ui/window-info';
 import { I18nProviderClient } from '@/locales/client';
-import { AVAILABLE_LOCALES } from '@/lib/utils/locale-helper';
 import { Header } from '@/components/header';
+import { getStaticParams } from '@/locales/server';
+import { setStaticParamsLocale } from 'next-international/server';
+import { AVAILABLE_LOCALES, type Locale } from '@/lib/utils/locale-helper';
+import { notFound } from 'next/navigation';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -27,7 +29,7 @@ function Providers({
 }
 
 export const generateStaticParams = () => {
-  return AVAILABLE_LOCALES.map((locale) => ({ locale }));
+  return getStaticParams();
 };
 
 export default async function RootLayout({
@@ -38,25 +40,19 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   const locale = (await params).locale;
+  if (!AVAILABLE_LOCALES.includes(locale as Locale)) return notFound();
+
+  setStaticParamsLocale(locale);
 
   return (
     <html lang={locale}>
       <body className={inter.className}>
         <NuqsAdapter>
-          <WindowInfoProvider
-            breakpoints={{
-              s: '(min-width: 640px)',
-              m: '(min-width: 768px)',
-              l: '(min-width: 1024px)',
-              xl: '(min-width: 1280px)',
-            }}
-          >
-            <Providers locale={locale}>
-              <Header />
-              {children}
-              <Toaster />
-            </Providers>
-          </WindowInfoProvider>
+          <Providers locale={locale}>
+            <Header />
+            {children}
+            <Toaster />
+          </Providers>
         </NuqsAdapter>
       </body>
     </html>

@@ -34,9 +34,17 @@ const HEADER_QUERY = groq`
       _type == "categoryNavigationItem" => {
         _type,
         category {
+          category {
+            id,
+            name
+          },
+        },
+        promotionalBanner {
           name,
-          id
-        }
+          description,
+          image,
+          cta
+        },
       }
     }
   }
@@ -57,7 +65,7 @@ export async function getHeader(locale: string) {
   }
 
   const rootCategoryIds = getRootCategoryIds(
-    result.data.navigation?.navigationItems,
+    result.data?.navigation?.navigationItems,
   );
 
   if (rootCategoryIds?.length) {
@@ -86,8 +94,8 @@ function getRootCategoryIds(
   if (!navigationItems) return [];
 
   return navigationItems.flatMap((item) =>
-    item._type !== 'navigationItem' && item.category?.id
-      ? [item.category.id]
+    item._type !== 'navigationItem' && item.category?.category?.id
+      ? [item.category.category.id]
       : [],
   );
 }

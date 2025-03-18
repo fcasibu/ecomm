@@ -17,7 +17,6 @@ export async function CategoryDetail({
   const categoriesPathResultPromise = getCategoriesPath(locale, id);
 
   if (!result.success) return notFound();
-  console.log(result.data);
 
   return (
     <CategoryUpdateForm

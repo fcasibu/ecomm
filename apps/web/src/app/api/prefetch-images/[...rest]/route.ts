@@ -10,7 +10,7 @@ function getHostname() {
   if (process.env.VERCEL_ENV === 'production') {
     return process.env.VERCEL_PROJECT_PRODUCTION_URL;
   }
-  return process.env.VERCEL_BRANCH_URL ?? 'localhost:3001';
+  return process.env.VERCEL_BRANCH_URL ?? 'localhost:3000';
 }
 
 const HOSTNAME = getHostname();
@@ -36,7 +36,7 @@ export async function GET(
     );
   }
 
-  const url = `${schema}://${HOSTNAME}/${href}`;
+  const url = `${schema}://${HOSTNAME}/${href.startsWith('/') ? href.slice(1) : href}`;
   const response = await fetch(url);
   if (!response.ok) {
     return NextResponse.json(

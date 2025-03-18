@@ -113,9 +113,43 @@ export const headerType = defineType({
               ],
             }),
             defineField({
-              type: 'rootCategorySelect',
+              type: 'object',
               title: 'Category Navigation Item',
               name: 'categoryNavigationItem',
+              fields: [
+                defineField({
+                  type: 'rootCategorySelect',
+                  name: 'category',
+                  title: 'Category',
+                }),
+                defineField({
+                  name: 'promotionalBanner',
+                  title: 'Promotional Banner',
+                  type: 'object',
+                  fields: [
+                    defineField({
+                      type: 'string',
+                      name: 'name',
+                      title: 'Name',
+                    }),
+                    defineField({
+                      type: 'string',
+                      name: 'description',
+                      title: 'Description',
+                    }),
+                    defineField({
+                      name: 'image',
+                      title: 'Image',
+                      type: 'customImage',
+                    }),
+                    defineField({
+                      type: 'link',
+                      name: 'cta',
+                      title: 'Call to Action',
+                    }),
+                  ],
+                }),
+              ],
             }),
           ],
         }),

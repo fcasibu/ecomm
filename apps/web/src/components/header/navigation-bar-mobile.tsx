@@ -24,7 +24,7 @@ import { link } from '@/lib/utils/link-helper';
 import { usePathname, useRouter } from 'next/navigation';
 import { Text } from '@ecomm/ui/typography';
 import { Badge } from '@ecomm/ui/badge';
-import { useWindowInfo } from '@faceless-ui/window-info';
+import { useWindowResize } from '@ecomm/ui/hooks/use-window-resize';
 
 export function NavigationBarMobile({
   navigation,
@@ -32,7 +32,7 @@ export function NavigationBarMobile({
   navigation: HeaderNavigation | null | undefined;
 }) {
   const { navigationItems } = navigation ?? {};
-  const t = useScopedI18n('navigation');
+  const t = useScopedI18n('header.navigation');
 
   return (
     <nav className="container flex items-center justify-between py-4 md:hidden">
@@ -75,9 +75,9 @@ function NavigationMenu({
 }: {
   navigationItems: HeaderNavigation['navigationItems'];
 }) {
-  const windowInfo = useWindowInfo();
   const [isNavMenuOpen, setIsNavMenuOpen] = useState(false);
-  const t = useScopedI18n('navigation');
+  const t = useScopedI18n('header.navigation');
+  const { width } = useWindowResize();
 
   const filteredNavigationItems = navigationItems.filter(isDefined);
   const pathname = usePathname();
@@ -86,11 +86,14 @@ function NavigationMenu({
     setIsNavMenuOpen(false);
   }, [pathname]);
 
+  useEffect(() => {
+    if (width && width >= 768) {
+      setIsNavMenuOpen(false);
+    }
+  }, [width]);
+
   return (
-    <Sheet
-      open={!windowInfo.breakpoints.m && isNavMenuOpen}
-      onOpenChange={setIsNavMenuOpen}
-    >
+    <Sheet open={isNavMenuOpen} onOpenChange={setIsNavMenuOpen}>
       <SheetTrigger asChild>
         <Button
           aria-label={
@@ -131,7 +134,7 @@ function NavigationMenu({
 }
 
 function NavigationMenuFooter() {
-  const t = useScopedI18n('navigation.menu');
+  const t = useScopedI18n('header.menu');
   const locale = useCurrentLocale();
   const lang = locale.split('-')[0];
 
@@ -154,7 +157,7 @@ function NavigationMenuFooter() {
         <Badge variant="outline">
           <Text size="sm" className="flex items-center gap-1">
             <Globe size={12} />
-            {lang?.toUpperCase()}
+            <span>{lang?.toUpperCase()}</span>
           </Text>
         </Badge>
       </div>

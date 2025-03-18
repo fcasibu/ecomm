@@ -12,7 +12,8 @@
     "NEXT_RUNTIME",
     "VERCEL_ENV",
     "VERCEL_PROJECT_PRODUCTION_URL",
-    "VERCEL_BRANCH_URL"
+    "VERCEL_BRANCH_URL",
+    "SANITY_TOKEN"
   ],
   "tasks": {
     "build": {
