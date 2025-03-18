@@ -35,32 +35,37 @@ export function NavigationBarMobile({
   const t = useScopedI18n('navigation');
 
   return (
-    <nav className="container flex justify-end gap-3 py-4 shadow md:hidden">
-      <Button
-        aria-label={t('actions.search.open')}
-        variant="none"
-        size="icon"
-        className="h-min w-min"
-      >
-        <Search aria-hidden />
-      </Button>
-      <Button
-        aria-label={t('actions.wishlist.open')}
-        variant="none"
-        size="icon"
-        className="h-min w-min"
-      >
-        <Heart aria-hidden />
-      </Button>
-      <Button
-        aria-label={t('actions.cart.open')}
-        variant="none"
-        size="icon"
-        className="h-min w-min"
-      >
-        <ShoppingCart aria-hidden />
-      </Button>
-      <NavigationMenu navigationItems={navigationItems ?? []} />
+    <nav className="container flex items-center justify-between py-4 md:hidden">
+      <NextLink href={link.home} className="hover:no-underline">
+        <Text className="!font-bold">{t('title')}</Text>
+      </NextLink>
+      <div className="flex items-center justify-end gap-3">
+        <Button
+          aria-label={t('actions.search.open')}
+          variant="none"
+          size="icon"
+          className="h-min w-min"
+        >
+          <Search aria-hidden />
+        </Button>
+        <Button
+          aria-label={t('actions.wishlist.open')}
+          variant="none"
+          size="icon"
+          className="h-min w-min"
+        >
+          <Heart aria-hidden />
+        </Button>
+        <Button
+          aria-label={t('actions.cart.open')}
+          variant="none"
+          size="icon"
+          className="h-min w-min"
+        >
+          <ShoppingCart aria-hidden />
+        </Button>
+        <NavigationMenu navigationItems={navigationItems ?? []} />
+      </div>
     </nav>
   );
 }

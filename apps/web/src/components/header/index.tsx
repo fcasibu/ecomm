@@ -8,7 +8,7 @@ export async function Header() {
   const header = await getHeader(locale);
 
   return (
-    <header className="sticky top-0 w-full bg-white">
+    <header className="sticky top-0 w-full border border-b-gray-200 bg-white">
       <NavigationBar
         navigation={header?.success ? header.data.navigation : null}
       />

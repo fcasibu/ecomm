@@ -14,7 +14,8 @@ import { link } from '@/lib/utils/link-helper';
 import { useScopedI18n } from '@/locales/client';
 import { cn } from '@ecomm/ui/lib/utils';
 import { ImageComponent } from '@ecomm/ui/image';
-import { ChevronRight } from 'lucide-react';
+import { ChevronRight, Heart, Search, ShoppingCart } from 'lucide-react';
+import { Button } from '@ecomm/ui/button';
 
 export function NavigationBar({
   navigation,
@@ -26,7 +27,7 @@ export function NavigationBar({
   const t = useScopedI18n('navigation');
 
   return (
-    <nav className="container hidden shadow md:block">
+    <nav className="container hidden md:block">
       <div className="flex items-center justify-between">
         <NextLink href={link.home} className="py-4 hover:no-underline">
           <Text className="!font-bold">{t('title')}</Text>
@@ -55,6 +56,32 @@ export function NavigationBar({
             </Fragment>
           ))}
         </ul>
+        <div className="flex items-center gap-2">
+          <Button
+            aria-label={t('actions.search.open')}
+            variant="none"
+            size="icon"
+            className="h-min w-min"
+          >
+            <Search aria-hidden />
+          </Button>
+          <Button
+            aria-label={t('actions.wishlist.open')}
+            variant="none"
+            size="icon"
+            className="h-min w-min"
+          >
+            <Heart aria-hidden />
+          </Button>
+          <Button
+            aria-label={t('actions.cart.open')}
+            variant="none"
+            size="icon"
+            className="h-min w-min"
+          >
+            <ShoppingCart aria-hidden />
+          </Button>
+        </div>
       </div>
     </nav>
   );
@@ -70,7 +97,7 @@ function Megamenu({
   return (
     <div
       className={cn(
-        'absolute left-0 top-full h-[300px] w-full overflow-y-auto bg-white pb-8 pt-0 shadow',
+        'absolute left-0 top-full h-[300px] w-full overflow-y-auto border border-b-gray-200 bg-white pb-8 pt-4',
         {
           hidden,
         },
@@ -100,7 +127,7 @@ function CategoryNavigationItemTier2({
   );
 
   return (
-    <div className="flex flex-wrap gap-16 gap-y-1">
+    <div className="grid flex-1 gap-x-8 gap-y-6 md:grid-cols-3 lg:grid-cols-4">
       {sortedTier2Items.map((item) => (
         <ul key={item.id}>
           <NextLink href={link.category.single(item.slug)}>
@@ -135,37 +162,39 @@ function NavigationItemTier2({
   );
 
   return (
-    <div className="flex">
-      <div className="flex flex-1 flex-wrap gap-16 gap-y-1">
+    <div className="flex gap-8">
+      <div className="grid flex-1 gap-x-8 gap-y-6 md:grid-cols-3 lg:grid-cols-4">
         {sortedTier2Items.map((item) => (
-          <ul key={item.title}>
-            <ConditionalLink href={item.link?.url} prefetch>
-              <Text size="sm" className="!font-semibold">
-                {item.title}
-              </Text>
-            </ConditionalLink>
-            {item.children?.map((child) => (
-              <li key={child.title}>
-                <ConditionalLink href={child.link?.url} prefetch>
-                  <Text as="span" size="xs">
-                    {child.title}
-                  </Text>
-                </ConditionalLink>
-              </li>
-            ))}
-          </ul>
+          <div key={item.title} className="min-w-[150px]">
+            <ul>
+              <ConditionalLink href={item.link?.url} prefetch>
+                <Text size="sm" className="mb-2 block !font-semibold">
+                  {item.title}
+                </Text>
+              </ConditionalLink>
+              {item.children?.map((child) => (
+                <li key={child.title} className="mb-1">
+                  <ConditionalLink href={child.link?.url} prefetch>
+                    <Text as="span" size="xs">
+                      {child.title}
+                    </Text>
+                  </ConditionalLink>
+                </li>
+              ))}
+            </ul>
+          </div>
         ))}
       </div>
       {promotionalBanner && (
-        <div className="ml-auto max-h-max min-h-[200px] max-w-[200px] flex-1 overflow-hidden rounded-lg border bg-gray-50">
+        <div className="max-h-max min-h-[200px] w-[200px] overflow-hidden rounded-lg border bg-gray-50">
           <ImageComponent
             alt={promotionalBanner.image?.alt ?? ''}
             src={promotionalBanner.image?.url}
-            width={200}
-            height={130}
-            className="w-full"
+            width={280}
+            height={160}
+            className="w-full object-cover"
           />
-          <div className="flex flex-col gap-4 p-3">
+          <div className="flex flex-col gap-2 p-4">
             <div>
               <Text
                 size="xs"
