@@ -31,6 +31,9 @@ const nextConfig = {
       {
         hostname: '*.cloudinary.com',
       },
+      {
+        hostname: 'placehold.co',
+      },
     ],
     dangerouslyAllowSVG: true,
   },

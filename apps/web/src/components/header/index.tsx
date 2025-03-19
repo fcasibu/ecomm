@@ -12,7 +12,7 @@ export async function Header() {
   const locale = await getCurrentLocale();
   const header = await getHeader(locale);
   const t = await getScopedI18n('header.menu');
-  const lang = locale.split('-')[0];
+  const [lang, region] = locale.split('-');
 
   return (
     <header className="sticky top-0 w-full border border-b-gray-300 bg-white">
@@ -30,9 +30,9 @@ export async function Header() {
             {t('actions.signIn')}
           </NextLink>
           <Separator orientation="vertical" className="h-[20px] bg-gray-500" />
-          <Text className="flex items-center gap-1 !text-[0.6rem]">
+          <Text className="flex items-start gap-1 !text-[0.6rem]">
             <Globe size={12} />
-            <span>{lang?.toUpperCase()}</span>
+            <span>{(region ? region : lang)?.toUpperCase()}</span>
           </Text>
         </div>
       </div>

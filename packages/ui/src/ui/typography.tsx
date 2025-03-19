@@ -52,6 +52,7 @@ interface TextProps
   asChild?: boolean;
 }
 
+// TODO(fcasibu): remove
 export function Text({
   className,
   as: Tag = 'p',

@@ -112,7 +112,7 @@ export const NextLink = ({
     <Link
       ref={linkRef}
       prefetch={false}
-      className={cn('underline-offset-2 hover:underline', className)}
+      className={cn('underline-offset-4 hover:underline', className)}
       {...(newTab && {
         target: '_blank',
         rel: 'noopener noreferrer',

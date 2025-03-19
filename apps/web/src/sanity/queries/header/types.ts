@@ -1,4 +1,5 @@
 import type { CategoryDTO } from '@ecomm/services/categories/category-dto';
+import type { CustomImage, Link } from '../common/types';
 
 export interface HeaderDTO {
   navigation: HeaderNavigation;
@@ -39,17 +40,4 @@ export interface HeaderCategoryNavigationItem extends Partial<CategoryDTO> {
   id: string;
   name: string;
   promotionalBanner: HeaderPromotionalBanner | null | undefined;
-}
-
-// TODO(fcasibu): move to a different place
-export interface Link {
-  title: string | null | undefined;
-  url: string;
-  newTab: boolean;
-}
-
-// TODO(fcasibu): move to a different palce
-export interface CustomImage {
-  alt: string | null | undefined;
-  url: string | null | undefined;
 }

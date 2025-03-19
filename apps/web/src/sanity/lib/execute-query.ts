@@ -12,10 +12,10 @@ interface ErrorResult {
 
 export type SanityResult<T> = SuccessResult<T> | ErrorResult;
 
-export async function executeQuery<T, V>(
+export async function executeQuery<T, V = T>(
   operation: () => Promise<T>,
   transformFn?: (data: T) => V,
-): Promise<SanityResult<V extends unknown ? T : V>> {
+): Promise<SanityResult<V>> {
   try {
     const data = await operation();
 
@@ -28,9 +28,7 @@ export async function executeQuery<T, V>(
 
     return {
       success: true,
-      data: (transformFn ? transformFn(data) : data) as V extends unknown
-        ? T
-        : V,
+      data: (transformFn ? transformFn(data) : data) as V,
     };
   } catch (error) {
     logger.error({ error }, 'Something went wrong with sanity query');

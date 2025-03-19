@@ -10,6 +10,8 @@ import { getStaticParams } from '@/locales/server';
 import { setStaticParamsLocale } from 'next-international/server';
 import { AVAILABLE_LOCALES, type Locale } from '@/lib/utils/locale-helper';
 import { notFound } from 'next/navigation';
+import { Suspense } from 'react';
+import { Footer } from '@/components/footer';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -49,8 +51,13 @@ export default async function RootLayout({
       <body className={inter.className}>
         <NuqsAdapter>
           <Providers locale={locale}>
-            <Header />
-            {children}
+            <div className="grid h-full grid-rows-[auto_1fr_auto]">
+              <Header />
+              <main>{children}</main>
+              <Suspense>
+                <Footer />
+              </Suspense>
+            </div>
             <Toaster />
           </Providers>
         </NuqsAdapter>
