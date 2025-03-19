@@ -2,7 +2,7 @@
 
 import { Text } from '@ecomm/ui/typography';
 import { ConditionalLink, NextLink } from '../link';
-import { Fragment, useState } from 'react';
+import { Fragment, useEffect, useState } from 'react';
 import type {
   HeaderCategoryNavigationItem,
   HeaderNavigation,
@@ -17,6 +17,7 @@ import { cn } from '@ecomm/ui/lib/utils';
 import { ImageComponent } from '@ecomm/ui/image';
 import { ChevronRight, Heart, Search, ShoppingCart } from 'lucide-react';
 import { Button } from '@ecomm/ui/button';
+import { usePathname } from 'next/navigation';
 
 export function NavigationBar({
   navigation,
@@ -26,6 +27,11 @@ export function NavigationBar({
   const [openedMenu, setOpenedMenu] = useState<number | null>(null);
   const { navigationItems } = navigation ?? {};
   const t = useScopedI18n('header.navigation');
+  const pathname = usePathname();
+
+  useEffect(() => {
+    setOpenedMenu(null);
+  }, [pathname]);
 
   return (
     <nav className="container hidden md:block">

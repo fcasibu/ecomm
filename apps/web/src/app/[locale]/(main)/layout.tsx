@@ -51,9 +51,9 @@ export default async function RootLayout({
       <body className={inter.className}>
         <NuqsAdapter>
           <Providers locale={locale}>
-            <div className="grid h-full grid-rows-[auto_1fr_auto]">
+            <div>
               <Header />
-              <main>{children}</main>
+              <main className="min-h-[350px]">{children}</main>
               <Suspense>
                 <Footer />
               </Suspense>
