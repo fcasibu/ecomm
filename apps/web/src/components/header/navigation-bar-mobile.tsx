@@ -10,13 +10,6 @@ import type {
 import { Button } from '@ecomm/ui/button';
 import { Globe, Heart, Menu, Search, ShoppingCart, X } from 'lucide-react';
 import { Fragment, useEffect, useState } from 'react';
-import { Sheet, SheetContent, SheetTitle, SheetTrigger } from '@ecomm/ui/sheet';
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from '@ecomm/ui/accordion';
 import type { CategoryHierarchy } from '@ecomm/services/categories/category-dto';
 import { ConditionalLink, NextLink } from '../link';
 import { isDefined } from '@ecomm/lib/is-defined';
@@ -25,6 +18,38 @@ import { usePathname, useRouter } from 'next/navigation';
 import { Text } from '@ecomm/ui/typography';
 import { Badge } from '@ecomm/ui/badge';
 import { useWindowResize } from '@ecomm/ui/hooks/use-window-resize';
+import { dynamicImport } from '@/lib/utils/dynamic-import';
+
+const { Accordion, AccordionTrigger, AccordionContent, AccordionItem } =
+  dynamicImport(
+    () => import('@ecomm/ui/accordion'),
+    {
+      Accordion: null,
+      AccordionItem: null,
+      AccordionContent: null,
+      AccordionTrigger: null,
+    },
+    { ssr: false },
+  );
+
+const { SheetTrigger, Sheet, SheetContent, SheetTitle } = dynamicImport(
+  () => import('@ecomm/ui/sheet'),
+  {
+    Sheet: {
+      loading: () => (
+        <Button variant="none" size="icon" className="h-min w-min">
+          <Menu aria-hidden />
+        </Button>
+      ),
+    },
+    SheetContent: null,
+    SheetTitle: null,
+    SheetTrigger: null,
+  },
+  {
+    ssr: false,
+  },
+);
 
 export function NavigationBarMobile({
   navigation,
