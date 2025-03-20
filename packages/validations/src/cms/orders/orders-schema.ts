@@ -8,7 +8,7 @@ const cartItemSchema = z.object({
   name: z.string(),
   quantity: z.number(),
   price: z.number(),
-  stock: z.number(),
+  size: z.string(),
 });
 
 export const orderCreateSchema = z.object({

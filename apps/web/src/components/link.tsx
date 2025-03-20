@@ -145,9 +145,9 @@ export const NextLink = ({
           props.onClick?.(e);
 
           if (props.replace) {
-            router.replace(href);
+            router.replace(href, { scroll: props.scroll });
           } else {
-            router.push(href);
+            router.push(href, { scroll: props.scroll });
           }
         }
       }}

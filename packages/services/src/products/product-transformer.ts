@@ -63,7 +63,7 @@ export class ProductTransformer extends BaseTransformer {
             value: size.value,
             stock: size.stock,
             reserved: size.reserved,
-            stockStatus: getStockStatus(size.stock - size.reserved),
+            stockStatus: getStockStatus(size.stock, size.reserved),
           };
         })
         .filter(isDefined),
@@ -116,12 +116,20 @@ export class ProductTransformer extends BaseTransformer {
   }
 }
 
-function getStockStatus(stock: number): StockStatus {
-  if (stock <= 0) return 'OUT_OF_STOCK';
+const STOCK_THRESHOLDS = {
+  OUT: 0,
+  ONE: 1,
+  LOW: 5,
+} as const;
 
-  if (stock === 1) return 'ONE_STOCK';
+export function getStockStatus(stock: number, reserved: number): StockStatus {
+  const finalStock = Math.max(0, stock - reserved);
 
-  if (stock <= 5) return 'LOW_STOCK';
+  if (finalStock === STOCK_THRESHOLDS.OUT) return 'OUT_OF_STOCK';
+
+  if (finalStock === STOCK_THRESHOLDS.ONE) return 'ONE_STOCK';
+
+  if (finalStock <= STOCK_THRESHOLDS.LOW) return 'LOW_STOCK';
 
   return 'IN_STOCK';
 }

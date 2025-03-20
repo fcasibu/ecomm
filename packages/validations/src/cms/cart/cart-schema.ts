@@ -6,6 +6,7 @@ export const cartCreateSchema = z.object({
     .array(
       z.object({
         sku: z.string().min(1, 'Please select a variant'),
+        size: z.string(),
         productId: z
           .string()
           .min(1, 'Please select a product')
@@ -21,6 +22,7 @@ export const cartUpdateSchema = z.object({
     z.object({
       sku: z.string(),
       id: z.string().uuid().optional(),
+      size: z.string(),
       productId: z.string().uuid(),
       quantity: z.number().min(1, 'A minimum of 1 quantity is required'),
     }),

@@ -516,8 +516,7 @@ function CartStage() {
         ...item,
         image: variant.images[0] ?? '',
         name: product.name,
-        price: variant.price,
-        stock: variant.stock,
+        price: variant.price.value,
       };
     });
 
@@ -657,7 +656,8 @@ function CartStage() {
                             form.getValues(`items.${index}.productId`),
                           )?.variants.map((variant) => {
                             const isSelected = field.value === variant.sku;
-                            const isOutOfStock = variant.stock <= 0;
+                            const variantStock = variant.sizes[0]?.stock ?? 1;
+                            const isOutOfStock = variantStock <= 0;
 
                             return (
                               <div
@@ -696,7 +696,7 @@ function CartStage() {
                                     </div>
                                     <div className="font-semibold">
                                       {formatPrice(
-                                        variant.price,
+                                        variant.price.value,
                                         store.currency,
                                       )}
                                     </div>
@@ -717,10 +717,10 @@ function CartStage() {
                                   <div
                                     className={cn(
                                       'text-sm',
-                                      getStockTextColor(variant.stock),
+                                      getStockTextColor(variantStock),
                                     )}
                                   >
-                                    {renderVariantStock(variant.stock)}
+                                    {renderVariantStock(variantStock)}
                                   </div>
 
                                   {isOutOfStock && (
@@ -780,7 +780,9 @@ function CartStage() {
             <div className="flex space-x-4">
               <Button
                 type="button"
-                onClick={() => append({ sku: '', productId: '', quantity: 1 })}
+                onClick={() =>
+                  append({ sku: '', productId: '', quantity: 1, size: '' })
+                }
                 variant="outline"
               >
                 Add Another Item

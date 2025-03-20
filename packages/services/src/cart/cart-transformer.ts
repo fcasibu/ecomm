@@ -32,7 +32,7 @@ export class CartTransformer extends BaseTransformer {
       sku: item.sku,
       quantity: item.quantity,
       price: variant.price.toNumber(),
-      stock: variant.stock,
+      size: item.size,
       image: variant.images[0],
       name: item.product.name,
       createdAt: this.formatDateToISO(item.createdAt),

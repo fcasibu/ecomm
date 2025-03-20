@@ -16,6 +16,7 @@ export type Category = Prisma.CategoryGetPayload<{
     products: {
       include: { variants: true };
     };
+    store: { select: { currency: true } };
   };
 }>;
 
@@ -24,6 +25,7 @@ const CATEGORY_INCLUDE = {
   products: {
     include: { variants: true },
   },
+  store: { select: { currency: true } },
 } as const satisfies Prisma.CategoryInclude;
 
 export class CategoriesService extends BaseService {

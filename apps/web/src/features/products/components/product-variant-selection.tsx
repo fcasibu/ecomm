@@ -24,6 +24,7 @@ export function ProductVariantSelection() {
           aria-label={t('alt', { sku: variant.sku })}
           key={variant.id}
           replace
+          scroll={false}
           href={link.product.single(variant.sku)}
           className="hover:no-underline"
           onClick={() => {
@@ -39,7 +40,7 @@ export function ProductVariantSelection() {
             className={cn(
               'relative aspect-square overflow-hidden rounded-full',
               {
-                'outline outline-offset-4 outline-black':
+                'outline-primary outline outline-offset-4':
                   selectedVariant.id === variant.id,
               },
             )}
@@ -53,9 +54,8 @@ export function ProductVariantSelection() {
               className="h-[75px] w-[75px] object-cover"
             />
             <CheckIcon
-              stroke="white"
               className={cn(
-                'absolute left-1/2 top-1/2 hidden -translate-x-1/2 -translate-y-1/2',
+                'stroke-primary absolute left-1/2 top-1/2 hidden -translate-x-1/2 -translate-y-1/2',
                 {
                   block: selectedVariant.id === variant.id,
                 },

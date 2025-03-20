@@ -87,7 +87,8 @@ function Thumbnails({ images }: { images: string[] }) {
             className={cn(
               'ring-border relative aspect-square overflow-hidden rounded-xl ring-1',
               {
-                'ring-2 ring-black ring-offset-2': index === currentSlideIndex,
+                'ring-primary ring-2 ring-offset-2':
+                  index === currentSlideIndex,
               },
             )}
           >
@@ -132,7 +133,7 @@ function ProductImageSkeleton() {
               className={cn(
                 'ring-border relative aspect-square overflow-hidden rounded-xl ring-1',
                 {
-                  'ring-2 ring-black ring-offset-2': index === 0,
+                  'ring-primary ring-2 ring-offset-2': index === 0,
                 },
               )}
             >

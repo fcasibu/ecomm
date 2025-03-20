@@ -1,7 +1,10 @@
+import assert from 'node:assert';
 import { BaseTransformer } from '../base-transformer';
 import type { ProductAttribute } from '../products/product-dto';
 import type { Category } from './categories-service';
 import type { CategoryDTO } from './category-dto';
+import { isDefined } from '@ecomm/lib/is-defined';
+import { getStockStatus } from '../products/product-transformer';
 
 export class CategoryTransformer extends BaseTransformer {
   public toDTO(category: Category | null | undefined): CategoryDTO | null {
@@ -18,7 +21,7 @@ export class CategoryTransformer extends BaseTransformer {
         this.transformCategoryChild(child),
       ),
       products: category.products.map((product) =>
-        this.transformProduct(product),
+        this.transformProduct(product, category.store.currency),
       ),
       createdAt: this.formatDateToISO(category.createdAt),
       updatedAt: this.formatDateToISO(category.updatedAt),
@@ -50,6 +53,7 @@ export class CategoryTransformer extends BaseTransformer {
 
   private transformProduct(
     product: Category['products'][number],
+    currency: string,
   ): CategoryDTO['products'][number] {
     return {
       id: product.id,
@@ -58,7 +62,7 @@ export class CategoryTransformer extends BaseTransformer {
       features: product.features,
       sku: product.sku,
       variants: product.variants.map((variant) =>
-        this.transformVariant(variant),
+        this.transformVariant(variant, currency),
       ),
       categoryId: product.categoryId,
       createdAt: this.formatDateToISO(product.createdAt),
@@ -68,17 +72,43 @@ export class CategoryTransformer extends BaseTransformer {
 
   private transformVariant(
     variant: Category['products'][number]['variants'][number],
+    currency: string,
   ): CategoryDTO['products'][number]['variants'][number] {
     const attributes = variant.attributes as ProductAttribute[];
+
+    assert(
+      Array.isArray(variant.sizes),
+      'variant.sizes should always be an array',
+    );
 
     return {
       id: variant.id,
       images: variant.images,
       sku: variant.sku,
-      stock: variant.stock,
       createdAt: this.formatDateToISO(variant.createdAt),
       updatedAt: this.formatDateToISO(variant.updatedAt),
-      price: variant.price.toNumber(),
+      sizes: variant.sizes
+        .map((_size) => {
+          const size = _size as {
+            value: string;
+            stock: number;
+            reserved: number;
+          };
+
+          if (!size) return null;
+
+          return {
+            value: size.value,
+            stock: size.stock,
+            reserved: size.reserved,
+            stockStatus: getStockStatus(size.stock, size.reserved),
+          };
+        })
+        .filter(isDefined),
+      price: {
+        value: variant.price.toNumber(),
+        currency,
+      },
       attributes: Object.fromEntries(
         attributes?.map((attribute) => [attribute.title, attribute.value]) ??
           [],

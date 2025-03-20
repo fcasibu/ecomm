@@ -39,7 +39,7 @@ import { toast } from '@ecomm/ui/hooks/use-toast';
 import { useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 import { Text, Heading } from '@ecomm/ui/typography';
-import { ImageIcon, Loader, Package, Tag } from 'lucide-react';
+import { ImageIcon, Loader, Tag } from 'lucide-react';
 import { Card, CardContent } from '@ecomm/ui/card';
 import { Badge } from '@ecomm/ui/badge';
 import type { CategoryDTO } from '@ecomm/services/categories/category-dto';
@@ -463,19 +463,8 @@ function Products({ products }: { products: CategoryDTO['products'] }) {
                     <Badge className="bg-white text-slate-800">
                       <Tag className="mr-1 h-3 w-3" />
                       {variant?.price &&
-                        formatPrice(variant.price, store.currency)}
+                        formatPrice(variant.price.value, store.currency)}
                     </Badge>
-
-                    {variant?.stock && (
-                      <Badge
-                        className={`${variant.stock > 10 ? 'bg-green-100 text-green-800' : variant.stock > 0 ? 'bg-amber-100 text-amber-800' : 'bg-red-100 text-red-800'}`}
-                      >
-                        <Package className="mr-1 h-3 w-3" />
-                        {variant.stock > 0
-                          ? `${variant.stock} in stock`
-                          : 'Out of stock'}
-                      </Badge>
-                    )}
                   </div>
                 </div>
 
