@@ -51,6 +51,7 @@ export function ProductUpdateForm({ product }: { product: ProductDTO }) {
       features: product.features,
       variants: product.variants.map((variant) => ({
         ...variant,
+        price: variant.price.value,
         attributes: Object.keys(productAttributes).map((key) => ({
           title: key,
           value: variant.attributes[key as keyof typeof productAttributes],
@@ -76,7 +77,7 @@ export function ProductUpdateForm({ product }: { product: ProductDTO }) {
         return {
           id: deliveryPromise.id,
           shippingMethod: deliveryPromise.shippingMethod,
-          price: deliveryPromise.price,
+          price: deliveryPromise.price.value,
           estimatedMinDays: deliveryPromise.estimatedMinDays,
           estimatedMaxDays: deliveryPromise.estimatedMaxDays,
           requiresShippingFee: deliveryPromise.requiresShippingFee,

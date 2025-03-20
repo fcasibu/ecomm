@@ -20,10 +20,10 @@ export class ProductTransformer extends BaseTransformer {
       createdAt: this.formatDateToISO(product.createdAt),
       updatedAt: this.formatDateToISO(product.updatedAt),
       variants: product.variants.map((variant) =>
-        this.transformVariant(variant),
+        this.transformVariant(variant, product.store.currency),
       ),
       deliveryPromises: product.deliveryPromises.map((deliveryPromise) =>
-        this.transformDeliveryPromise(deliveryPromise),
+        this.transformDeliveryPromise(deliveryPromise, product.store.currency),
       ),
       category: this.transformCategory(product.category),
     };
@@ -31,6 +31,7 @@ export class ProductTransformer extends BaseTransformer {
 
   private transformVariant(
     variant: Product['variants'][number],
+    currency: string,
   ): ProductVariantDTO {
     const attributes = variant.attributes as ProductAttribute[];
 
@@ -41,7 +42,10 @@ export class ProductTransformer extends BaseTransformer {
       stock: variant.stock,
       createdAt: this.formatDateToISO(variant.createdAt),
       updatedAt: this.formatDateToISO(variant.updatedAt),
-      price: variant.price.toNumber(),
+      price: {
+        value: variant.price.toNumber(),
+        currency,
+      },
       attributes: Object.fromEntries(
         attributes?.map((attribute) => [attribute.title, attribute.value]) ??
           [],
@@ -51,10 +55,14 @@ export class ProductTransformer extends BaseTransformer {
 
   private transformDeliveryPromise(
     deliveryPromise: Product['deliveryPromises'][number],
+    currency: string,
   ): DeliveryPromiseDTO {
     return {
       id: deliveryPromise.id,
-      price: deliveryPromise.price.toNumber(),
+      price: {
+        value: deliveryPromise.price.toNumber(),
+        currency,
+      },
       shippingMethod: deliveryPromise.shippingMethod,
       estimatedMinDays: deliveryPromise.estimatedMinDays,
       estimatedMaxDays: deliveryPromise.estimatedMaxDays,

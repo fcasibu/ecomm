@@ -20,6 +20,11 @@ export type Product = Prisma.ProductGetPayload<{
     category: true;
     variants: true;
     deliveryPromises: true;
+    store: {
+      select: {
+        currency: true;
+      };
+    };
   };
 }>;
 
@@ -27,6 +32,11 @@ const PRODUCT_INCLUDE = {
   category: true,
   variants: true,
   deliveryPromises: true,
+  store: {
+    select: {
+      currency: true,
+    },
+  },
 } as const satisfies Prisma.ProductInclude;
 
 export class ProductsService extends BaseService {

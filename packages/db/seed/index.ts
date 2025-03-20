@@ -70,21 +70,25 @@ async function readProductVariants(): Promise<ProductVariant[]> {
 
   const data = await parsedFile.toArray();
 
-  return data.map((item) => ({
-    id: item.id,
-    productId: item.productId,
-    sku: item.sku,
-    price: Number(item.price),
-    stock: Number(item.stock),
-    images: item.images.split(','),
-    attributes: Object.entries(item.attributes).map(([attr, value]) => ({
-      title: attr,
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      value: value as any,
-    })),
-    createdAt: new Date(item.createdAt),
-    updatedAt: new Date(item.updatedAt),
-  }));
+  return data.map((item) => {
+    return {
+      id: item.id,
+      productId: item.productId,
+      sku: item.sku,
+      price: Number(item.price),
+      stock: Number(item.stock),
+      images: item.images.split(','),
+      attributes: Object.entries(JSON.parse(item.attributes)).map(
+        ([attr, value]) => ({
+          title: attr,
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          value: value as any,
+        }),
+      ),
+      createdAt: new Date(item.createdAt),
+      updatedAt: new Date(item.updatedAt),
+    };
+  });
 }
 
 async function readCategories(): Promise<Category[]> {

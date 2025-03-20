@@ -8,7 +8,10 @@ export interface DeliveryPromiseDTO {
   shippingMethod: 'STANDARD' | 'EXPRESS' | 'NEXT_DAY';
   estimatedMinDays: number;
   estimatedMaxDays: number;
-  price: number;
+  price: {
+    value: number;
+    currency: string;
+  };
   requiresShippingFee: boolean;
   createdAt: string;
   updatedAt: string;
@@ -20,7 +23,10 @@ export interface ProductVariantDTO {
   updatedAt: string;
   images: string[];
   sku: string;
-  price: number;
+  price: {
+    value: number;
+    currency: string;
+  };
   stock: number;
   attributes: {
     size: string;
