@@ -18,6 +18,7 @@ import { CartService } from './cart/cart-service';
 import { CartController } from './cart/cart-controller';
 import { StoreService } from './store/store-service';
 import { StoreController } from './store/store-controller';
+import { StockService } from './stock/stock-service';
 
 Container.register(StoreService, () => [prismaClient]);
 Container.register(StoreController, () => [Container.resolve(StoreService)]);
@@ -57,7 +58,11 @@ Container.register(OrdersController, () => [Container.resolve(OrdersService)]);
 
 export const ordersController = () => Container.resolve(OrdersController);
 
-Container.register(CartService, () => [prismaClient]);
+Container.register(StockService, () => [prismaClient]);
+Container.register(CartService, () => [
+  prismaClient,
+  Container.resolve(StockService),
+]);
 Container.register(CartController, () => [Container.resolve(CartService)]);
 
 export const cartController = () => Container.resolve(CartController);

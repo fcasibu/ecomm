@@ -1,55 +1,34 @@
-import { logger } from '@ecomm/lib/logger';
-import type { ZodError, ZodSchema } from 'zod';
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import type { Result } from '@ecomm/lib/execute-operation';
+import type { z, ZodSchema } from 'zod';
 
-interface SuccessResult<T> {
-  success: true;
-  data: T;
-}
-
-interface ErrorResult {
+interface ActionErrorResult<T extends ZodSchema> {
   success: false;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  error: ZodError<any> | unknown;
+  error: { [key in keyof z.infer<T>]: { _errors: string[] } };
 }
 
-type ActionResult<T> = SuccessResult<T> | ErrorResult;
+type ActionFunction<T, U> = (arg: T) => Promise<U>;
+type ActionResult<T, U extends ZodSchema> = T | ActionErrorResult<U>;
 
-export function validateAction<
-  T extends ZodSchema | FormData,
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  U extends (arg: T) => Promise<any>,
->(
-  schema: ZodSchema,
-  action: U,
+export function validateAction<T extends Result<any>, U extends ZodSchema>(
+  schema: U,
+  action: ActionFunction<z.infer<U>, T>,
 ): (
-  _prevState: ActionResult<Awaited<ReturnType<U>>>,
-  arg: T,
-) => Promise<ActionResult<Awaited<ReturnType<U>>>> {
-  return async (_prevState: ActionResult<Awaited<ReturnType<U>>>, arg: T) => {
-    try {
-      const input = await schema.safeParseAsync(
-        arg instanceof FormData ? Object.fromEntries(arg) : arg,
-      );
+  _prevState: any,
+  arg: z.infer<U> | FormData,
+) => Promise<ActionResult<T, U> | null> {
+  return async (_prevState: any, arg: z.infer<U> | FormData) => {
+    const parsedArg = arg instanceof FormData ? Object.fromEntries(arg) : arg;
 
-      if (!input.success) {
-        return {
-          success: false,
-          error: input.error,
-        };
-      }
+    const validationResult = await schema.safeParseAsync(parsedArg);
 
-      const result = await action(input.data);
-
-      return {
-        success: true,
-        data: result,
-      };
-    } catch (error) {
-      logger.error({ error }, `Action call failed for ${action.name}`);
+    if (!validationResult.success) {
       return {
         success: false,
-        error,
-      };
+        error: validationResult.error.format(),
+      } as ActionErrorResult<U>;
     }
+
+    return await action(validationResult.data);
   };
 }

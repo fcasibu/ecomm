@@ -3,6 +3,13 @@ export interface ProductAttribute {
   title?: string;
 }
 
+export interface Size {
+  value: string;
+  stock: number;
+  stockStatus: StockStatus;
+  reserved: number;
+}
+
 export interface DeliveryPromiseDTO {
   id: string;
   shippingMethod: 'STANDARD' | 'EXPRESS' | 'NEXT_DAY';
@@ -33,12 +40,7 @@ export interface ProductVariantDTO {
     value: number;
     currency: string;
   };
-  sizes: {
-    value: string;
-    stock: number;
-    stockStatus: StockStatus;
-    reserved: number;
-  }[];
+  sizes: Size[];
   attributes: {
     color: string;
   };

@@ -91,5 +91,12 @@ export default {
         decrease: 'Decrease quantity',
       },
     },
+    addToCart: {
+      title: 'Add to Cart',
+      loading: 'Adding...',
+    },
+    errors: {
+      size: 'Please select a size',
+    },
   },
 } as const;

@@ -6,6 +6,12 @@ import type {
 } from '@ecomm/validations/cms/cart/cart-schema';
 import { BaseService } from '../base-service';
 import { randomUUID } from 'node:crypto';
+import type { AddToCartInput } from '@ecomm/validations/web/cart/add-to-cart-schema';
+import { CartArgsFactory } from '../strategies/cart-args-strategy';
+import type { ServerContext } from '@ecomm/lib/types';
+import type { StockService } from '../stock/stock-service';
+
+export type UserType = 'customer' | 'guest' | 'new';
 
 export type Cart = Prisma.CartGetPayload<{
   include: {
@@ -34,7 +40,10 @@ const CART_INCLUDE = {
 } as const satisfies Prisma.CartInclude;
 
 export class CartService extends BaseService {
-  constructor(prismaClient: PrismaClient) {
+  constructor(
+    prismaClient: PrismaClient,
+    private readonly stockService: StockService,
+  ) {
     super(prismaClient);
   }
 
@@ -151,6 +160,123 @@ export class CartService extends BaseService {
     });
   }
 
+  public async addToCart(input: AddToCartInput, context: ServerContext) {
+    const { sku, quantity, size } = input;
+
+    return await this.executeTransaction(async (tx) => {
+      const productVariant = await this.stockService.validateStockAndGetVariant(
+        sku,
+        size,
+        quantity,
+      );
+
+      const cart = await this.findCart(tx, context);
+
+      return await this.addItemToCart(tx, cart, context, input, productVariant);
+    });
+  }
+
+  private async addItemToCart(
+    tx: Prisma.TransactionClient,
+    cart: Cart | null,
+    context: ServerContext,
+    item: AddToCartInput,
+    productVariant: ProductVariant,
+  ) {
+    let currentCart: Cart | null = cart;
+    if (!cart) {
+      currentCart = await this.createCartIfNotExists(tx, context);
+    }
+
+    return this.updateCartWithNewItem(tx, currentCart, item, productVariant);
+  }
+
+  private async createCartIfNotExists(
+    tx: Prisma.TransactionClient,
+    context: ServerContext,
+  ) {
+    const { user, locale } = context;
+    const userType = CartService.determineUserType(
+      user.customerId,
+      user.anonymousId,
+    );
+    const args = CartArgsFactory.create({
+      anonymousId: user.anonymousId,
+      customerId: user.customerId,
+      locale,
+      userType,
+    });
+
+    return tx.cart.create({
+      include: CART_INCLUDE,
+      data: { totalAmount: 0, store: { connect: { locale } }, ...args },
+    });
+  }
+
+  private async updateCartWithNewItem(
+    tx: Prisma.TransactionClient,
+    cart: Cart | null,
+    item: AddToCartInput,
+    productVariant: ProductVariant,
+  ) {
+    if (!cart) {
+      throw new Error('There was an issue with updating the new cart item');
+    }
+
+    return tx.cart.update({
+      include: CART_INCLUDE,
+      data: {
+        totalAmount: CartService.calculateItemsTotalAmount(
+          [...cart.items, item],
+          [productVariant],
+        ),
+        items: {
+          upsert: {
+            where: {
+              cartId_sku_size: {
+                cartId: cart.id,
+                sku: item.sku,
+                size: item.size,
+              },
+            },
+            update: { quantity: { increment: item.quantity } },
+            create: item,
+          },
+        },
+      },
+      where: { id: cart.id },
+    });
+  }
+
+  private async findCart(tx: Prisma.TransactionClient, context: ServerContext) {
+    const { cart: cartContext, user, locale } = context;
+    const userType = CartService.determineUserType(
+      user.customerId,
+      user.anonymousId,
+    );
+
+    let cart: Cart | null = null;
+
+    if (cartContext.id) {
+      cart = await tx.cart.findUnique({
+        include: CART_INCLUDE,
+        where: { id: cartContext.id, locale: locale },
+      });
+    } else if (userType === 'customer' || userType === 'guest') {
+      const filterField =
+        userType === 'customer' ? 'customerId' : 'anonymousId';
+      const filterValue =
+        userType === 'customer' ? user.customerId : user.anonymousId;
+
+      cart = await tx.cart.findFirst({
+        include: CART_INCLUDE,
+        where: { locale: context.locale, [filterField]: filterValue },
+      });
+    }
+
+    return cart;
+  }
+
   private async createAnonymousCustomer(locale: string) {
     const anonymousId = randomUUID();
     return await this.prismaClient.customer.create({
@@ -162,18 +288,30 @@ export class CartService extends BaseService {
     });
   }
 
+  private static determineUserType(
+    customerId: string | null | undefined,
+    anonymousId: string | null | undefined,
+  ): UserType {
+    if (customerId) return 'customer';
+    if (anonymousId) return 'guest';
+    return 'new';
+  }
+
   private static calculateItemsTotalAmount(
     items: { sku: string; quantity: number }[],
     variants: ProductVariant[],
   ) {
-    return variants
-      .flatMap((variant) => {
-        const item = items.find((item) => variant.sku === item.sku);
+    return items
+      .flatMap((item) => {
+        const productVariant = variants.find(
+          (variant) => variant.sku === item.sku,
+        );
 
-        if (!item) return [];
+        if (!productVariant) return [];
 
-        return [{ quantity: item.quantity, ...variant }];
+        return [{ ...item, price: productVariant.price }];
       })
+
       .reduce((acc, curr) => acc + curr.price.toNumber() * curr.quantity, 0);
   }
 }

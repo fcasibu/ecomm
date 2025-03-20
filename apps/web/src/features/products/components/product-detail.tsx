@@ -7,6 +7,7 @@ import { ProductVariantProvider } from '../providers/product-variant-provider';
 import { ProductVariantSelection } from './product-variant-selection';
 import { ProductSizeSelection } from './product-size-selection';
 import { ProductQuantity } from './product-quantity';
+import { ProductAddToCart } from './product-add-to-cart';
 
 export function ProductDetail({
   product,
@@ -44,6 +45,7 @@ export function ProductDetail({
             <ProductVariantSelection />
             <ProductSizeSelection />
             <ProductQuantity />
+            <ProductAddToCart />
           </div>
         </div>
       </ProductVariantProvider>

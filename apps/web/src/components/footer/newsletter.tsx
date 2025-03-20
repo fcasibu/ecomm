@@ -17,7 +17,7 @@ export function Newsletter({ email }: { email?: string }) {
     success: true,
   });
 
-  if (result.success && result.data.email) {
+  if (result && result.success && result.data.email) {
     return <NewsletterSuccess email="projectnevz@gmail.com" />;
   }
 
@@ -75,12 +75,9 @@ export function Newsletter({ email }: { email?: string }) {
 
 function NewsletterSuccess({ email }: { email: string }) {
   const t = useScopedI18n('footer.newsletter.success');
-  const [result, formAction, isPending] = useActionState(unsubscribe, {
-    data: false,
-    success: true,
-  });
+  const [result, formAction, isPending] = useActionState(unsubscribe, null);
 
-  if (result.success && result.data) {
+  if (result && result.success && result.data) {
     return <Newsletter />;
   }
 

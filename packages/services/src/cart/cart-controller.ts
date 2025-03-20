@@ -10,6 +10,8 @@ import { logger } from '@ecomm/lib/logger';
 import { ValidationError } from '../errors/validation-error';
 import { NotFoundError } from '../errors/not-found-error';
 import { CartTransformer } from './cart-transformer';
+import type { AddToCartInput } from '@ecomm/validations/web/cart/add-to-cart-schema';
+import type { ServerContext } from '@ecomm/lib/types';
 
 export class CartController extends BaseController {
   private readonly transformer = new CartTransformer();
@@ -103,6 +105,28 @@ export class CartController extends BaseController {
     } catch (error) {
       this.logAndThrowError(error, {
         message: 'Error fetching cart',
+      });
+    }
+  }
+
+  public async addToCart(input: AddToCartInput, context: ServerContext) {
+    try {
+      logger.info({ input }, 'Adding to cart');
+
+      const cart = this.transformer.toDTO(
+        await this.cartService.addToCart(input, context),
+      );
+
+      if (!cart) {
+        throw new NotFoundError('There was an issue with finding the cart');
+      }
+
+      logger.info({ cartId: cart.id }, 'Add to cart successful');
+
+      return cart;
+    } catch (error) {
+      this.logAndThrowError(error, {
+        message: 'Error add to cart',
       });
     }
   }
