@@ -1,29 +1,28 @@
 import type { DynamicOptions } from 'next/dynamic';
 import dynamic from 'next/dynamic';
-import type { ComponentType } from 'react';
 
 // ref: https://github.com/facebook/react/issues/14603
 export function dynamicImport<
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  T extends ComponentType<any>,
-  U extends Record<string, T>,
+  T extends React.ComponentType<any>,
+  I extends Record<string, T>,
 >(
-  factory: () => Promise<U>,
-  modules: Partial<Record<keyof U, DynamicOptions<U> | null>>,
+  factory: () => Promise<I>,
+  modules: Partial<Record<keyof I, DynamicOptions<I> | null>>,
   globalOptions: DynamicOptions<T> = {},
 ) {
   const entries = Object.entries(modules) as [
-    keyof U,
-    DynamicOptions<U> | null,
+    keyof I,
+    DynamicOptions<I> | null,
   ][];
 
   return Object.fromEntries(
     entries.map(([name, options]) => [
       name,
       dynamic(() => factory().then((mod) => mod[name]), {
-        ...globalOptions,
         ...options,
+        ...globalOptions,
       }),
     ]),
-  ) as Record<NoInfer<keyof U>, T>;
+  ) as { [K in keyof typeof modules]-?: I[K] };
 }
