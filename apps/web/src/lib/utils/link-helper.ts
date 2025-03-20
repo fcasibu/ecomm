@@ -2,6 +2,9 @@ export const link = {
   category: {
     single: (slug: string) => `/categories/${slug}`,
   },
+  product: {
+    single: (sku: string) => `/products/${sku}`,
+  },
   auth: {
     signIn: '/sign-in',
     joinUs: '/create-account',

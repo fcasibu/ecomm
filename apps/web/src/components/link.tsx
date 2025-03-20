@@ -110,6 +110,7 @@ export const NextLink = ({
 
   return (
     <Link
+      {...props}
       ref={linkRef}
       prefetch={false}
       className={cn('underline-offset-4 hover:underline', className)}
@@ -131,6 +132,7 @@ export const NextLink = ({
         if (newTab) return;
 
         const url = new URL(href, window.location.href);
+
         if (
           url.origin === window.location.origin &&
           e.button === 0 &&
@@ -140,10 +142,16 @@ export const NextLink = ({
           !e.shiftKey
         ) {
           e.preventDefault();
-          router.push(href);
+          props.onClick?.(e);
+
+          if (props.replace) {
+            router.replace(href);
+          } else {
+            router.push(href);
+          }
         }
       }}
-      {...props}
+      href={href}
     >
       {children}
     </Link>

@@ -17,6 +17,12 @@ export interface DeliveryPromiseDTO {
   updatedAt: string;
 }
 
+export type StockStatus =
+  | 'OUT_OF_STOCK'
+  | 'LOW_STOCK'
+  | 'IN_STOCK'
+  | 'ONE_STOCK';
+
 export interface ProductVariantDTO {
   id: string;
   createdAt: string;
@@ -27,9 +33,13 @@ export interface ProductVariantDTO {
     value: number;
     currency: string;
   };
-  stock: number;
+  sizes: {
+    value: string;
+    stock: number;
+    stockStatus: StockStatus;
+    reserved: number;
+  }[];
   attributes: {
-    size: string;
     color: string;
   };
 }

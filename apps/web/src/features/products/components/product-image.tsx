@@ -3,7 +3,7 @@
 import { dynamicImport } from '@/lib/utils/dynamic-import';
 import { useDidMount } from '@ecomm/ui/hooks/use-did-mount';
 import { ImageComponent } from '@ecomm/ui/image';
-import { useProductDetail } from './product-detail-provider';
+import { useProductDetail } from '../providers/product-detail-provider';
 import { cn } from '@ecomm/ui/lib/utils';
 import { useCarousel } from '@ecomm/ui/context/carousel-context';
 import { Button } from '@ecomm/ui/button';

@@ -77,5 +77,19 @@ export default {
         alt: 'Thumbnail Product Image {index}',
       },
     },
+    variantSelection: {
+      alt: 'Select Variant SKU {sku}',
+    },
+    sizeSelection: {
+      title: 'Size',
+      alt: 'Size {value}',
+    },
+    quantitySelection: {
+      title: 'Quantity',
+      action: {
+        increase: 'Increase quantity',
+        decrease: 'Decrease quantity',
+      },
+    },
   },
 } as const;

@@ -23,6 +23,10 @@ interface ProductVariant {
   stock: number;
   images: string[];
   attributes: { title: string; value: string }[];
+  sizes: {
+    value: string;
+    stock: number;
+  }[];
   createdAt: Date;
   updatedAt: Date;
 }
@@ -78,6 +82,7 @@ async function readProductVariants(): Promise<ProductVariant[]> {
       price: Number(item.price),
       stock: Number(item.stock),
       images: item.images.split(','),
+      sizes: JSON.parse(item.sizes),
       attributes: Object.entries(JSON.parse(item.attributes)).map(
         ([attr, value]) => ({
           title: attr,
@@ -185,10 +190,10 @@ async function main() {
               id: variant.id,
               sku: variant.sku,
               price: variant.price,
-              stock: variant.stock,
               images: variant.images,
               attributes: variant.attributes,
               product: { connect: { id: variant.productId } },
+              sizes: variant.sizes,
             },
           }),
         ),

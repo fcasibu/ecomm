@@ -1,11 +1,14 @@
+import assert from 'node:assert';
 import { BaseTransformer } from '../base-transformer';
 import type {
   DeliveryPromiseDTO,
   ProductAttribute,
   ProductDTO,
   ProductVariantDTO,
+  StockStatus,
 } from './product-dto';
 import type { Product } from './products-service';
+import { isDefined } from '@ecomm/lib/is-defined';
 
 export class ProductTransformer extends BaseTransformer {
   public toDTO(product: Product | null | undefined): ProductDTO | null {
@@ -35,13 +38,35 @@ export class ProductTransformer extends BaseTransformer {
   ): ProductVariantDTO {
     const attributes = variant.attributes as ProductAttribute[];
 
+    assert(
+      Array.isArray(variant.sizes),
+      'variant.sizes should always be an array',
+    );
+
     return {
       id: variant.id,
       images: variant.images,
       sku: variant.sku,
-      stock: variant.stock,
       createdAt: this.formatDateToISO(variant.createdAt),
       updatedAt: this.formatDateToISO(variant.updatedAt),
+      sizes: variant.sizes
+        .map((_size) => {
+          const size = _size as {
+            value: string;
+            stock: number;
+            reserved: number;
+          };
+
+          if (!size) return null;
+
+          return {
+            value: size.value,
+            stock: size.stock,
+            reserved: size.reserved,
+            stockStatus: getStockStatus(size.stock - size.reserved),
+          };
+        })
+        .filter(isDefined),
       price: {
         value: variant.price.toNumber(),
         currency,
@@ -89,4 +114,14 @@ export class ProductTransformer extends BaseTransformer {
       updatedAt: this.formatDateToISO(category.updatedAt),
     };
   }
+}
+
+function getStockStatus(stock: number): StockStatus {
+  if (stock <= 0) return 'OUT_OF_STOCK';
+
+  if (stock === 1) return 'ONE_STOCK';
+
+  if (stock <= 5) return 'LOW_STOCK';
+
+  return 'IN_STOCK';
 }

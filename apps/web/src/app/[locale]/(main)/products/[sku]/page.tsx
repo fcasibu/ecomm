@@ -12,7 +12,7 @@ export default async function Page({
   const result = await getProductBySku(locale, sku);
   setStaticParamsLocale(locale);
 
-  if (!result.success) return notFound();
+  if (!result.success || !result.data.variants.length) return notFound();
 
   return <ProductDetail product={result.data} selectedSku={sku} />;
 }

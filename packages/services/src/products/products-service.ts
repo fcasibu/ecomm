@@ -58,6 +58,10 @@ export class ProductsService extends BaseService {
             data:
               input.variants?.map((variant) => ({
                 ...variant,
+                sizes: variant.sizes.map((size) => ({
+                  ...size,
+                  reserved: 0,
+                })),
                 sku: generateVariantSku(sku),
               })) ?? [],
           },
@@ -206,6 +210,10 @@ export class ProductsService extends BaseService {
             createMany: {
               data: variantsToCreate.map((variant) => ({
                 ...variant,
+                sizes: variant.sizes.map((size) => ({
+                  ...size,
+                  reserved: 0,
+                })),
                 sku: generateVariantSku(product.sku),
               })),
             },

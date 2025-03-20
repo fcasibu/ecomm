@@ -10,16 +10,12 @@ export const productAttributes = {
     title: 'Color',
     validation: z.string().min(1, 'Color is required'),
   },
-  [AttributeKey.SIZE]: {
-    title: 'Size',
-    validation: z.string().min(1, 'Size is required'),
-  },
 } as const;
 
 const variantAttributeSchema = z.array(
   z
     .object({
-      title: z.enum([AttributeKey.COLOR, AttributeKey.SIZE]),
+      title: z.enum([AttributeKey.COLOR]),
       value: z.any(),
     })
     .superRefine((attr, ctx) => {
@@ -34,18 +30,37 @@ const variantAttributeSchema = z.array(
 
 export const productCreateVariantSchema = z.object({
   price: z.number(),
-  stock: z.number(),
   images: z
     .array(z.string().min(1, 'Variant image is required'))
     .nonempty({ message: 'Please provide an image' })
     .max(5, 'You can only upload up to 5 images'),
+  sizes: z
+    .array(
+      z.object({
+        value: z.string(),
+        stock: z.number(),
+      }),
+    )
+    .refine(
+      (sizes) => {
+        const uniqueSizes = new Set<string>(sizes.map((size) => size.value));
+
+        return uniqueSizes.size === sizes.length;
+      },
+      { message: 'All items must be unique, no duplicate size allowed.' },
+    ),
   attributes: variantAttributeSchema,
 });
 
 export const productUpdateVariantSchema = z.object({
   sku: z.string().optional(),
   price: z.number(),
-  stock: z.number(),
+  sizes: z.array(
+    z.object({
+      value: z.string(),
+      stock: z.number(),
+    }),
+  ),
   images: z
     .array(z.string().min(1, 'Variant image is required'))
     .nonempty({ message: 'Please provide an image' })

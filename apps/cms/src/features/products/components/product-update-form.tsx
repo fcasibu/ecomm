@@ -50,8 +50,14 @@ export function ProductUpdateForm({ product }: { product: ProductDTO }) {
       categoryId: product.category?.id ?? undefined,
       features: product.features,
       variants: product.variants.map((variant) => ({
-        ...variant,
+        id: variant.id,
+        sku: variant.sku,
+        images: variant.images,
         price: variant.price.value,
+        sizes: variant.sizes.map((size) => ({
+          value: size.value,
+          stock: size.stock,
+        })),
         attributes: Object.keys(productAttributes).map((key) => ({
           title: key,
           value: variant.attributes[key as keyof typeof productAttributes],

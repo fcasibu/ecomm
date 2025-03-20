@@ -98,9 +98,8 @@ model ProductVariant {
   productId  String
   sku        String   @unique
   price      Decimal
-  stock      Int      @default(0)
-  reserved   Int      @default(0)
   images     String[]
+  sizes      Json // [{ stock: Int, reserved: Int, value: String }]
   attributes Json?
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
@@ -172,6 +171,7 @@ model CartItem {
   product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
   productId String
   sku       String
+  size      String
   quantity  Int
   cart      Cart     @relation(fields: [cartId], references: [id], onDelete: Cascade)
   cartId    String

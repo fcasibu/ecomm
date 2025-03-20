@@ -4,7 +4,7 @@ import type {
   ProductDTO,
   ProductVariantDTO,
 } from '@ecomm/services/products/product-dto';
-import { createContext, useContext, useMemo } from 'react';
+import { createContext, useContext } from 'react';
 
 interface ProductDetailContextType {
   product: ProductDTO;
@@ -29,24 +29,15 @@ export function useProductDetail() {
 
 export function ProductDetailProvider({
   children,
-  selectedSku,
+  selectedVariant,
   product,
 }: {
   children: React.ReactNode;
-  selectedSku: string;
+  selectedVariant: ProductVariantDTO;
   product: ProductDTO;
 }) {
-  const selectedVariant =
-    product.variants.find((variant) => variant.sku === selectedSku) ??
-    product.variants[0]!;
-
-  const value = useMemo(
-    () => ({ product, selectedVariant }),
-    [product, selectedVariant],
-  );
-
   return (
-    <ProductDetailContext.Provider value={value}>
+    <ProductDetailContext.Provider value={{ product, selectedVariant }}>
       {children}
     </ProductDetailContext.Provider>
   );

@@ -19,7 +19,7 @@ import { Input } from '@ecomm/ui/input';
 import { Button } from '@ecomm/ui/button';
 import { MultiImageUpload } from '@/components/multi-image-upload';
 import { ImageComponent } from '@ecomm/ui/image';
-import { useForm } from 'react-hook-form';
+import { useFieldArray, useForm } from 'react-hook-form';
 import { useState } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Plus } from 'lucide-react';
@@ -31,6 +31,12 @@ import type {
   ProductVariantUpdateInput,
 } from '@ecomm/validations/cms/products/product-schema';
 import type { z } from 'zod';
+import {
+  Collapsible,
+  CollapsibleTrigger,
+  CollapsibleContent,
+} from '@ecomm/ui/collapsible';
+import { ScrollArea } from '@ecomm/ui/scroll-area';
 
 export function ProductVariantsControl({
   value,
@@ -48,9 +54,18 @@ export function ProductVariantsControl({
   const [isOpen, setIsOpen] = useState(false);
   const [currentItem, setCurrentItem] = useState<Schema | null>(null);
 
-  const form = useForm({
+  const form = useForm<Schema>({
     resolver: zodResolver(schema),
     defaultValues: {},
+  });
+
+  const {
+    fields: sizeFields,
+    append: appendSize,
+    remove: removeSize,
+  } = useFieldArray({
+    control: form.control,
+    name: 'sizes',
   });
 
   const resetAndClose = () => {
@@ -91,7 +106,6 @@ export function ProductVariantsControl({
   const handleSheetOpenChange = (open: boolean) => {
     form.reset({});
     setIsOpen(open);
-
     if (!open) {
       setCurrentItem(null);
     }
@@ -162,24 +176,7 @@ export function ProductVariantsControl({
                 </FormItem>
               )}
             />
-            <FormField
-              control={form.control}
-              name="stock"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Stock</FormLabel>
-                  <FormControl>
-                    <Input
-                      type="number"
-                      {...field}
-                      value={field.value ?? 0}
-                      onChange={(e) => field.onChange(e.target.valueAsNumber)}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+
             <FormField
               control={form.control}
               name="images"
@@ -196,6 +193,82 @@ export function ProductVariantsControl({
                 </FormItem>
               )}
             />
+
+            <Collapsible>
+              <CollapsibleTrigger className="flex w-full justify-between rounded-md border p-2">
+                <span className="font-medium">Sizes</span>
+                <Plus className="h-4 w-4" />
+              </CollapsibleTrigger>
+              <CollapsibleContent>
+                <ScrollArea className="h-60 w-full">
+                  <div className="space-y-4 p-2">
+                    {sizeFields.map((sizeField, index) => (
+                      <div
+                        key={sizeField.id}
+                        className="flex items-center gap-4"
+                      >
+                        <FormField
+                          control={form.control}
+                          name={`sizes.${index}.value`}
+                          render={({ field }) => (
+                            <FormItem className="flex-1">
+                              <FormLabel>Size</FormLabel>
+                              <FormControl>
+                                <Input {...field} value={field.value ?? ''} />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                        <FormField
+                          control={form.control}
+                          name={`sizes.${index}.stock`}
+                          render={({ field }) => (
+                            <FormItem className="w-24">
+                              <FormLabel>Stock</FormLabel>
+                              <FormControl>
+                                <Input
+                                  {...field}
+                                  type="number"
+                                  value={field.value ?? 0}
+                                  onChange={(e) =>
+                                    field.onChange(e.target.valueAsNumber)
+                                  }
+                                  placeholder="Stock"
+                                />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                        <Button
+                          type="button"
+                          variant="destructive"
+                          onClick={() => removeSize(index)}
+                          className="mt-6"
+                        >
+                          Remove
+                        </Button>
+                      </div>
+                    ))}
+                  </div>
+                </ScrollArea>
+                <div className="mt-2 flex justify-end">
+                  <Button
+                    type="button"
+                    onClick={() =>
+                      appendSize({
+                        value: '',
+                        stock: 0,
+                      })
+                    }
+                  >
+                    Add Size
+                  </Button>
+                </div>
+              </CollapsibleContent>
+            </Collapsible>
+
             {Object.entries(productAttributes).map(
               ([key, attribute], index) => (
                 <FormField
