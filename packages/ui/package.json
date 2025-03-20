@@ -6,7 +6,8 @@
   "exports": {
     "./*": "./src/ui/*.tsx",
     "./lib/*": "./src/lib/*.ts",
-    "./hooks/*": "./src/hooks/*.ts"
+    "./hooks/*": "./src/hooks/*.ts",
+    "./context/*": "./src/context/*.ts"
   },
   "imports": {
     "#*": [
@@ -51,6 +52,7 @@
     "clsx": "^2.1.1",
     "cmdk": "1.0.0",
     "date-fns": "^4.1.0",
+    "embla-carousel-react": "^8.5.2",
     "lucide-react": "^0.475.0",
     "react": "^19.0.0",
     "react-day-picker": "8.10.1",

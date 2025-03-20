@@ -76,6 +76,26 @@ export class ProductsService extends BaseService {
       include: PRODUCT_INCLUDE,
     });
   }
+  public async getBySku(locale: string, sku: string) {
+    return await this.prismaClient.product.findFirst({
+      where: {
+        locale,
+        OR: [
+          {
+            sku,
+          },
+          {
+            variants: {
+              some: {
+                sku,
+              },
+            },
+          },
+        ],
+      },
+      include: PRODUCT_INCLUDE,
+    });
+  }
 
   public async getAll(locale: string, options: SearchOptions) {
     const { query, page = 1, pageSize = 20 } = options;

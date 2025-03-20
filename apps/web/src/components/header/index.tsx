@@ -15,7 +15,7 @@ export async function Header() {
   const [lang, region] = locale.split('-');
 
   return (
-    <header className="sticky top-0 w-full border border-b-gray-300 bg-white">
+    <header className="sticky top-0 z-10 w-full border border-b-gray-300 bg-white">
       <div className="bg-gray-200 py-1">
         <div className="container flex items-center justify-end gap-4">
           <NextLink href={link.help} className="text-[0.6rem]">

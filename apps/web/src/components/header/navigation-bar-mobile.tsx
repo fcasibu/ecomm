@@ -20,19 +20,18 @@ import { Badge } from '@ecomm/ui/badge';
 import { useWindowResize } from '@ecomm/ui/hooks/use-window-resize';
 import { dynamicImport } from '@/lib/utils/dynamic-import';
 
-const { Accordion, AccordionTrigger, AccordionContent, AccordionItem } =
-  dynamicImport(
-    () => import('@ecomm/ui/accordion'),
-    {
-      Accordion: null,
-      AccordionItem: null,
-      AccordionContent: null,
-      AccordionTrigger: null,
-    },
-    { ssr: false },
-  );
+const AccordionComponents = dynamicImport(
+  () => import('@ecomm/ui/accordion'),
+  {
+    Accordion: null,
+    AccordionItem: null,
+    AccordionContent: null,
+    AccordionTrigger: null,
+  },
+  { ssr: false },
+);
 
-const { SheetTrigger, Sheet, SheetContent, SheetTitle } = dynamicImport(
+const SheetComponents = dynamicImport(
   () => import('@ecomm/ui/sheet'),
   {
     Sheet: {
@@ -118,8 +117,8 @@ function NavigationMenu({
   }, [width]);
 
   return (
-    <Sheet open={isNavMenuOpen} onOpenChange={setIsNavMenuOpen}>
-      <SheetTrigger asChild>
+    <SheetComponents.Sheet open={isNavMenuOpen} onOpenChange={setIsNavMenuOpen}>
+      <SheetComponents.SheetTrigger asChild>
         <Button
           aria-label={
             isNavMenuOpen ? t('actions.menu.close') : t('actions.menu.open')
@@ -130,31 +129,33 @@ function NavigationMenu({
         >
           {isNavMenuOpen ? <X /> : <Menu aria-hidden />}
         </Button>
-      </SheetTrigger>
-      <SheetContent
+      </SheetComponents.SheetTrigger>
+      <SheetComponents.SheetContent
         className="sticky top-0 flex h-screen w-full max-w-full flex-col overflow-y-auto px-4 pt-10"
         side="right"
       >
-        <SheetTitle className="sr-only">Menu</SheetTitle>
+        <SheetComponents.SheetTitle className="sr-only">
+          Menu
+        </SheetComponents.SheetTitle>
         {isNavMenuOpen &&
           filteredNavigationItems.map((navigationItem, index) => (
             <Fragment key={`${navigationItem.type}-${index}`}>
               {navigationItem.type === 'categoryNavigationItem' ? (
-                <Accordion type="multiple">
+                <AccordionComponents.Accordion type="multiple">
                   <CategoryNavigationItemTier1
                     navigationItem={navigationItem}
                   />
-                </Accordion>
+                </AccordionComponents.Accordion>
               ) : (
-                <Accordion type="multiple">
+                <AccordionComponents.Accordion type="multiple">
                   <NavigationItemTier1 navigationItem={navigationItem} />
-                </Accordion>
+                </AccordionComponents.Accordion>
               )}
             </Fragment>
           ))}
         <NavigationMenuFooter />
-      </SheetContent>
-    </Sheet>
+      </SheetComponents.SheetContent>
+    </SheetComponents.Sheet>
   );
 }
 
@@ -200,8 +201,8 @@ function NavigationItemTier1({
   if (!navigationItem.title) return null;
 
   return (
-    <AccordionItem value={navigationItem.title}>
-      <AccordionTrigger
+    <AccordionComponents.AccordionItem value={navigationItem.title}>
+      <AccordionComponents.AccordionTrigger
         className="py-2"
         isEmpty={!navigationItem.children.length}
       >
@@ -215,13 +216,13 @@ function NavigationItemTier1({
         >
           {navigationItem.title}
         </span>
-      </AccordionTrigger>
+      </AccordionComponents.AccordionTrigger>
       {Boolean(navigationItem.children.length) && (
-        <AccordionContent className="pl-4">
+        <AccordionComponents.AccordionContent className="pl-4">
           <NavigationItemTier2 tier2Items={navigationItem.children} />
-        </AccordionContent>
+        </AccordionComponents.AccordionContent>
       )}
-    </AccordionItem>
+    </AccordionComponents.AccordionItem>
   );
 }
 
@@ -240,10 +241,10 @@ function NavigationItemTier2({
   );
 
   return (
-    <Accordion type="multiple">
+    <AccordionComponents.Accordion type="multiple">
       {filteredItems.map((item) => (
-        <AccordionItem value={item.title} key={item.title}>
-          <AccordionTrigger
+        <AccordionComponents.AccordionItem value={item.title} key={item.title}>
+          <AccordionComponents.AccordionTrigger
             className="py-2 text-xs"
             isEmpty={!item.children.length}
           >
@@ -257,9 +258,9 @@ function NavigationItemTier2({
             >
               {item.title}
             </span>
-          </AccordionTrigger>
+          </AccordionComponents.AccordionTrigger>
           {Boolean(item.children.length) && (
-            <AccordionContent className="flex flex-col gap-2 pl-4">
+            <AccordionComponents.AccordionContent className="flex flex-col gap-2 pl-4">
               {item.children.map((child) => (
                 <Fragment key={child.title}>
                   <ConditionalLink
@@ -271,11 +272,11 @@ function NavigationItemTier2({
                   </ConditionalLink>
                 </Fragment>
               ))}
-            </AccordionContent>
+            </AccordionComponents.AccordionContent>
           )}
-        </AccordionItem>
+        </AccordionComponents.AccordionItem>
       ))}
-    </Accordion>
+    </AccordionComponents.Accordion>
   );
 }
 
@@ -287,8 +288,8 @@ function CategoryNavigationItemTier1({
   const router = useRouter();
 
   return (
-    <AccordionItem value={navigationItem.name}>
-      <AccordionTrigger
+    <AccordionComponents.AccordionItem value={navigationItem.name}>
+      <AccordionComponents.AccordionTrigger
         className="py-2"
         isEmpty={!navigationItem.children?.length}
       >
@@ -300,15 +301,15 @@ function CategoryNavigationItemTier1({
         >
           {navigationItem.name}
         </span>
-      </AccordionTrigger>
+      </AccordionComponents.AccordionTrigger>
       {Boolean(navigationItem.children?.length) && (
-        <AccordionContent className="pl-4">
+        <AccordionComponents.AccordionContent className="pl-4">
           <CategoryNavigationItemTier2
             tier2Items={navigationItem.children ?? []}
           />
-        </AccordionContent>
+        </AccordionComponents.AccordionContent>
       )}
-    </AccordionItem>
+    </AccordionComponents.AccordionItem>
   );
 }
 
@@ -322,10 +323,13 @@ function CategoryNavigationItemTier2({
   if (!tier2Items.length) return null;
 
   return (
-    <Accordion type="multiple">
+    <AccordionComponents.Accordion type="multiple">
       {tier2Items.map((tier2Item) => (
-        <AccordionItem value={tier2Item.name} key={tier2Item.id}>
-          <AccordionTrigger
+        <AccordionComponents.AccordionItem
+          value={tier2Item.name}
+          key={tier2Item.id}
+        >
+          <AccordionComponents.AccordionTrigger
             className="py-2 text-xs"
             isEmpty={!tier2Item.children?.length}
           >
@@ -337,9 +341,9 @@ function CategoryNavigationItemTier2({
             >
               {tier2Item.name}
             </span>
-          </AccordionTrigger>
+          </AccordionComponents.AccordionTrigger>
           {Boolean(tier2Item.children?.length) && (
-            <AccordionContent className="flex flex-col gap-2 pl-4">
+            <AccordionComponents.AccordionContent className="flex flex-col gap-2 pl-4">
               {tier2Item.children?.map((item) => (
                 <NextLink
                   key={item.id}
@@ -350,10 +354,10 @@ function CategoryNavigationItemTier2({
                   {item.name}
                 </NextLink>
               ))}
-            </AccordionContent>
+            </AccordionComponents.AccordionContent>
           )}
-        </AccordionItem>
+        </AccordionComponents.AccordionItem>
       ))}
-    </Accordion>
+    </AccordionComponents.Accordion>
   );
 }

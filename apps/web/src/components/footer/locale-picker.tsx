@@ -16,14 +16,7 @@ import { Text } from '@ecomm/ui/typography';
 import { dynamicImport } from '@/lib/utils/dynamic-import';
 import { LazyLoader } from '../lazy-loader';
 
-const {
-  Command,
-  CommandList,
-  CommandInput,
-  CommandEmpty,
-  CommandGroup,
-  CommandItem,
-} = dynamicImport(
+const CommandComponents = dynamicImport(
   () => import('@ecomm/ui/command'),
   {
     Command: null,
@@ -36,7 +29,7 @@ const {
   { ssr: false },
 );
 
-const { Popover, PopoverContent, PopoverTrigger } = dynamicImport(
+const PopoverComponents = dynamicImport(
   () => import('@ecomm/ui/popover'),
   {
     Popover: {
@@ -56,11 +49,11 @@ export function LocalePicker() {
 
   return (
     <LazyLoader skeleton={LocalePickerSkeleton}>
-      <Popover open={open} onOpenChange={setOpen}>
+      <PopoverComponents.Popover open={open} onOpenChange={setOpen}>
         <Text size="md" className="mb-2 !font-semibold">
           {t('title')}
         </Text>
-        <PopoverTrigger asChild>
+        <PopoverComponents.PopoverTrigger asChild>
           <Button
             variant="outline"
             role="combobox"
@@ -77,20 +70,24 @@ export function LocalePicker() {
             </div>
             <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
           </Button>
-        </PopoverTrigger>
-        <PopoverContent className="w-full p-0">
+        </PopoverComponents.PopoverTrigger>
+        <PopoverComponents.PopoverContent className="w-full p-0">
           {open && (
-            <Command>
-              <CommandInput
+            <CommandComponents.Command>
+              <CommandComponents.CommandInput
                 aria-label="Search locale"
                 placeholder="Search locale..."
               />
-              <CommandList>
-                <CommandEmpty>No locales found.</CommandEmpty>
-                <CommandGroup>
+              <CommandComponents.CommandList>
+                <CommandComponents.CommandEmpty>
+                  No locales found.
+                </CommandComponents.CommandEmpty>
+                <CommandComponents.CommandGroup>
                   {AVAILABLE_LOCALES.map((locale) => (
                     <div key={locale}>
-                      <CommandItem onSelect={() => changeLocale(locale)}>
+                      <CommandComponents.CommandItem
+                        onSelect={() => changeLocale(locale)}
+                      >
                         <Check
                           className={cn(
                             'mr-2 h-4 w-4',
@@ -105,15 +102,15 @@ export function LocalePicker() {
                             {getGeneralLanguageNameOfLocale(locale)} - {locale}
                           </span>
                         </div>
-                      </CommandItem>
+                      </CommandComponents.CommandItem>
                     </div>
                   ))}
-                </CommandGroup>
-              </CommandList>
-            </Command>
+                </CommandComponents.CommandGroup>
+              </CommandComponents.CommandList>
+            </CommandComponents.Command>
           )}
-        </PopoverContent>
-      </Popover>
+        </PopoverComponents.PopoverContent>
+      </PopoverComponents.Popover>
     </LazyLoader>
   );
 }

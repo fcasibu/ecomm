@@ -70,4 +70,12 @@ export default {
       notice: '© {year} ECOMM. All rights reserved.',
     },
   },
+  productDetail: {
+    image: {
+      thumbnails: {
+        actions: { select: 'Select Product Image {index}' },
+        alt: 'Thumbnail Product Image {index}',
+      },
+    },
+  },
 } as const;

@@ -115,6 +115,28 @@ export class ProductsController extends BaseController {
     }
   }
 
+  public async getBySku(locale: string, sku: string) {
+    try {
+      logger.info({ sku }, 'Fetching product');
+
+      const product = this.transformer.toDTO(
+        await this.productsService.getBySku(locale, sku),
+      );
+
+      if (!product) {
+        throw new NotFoundError(`Product SKU "${sku}" not found.`);
+      }
+
+      logger.info({ sku: product.sku }, 'Fetched product');
+
+      return product;
+    } catch (error) {
+      this.logAndThrowError(error, {
+        message: 'Error fetching product',
+      });
+    }
+  }
+
   public async getAll(
     locale: string,
     input: {

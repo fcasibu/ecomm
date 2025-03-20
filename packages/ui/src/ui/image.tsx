@@ -1,4 +1,8 @@
-import type { ImageProps as NextImageProps, ImageLoader } from 'next/image';
+import type {
+  ImageProps as NextImageProps,
+  ImageLoader,
+  ImageLoaderProps,
+} from 'next/image';
 import NextImage from 'next/image';
 import type { Ref } from 'react';
 
@@ -18,7 +22,7 @@ export function ImageComponent({ src, loader, ...props }: CustomImageProps) {
   const resolvedLoader =
     loader ||
     (typeof src === 'string' && !isResolvableUrl(src)
-      ? cloudinaryLoader
+      ? (opts) => cloudinaryLoader({ ...opts, fill: props.fill })
       : undefined);
 
   return (
@@ -33,8 +37,18 @@ export function ImageComponent({ src, loader, ...props }: CustomImageProps) {
   );
 }
 
-const cloudinaryLoader: ImageLoader = ({ src, width, quality }) => {
-  const params = ['f_auto', 'c_limit', `w_${width}`, `q_${quality || 'auto'}`];
+const cloudinaryLoader = ({
+  src,
+  width,
+  quality,
+  fill,
+}: ImageLoaderProps & { fill?: boolean }) => {
+  const params = ['f_auto', `q_${quality || 'auto'}`];
+
+  if (!fill) {
+    params.push('c_limit', `w_${width}`);
+  }
+
   return `https://res.cloudinary.com/dzvz2v25d/image/upload/${params.join(',')}/${src}`;
 };
 
