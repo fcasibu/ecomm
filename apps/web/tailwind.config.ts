@@ -9,7 +9,7 @@ export default {
         DEFAULT: '1rem',
       },
       screens: {
-        DEFAULT: '1280px',
+        DEFAULT: '1440px',
       },
     },
     extend: {

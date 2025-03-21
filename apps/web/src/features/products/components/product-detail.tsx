@@ -8,6 +8,11 @@ import { ProductVariantSelection } from './product-variant-selection';
 import { ProductSizeSelection } from './product-size-selection';
 import { ProductQuantity } from './product-quantity';
 import { ProductAddToCart } from './product-add-to-cart';
+import { ProductWishListButton } from './product-wishlist-button';
+import { ProductShareButton } from './product-share-button';
+import { ProductGuarantees } from './product-guarantees';
+import { ProductTabs } from './product-tabs';
+import { Separator } from '@ecomm/ui/separator';
 
 export function ProductDetail({
   product,
@@ -46,6 +51,13 @@ export function ProductDetail({
             <ProductSizeSelection />
             <ProductQuantity />
             <ProductAddToCart />
+            <div className='flex gap-2'>
+              <ProductWishListButton />
+              <ProductShareButton />
+            </div>
+            <ProductGuarantees />
+            <Separator className="my-2" />
+            <ProductTabs />
           </div>
         </div>
       </ProductVariantProvider>

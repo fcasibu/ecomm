@@ -95,6 +95,31 @@ export default {
       title: 'Add to Cart',
       loading: 'Adding...',
     },
+    wishlist: {
+      title: 'Wishlist'
+    },
+    share: {
+      title: 'Share',
+      copied: 'Copied!'
+    },
+    guarantees: {
+      freeShipping: {
+        title: 'Free Shipping',
+        subtitle: 'On orders over {value}'
+      },
+      easyReturns: {
+        title: 'Easy Returns',
+        subtitleL: '30-day return policy'
+      },
+      secureCheckout: {
+        title: 'Secure Checkout',
+        subtitle: 'Protected payments'
+      }
+    },
+    tabs: {
+      description: 'Description',
+      features: 'Features'
+    },
     errors: {
       size: 'Please select a size',
     },
