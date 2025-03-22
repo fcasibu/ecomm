@@ -78,6 +78,7 @@ export default {
       },
     },
     variantSelection: {
+      title: 'Color',
       alt: 'Select Variant SKU {sku}',
     },
     sizeSelection: {
