@@ -15,27 +15,32 @@ export default async function Page({
 }) {
   const { slug, locale } = await params;
   setStaticParamsLocale(locale);
-  const querySku = (slug[1] ?? slug[0] ?? '').toLowerCase();
+  const querySku = slug[1] ?? slug[0] ?? '';
   const result = await getProductBySku(locale, querySku);
 
   if (!result.success || !result.data.variants.length) return notFound();
 
-  const sku = result.data.variants[0]?.sku;
-  assert(sku, 'sku must be present');
+  const baseProductSku = result.data.sku;
+  const variantSku = result.data.variants[0]?.sku;
+  assert(variantSku, 'variant sku must be present');
 
   const productSlugs = transformProductSkusToSlugs(result.data);
   const joinedSlug = slug.join('/');
 
   if (productSlugs.every((productSlug) => productSlug !== joinedSlug)) {
-    const formattedSlug = `/${locale}/products/${joinedSlug}`;
+    const formattedSlug = productSlugs.find((productSlug) =>
+      productSlug.endsWith(querySku),
+    );
+    assert(formattedSlug, 'formatted slug should exist');
+
     return redirect(formattedSlug, RedirectType.replace);
   }
 
   return (
     <div className="flex flex-col gap-8 pb-12">
-      <ProductDetail product={result.data} selectedSku={sku} />
-      <RecentlyViewedProducts sku={sku} />
-      <RecentlyViewedSetter sku={sku} />
+      <ProductDetail product={result.data} selectedSku={querySku} />
+      <RecentlyViewedProducts sku={baseProductSku} />
+      <RecentlyViewedSetter sku={baseProductSku} />
     </div>
   );
 }

@@ -22,8 +22,9 @@ export function ProductDetail({
   selectedSku: string;
 }) {
   const selectedVariant =
-    product.variants.find((variant) => variant.sku === selectedSku) ??
-    product.variants[0]!;
+    product.variants.find(
+      (variant) => variant.sku.toLowerCase() === selectedSku.toLowerCase(),
+    ) ?? product.variants[0]!;
 
   return (
     <ProductDetailProvider selectedVariant={selectedVariant} product={product}>
@@ -39,7 +40,7 @@ export function ProductDetail({
               <Heading as="h1" className="!text-3xl">
                 {product.name}
               </Heading>
-              <p className="text-muted-foreground">{selectedSku}</p>
+              <p className="text-muted-foreground">{selectedVariant.sku}</p>
             </div>
             <p className="text-xl font-bold">
               {formatPrice(
