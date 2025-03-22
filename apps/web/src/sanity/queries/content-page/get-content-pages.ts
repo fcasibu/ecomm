@@ -21,6 +21,7 @@ const CONTENT_PAGES_QUERY = groq`
   },
   blocks[] {
     _type == "fullWidthBanner" => {
+      _key,
       _type,
       title, 
       description,

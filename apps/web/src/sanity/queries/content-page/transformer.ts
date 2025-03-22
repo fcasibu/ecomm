@@ -1,6 +1,6 @@
 import type { ContentPage } from '@/sanity.types';
 import type {
-  Content,
+  Block,
   ContentPageDTO,
   FullWidthBanner,
   SEOMetadata,
@@ -11,7 +11,7 @@ export function transformContentPage(contentPage: ContentPage): ContentPageDTO {
   return {
     slug: contentPage.slug ?? '',
     seoMetadata: transformSeoMetadata(contentPage?.seoMetadata),
-    content: transformContent(contentPage.blocks),
+    blocks: transformContent(contentPage.blocks),
   };
 }
 
@@ -31,7 +31,7 @@ function transformSeoMetadata(
 
 function transformContent(
   content: ExtractType<ContentPage, 'blocks'>,
-): Content[] {
+): Block[] {
   return content?.map(pickTransformContent) ?? [];
 }
 
@@ -50,7 +50,12 @@ function transformFullWidthBanner(
   fullWidthBanner: ExtractType<ContentPage, 'blocks[number]'>,
 ): FullWidthBanner {
   return {
-    title: fullWidthBanner.title ?? '',
+    key: fullWidthBanner._key,
+    type: fullWidthBanner._type,
+    title: {
+      value: fullWidthBanner.title?.title ?? '',
+      type: fullWidthBanner.title?.type ?? 'h2',
+    },
     description: fullWidthBanner.description ?? '',
     cta: {
       title: fullWidthBanner.cta?.title ?? '',

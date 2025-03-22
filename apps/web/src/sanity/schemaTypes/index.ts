@@ -1,6 +1,6 @@
 import { type SchemaTypeDefinition } from 'sanity';
 import { headerType } from './header-type';
-import { image, link, rootCategorySelect } from './objects';
+import { heading, image, link, rootCategorySelect } from './objects';
 import { footerType } from './footer-type';
 import { contentPageType } from './content-page-type';
 import { fullWidthBanner } from './objects/banners';
@@ -17,5 +17,6 @@ export const schema: { types: SchemaTypeDefinition[] } = {
     image,
     rootCategorySelect,
     fullWidthBanner,
+    heading,
   ],
 };

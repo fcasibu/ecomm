@@ -8,7 +8,7 @@ export const fullWidthBanner = defineType({
     defineField({
       name: 'title',
       title: 'Title',
-      type: 'string',
+      type: 'heading',
     }),
     defineField({
       name: 'description',

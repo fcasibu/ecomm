@@ -3,6 +3,7 @@ import { generateContentPageMetadata } from './_metadata';
 import { getContentPage } from '@/sanity/queries/content-page/get-content-page';
 import { getContentPages } from '@/sanity/queries/content-page/get-content-pages';
 import { setStaticParamsLocale } from 'next-international/server';
+import { ContentPage } from '@/components/content-page';
 
 export async function generateMetadata({
   params,
@@ -44,5 +45,5 @@ export default async function Page({
 
   if (!result.success) return notFound();
 
-  return <div>{JSON.stringify(result.data)}</div>;
+  return <ContentPage contentPage={result.data} />;
 }

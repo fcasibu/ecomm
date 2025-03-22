@@ -21,9 +21,9 @@ export function transformNavigationItem(
     title: navigationItem.title,
     children:
       navigationItem.children?.filter(isDefined).map((item) => ({
-        title: item.title,
+        title: item.title ?? '',
         link: {
-          title: item.link?.title,
+          title: item.link?.title ?? '',
           url: item.link?.url ?? '',
           newTab: item.link?.newTab ?? false,
         },

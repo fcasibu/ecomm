@@ -59,12 +59,12 @@ function transformCategoryNavigationItem(
         name: navigationItem.promotionalBanner.name,
         cta: {
           url: navigationItem.promotionalBanner.cta?.url ?? '',
-          title: navigationItem.promotionalBanner.cta?.title,
+          title: navigationItem.promotionalBanner.cta?.title ?? '',
           newTab: navigationItem.promotionalBanner.cta?.newTab ?? false,
         },
         image: {
-          url: navigationItem.promotionalBanner.image?.image,
-          alt: navigationItem.promotionalBanner.image?.alt,
+          url: navigationItem.promotionalBanner.image?.image ?? '',
+          alt: navigationItem.promotionalBanner.image?.alt ?? '',
         },
         description: navigationItem.promotionalBanner.description,
       }
@@ -96,7 +96,7 @@ function transformTier1NavigationItem(
     title: navigationItem.title,
     link: {
       url: navigationItem.link?.url ?? '',
-      title: navigationItem.link?.title,
+      title: navigationItem.link?.title ?? '',
       newTab: navigationItem.link?.newTab ?? false,
     },
     promotionalBanner: navigationItem.promotionalBanner?.image
@@ -104,12 +104,12 @@ function transformTier1NavigationItem(
           name: navigationItem.promotionalBanner.name,
           description: navigationItem.promotionalBanner.description,
           image: {
-            url: navigationItem.promotionalBanner.image?.image,
-            alt: navigationItem.promotionalBanner.image?.alt,
+            url: navigationItem.promotionalBanner.image?.image ?? '',
+            alt: navigationItem.promotionalBanner.image?.alt ?? '',
           },
           cta: {
             url: navigationItem.promotionalBanner.cta?.url ?? '',
-            title: navigationItem.promotionalBanner.cta?.title,
+            title: navigationItem.promotionalBanner.cta?.title ?? '',
             newTab: navigationItem.promotionalBanner.cta?.newTab ?? false,
           },
         }
@@ -128,7 +128,7 @@ function transformTier2NavigationItem(
     title: navigationItem.title ?? '',
     link: {
       url: navigationItem.link?.url ?? '',
-      title: navigationItem.link?.title,
+      title: navigationItem.link?.title ?? '',
       newTab: navigationItem.link?.newTab ?? false,
     },
     children: navigationItem.children?.map(transformTier3NavigationItem) ?? [],
@@ -145,7 +145,7 @@ function transformTier3NavigationItem(
     title: navigationItem.title,
     link: {
       url: navigationItem.link?.url ?? '',
-      title: navigationItem.link?.title,
+      title: navigationItem.link?.title ?? '',
       newTab: navigationItem.link?.newTab ?? false,
     },
   };

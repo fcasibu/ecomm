@@ -4,7 +4,7 @@ import { cva } from 'class-variance-authority';
 
 type Headings = 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6';
 
-const heading = cva('m-0 font-bold leading-1.5', {
+const heading = cva('m-0 font-bold leading-tight', {
   variants: {
     as: {
       h1: 'text-[2.9rem]',

@@ -1,5 +1,5 @@
 import type { ExtractType } from '@/types';
-import type { CustomImage, Link } from '../common/types';
+import type { CustomImage, Heading, Link } from '../common/types';
 import type { ContentPage } from '@/sanity.types';
 
 export type ContentAlignment = 'left' | 'center' | 'right';
@@ -17,7 +17,7 @@ export type ContentPosition =
 export interface ContentPageDTO {
   slug: string;
   seoMetadata: SEOMetadata;
-  content: Content[];
+  blocks: Block[];
 }
 
 export interface SEOMetadata {
@@ -30,11 +30,13 @@ export interface SEOMetadata {
   indexing: string;
 }
 
-export type Content = FullWidthBanner;
-export type ContentKeys = ExtractType<ContentPage, 'blocks[number]._type'>;
+export type Block = FullWidthBanner;
+export type BlockKeys = ExtractType<ContentPage, 'blocks[number]._type'>;
 
 export interface FullWidthBanner {
-  title: string;
+  key: string;
+  type: BlockKeys;
+  title: Heading;
   description: string;
   cta: Link;
   image: CustomImage;
