@@ -32,7 +32,7 @@ export default defineConfig({
         name: locale.replace('-', '_'),
         title: locale.toUpperCase(),
       })),
-      schemaTypes: ['header', 'footer'],
+      schemaTypes: ['header', 'footer', 'contentPage'],
     }),
   ],
 });
