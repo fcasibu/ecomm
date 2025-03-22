@@ -1,12 +1,7 @@
-import {
-  AVAILABLE_LOCALES,
-  DEFAULT_LOCALE,
-  type Locale,
-} from '@ecomm/lib/locale-helper';
+import { AVAILABLE_LOCALES, DEFAULT_LOCALE } from '@ecomm/lib/locale-helper';
 import { createI18nMiddleware } from 'next-international/middleware';
 import { NextRequest, NextResponse } from 'next/server';
 import { clientEnv } from './env/client';
-import { getCurrentLocale } from './locales/server';
 
 const I18nMiddleware = createI18nMiddleware({
   locales: AVAILABLE_LOCALES,
@@ -15,7 +10,7 @@ const I18nMiddleware = createI18nMiddleware({
 
 export async function middleware(request: NextRequest) {
   const response = I18nMiddleware(request);
-  const locale = await getCurrentLocale();
+  const locale = response.headers.get('x-next-locale') ?? '';
 
   const noLocalePathname = request.nextUrl.pathname.replace(locale, '');
   if (noLocalePathname !== noLocalePathname.toLowerCase()) {
@@ -28,7 +23,7 @@ export async function middleware(request: NextRequest) {
   return response;
 }
 
-async function getFriendlyDestination(request: NextRequest, locale: Locale) {
+async function getFriendlyDestination(request: NextRequest, locale: string) {
   const pathname = request.nextUrl.pathname.replace(locale, '').toLowerCase();
   return `${clientEnv.NEXT_PUBLIC_STOREFRONT_BASE_URL}/${locale}${pathname}${request.nextUrl.search}`;
 }

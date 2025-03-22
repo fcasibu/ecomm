@@ -38,6 +38,5 @@ yarn-error.log*
 *.pem
 
 todo.md
-backlog.md
 
 tsconfig.tsbuildinfo

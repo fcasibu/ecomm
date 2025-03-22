@@ -15,7 +15,13 @@ import { link } from '@/lib/utils/link-helper';
 import { useScopedI18n } from '@/locales/client';
 import { cn } from '@ecomm/ui/lib/utils';
 import { ImageComponent } from '@ecomm/ui/image';
-import { ChevronRight, Heart, Search, ShoppingCart } from 'lucide-react';
+import {
+  ChevronDown,
+  ChevronRight,
+  Heart,
+  Search,
+  ShoppingCart,
+} from 'lucide-react';
 import { Button } from '@ecomm/ui/button';
 import { usePathname } from 'next/navigation';
 
@@ -40,7 +46,7 @@ export function NavigationBar({
           <Text className="!font-bold">{t('title')}</Text>
         </NextLink>
         <ul
-          className="flex gap-4 py-4"
+          className="flex gap-6 py-4"
           onMouseLeave={() => setOpenedMenu(null)}
         >
           {navigationItems?.map((item, index) => (
@@ -310,8 +316,13 @@ function CategoryNavigationItem({
 }) {
   return (
     <li onMouseEnter={onMouseEnter}>
-      <ConditionalLink href={navigationItem.slug} prefetch>
-        <Text as="span">{navigationItem.name}</Text>
+      <ConditionalLink
+        href={navigationItem.slug}
+        prefetch
+        className="flex items-center gap-1"
+      >
+        <span className="text-sm">{navigationItem.name}</span>
+        {Boolean(navigationItem.children?.length) && <ChevronDown size={15} />}
       </ConditionalLink>
     </li>
   );
@@ -326,8 +337,13 @@ function NavigationItemTier1({
 }) {
   return (
     <li onMouseEnter={onMouseEnter}>
-      <ConditionalLink href={navigationItem.link?.url} prefetch>
-        <Text as="span">{navigationItem.title}</Text>
+      <ConditionalLink
+        href={navigationItem.link?.url}
+        prefetch
+        className="flex items-center gap-1"
+      >
+        <span className="text-sm">{navigationItem.title}</span>
+        {Boolean(navigationItem.children.length) && <ChevronDown size={15} />}
       </ConditionalLink>
     </li>
   );
