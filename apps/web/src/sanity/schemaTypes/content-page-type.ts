@@ -86,9 +86,10 @@ export const contentPageType = defineType({
       ],
     }),
     defineField({
-      name: 'content',
-      title: 'Content',
+      name: 'blocks',
+      title: 'Blocks',
       type: 'array',
+      validation: (Rule) => Rule.min(1).max(12),
       of: [{ type: 'fullWidthBanner' }],
     }),
   ],

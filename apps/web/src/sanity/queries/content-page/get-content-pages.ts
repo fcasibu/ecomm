@@ -6,8 +6,8 @@ import type { ContentPage } from '@/sanity.types';
 import { executeQuery } from '@/sanity/lib/execute-query';
 import { transformContentPage } from './transformer';
 
-const CONTENT_PAGE_QUERY = groq`
-*[_type == "contentPage" && language == $lang && slug == $slug]{
+const CONTENT_PAGES_QUERY = groq`
+*[_type == "contentPage" && language == $lang]{
   title,
   slug,
   seoMetadata {
@@ -30,19 +30,18 @@ const CONTENT_PAGE_QUERY = groq`
       contentPosition
     }
   }
-}[0]
+}
 `;
 
-export async function getContentPage(locale: string, slug: string) {
+export async function getContentPages(locale: string) {
   'use cache';
 
-  cacheTag('content_page', `content_page_${slug}`);
+  cacheTag('content_pages');
 
   const result = await executeQuery(
     async () =>
-      await client.fetch<ContentPage>(CONTENT_PAGE_QUERY, {
+      await client.fetch<ContentPage[]>(CONTENT_PAGES_QUERY, {
         lang: locale,
-        slug,
       }),
   );
 
@@ -52,6 +51,6 @@ export async function getContentPage(locale: string, slug: string) {
 
   return {
     success: result.success,
-    data: transformContentPage(result.data),
+    data: result.data.map(transformContentPage),
   };
 }

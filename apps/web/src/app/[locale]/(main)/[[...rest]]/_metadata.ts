@@ -1,7 +1,6 @@
-import { getURLFromHeaders } from '@/lib/utils/get-url-from-header';
+import { clientEnv } from '@/env/client';
 import { getContentPage } from '@/sanity/queries/content-page/get-content-page';
 import type { Metadata } from 'next';
-import { headers } from 'next/headers';
 import { notFound } from 'next/navigation';
 
 export async function generateContentPageMetadata(
@@ -24,7 +23,8 @@ export async function generateContentPageMetadata(
     twitterDescription,
     indexing,
   } = result.data.seoMetadata;
-  const seoURL = getURLFromHeaders(await headers());
+
+  const seoURL = `${clientEnv.NEXT_PUBLIC_STOREFRONT_BASE_URL}/${locale}${slug}`;
 
   return {
     title: title,

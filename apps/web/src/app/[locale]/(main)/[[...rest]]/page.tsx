@@ -1,13 +1,32 @@
 import { notFound } from 'next/navigation';
 import { generateContentPageMetadata } from './_metadata';
 import { getContentPage } from '@/sanity/queries/content-page/get-content-page';
+import { getContentPages } from '@/sanity/queries/content-page/get-content-pages';
+import { setStaticParamsLocale } from 'next-international/server';
 
-export function generateMetadata({
+export async function generateMetadata({
   params,
 }: {
   params: Promise<{ locale: string; rest: string[] }>;
 }) {
-  return generateContentPageMetadata(params);
+  return await generateContentPageMetadata(params);
+}
+
+export async function generateStaticParams({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const locale = (await params).locale;
+
+  const result = await getContentPages(locale);
+
+  if (!result.success) return [];
+
+  return result.data.map((contentPage) => ({
+    locale,
+    rest: [contentPage.slug],
+  }));
 }
 
 export default async function Page({
@@ -19,6 +38,7 @@ export default async function Page({
     slug: p.rest?.at(-1) || '/',
     locale: p.locale,
   }));
+  setStaticParamsLocale(locale);
 
   const result = await getContentPage(locale, slug);
 

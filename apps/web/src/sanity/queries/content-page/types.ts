@@ -1,4 +1,6 @@
+import type { ExtractType } from '@/types';
 import type { CustomImage, Link } from '../common/types';
+import type { ContentPage } from '@/sanity.types';
 
 export type ContentAlignment = 'left' | 'center' | 'right';
 export type ContentPosition =
@@ -29,6 +31,7 @@ export interface SEOMetadata {
 }
 
 export type Content = FullWidthBanner;
+export type ContentKeys = ExtractType<ContentPage, 'blocks[number]._type'>;
 
 export interface FullWidthBanner {
   title: string;

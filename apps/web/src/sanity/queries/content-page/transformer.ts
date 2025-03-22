@@ -11,7 +11,7 @@ export function transformContentPage(contentPage: ContentPage): ContentPageDTO {
   return {
     slug: contentPage.slug ?? '',
     seoMetadata: transformSeoMetadata(contentPage?.seoMetadata),
-    content: transformContent(contentPage.content),
+    content: transformContent(contentPage.blocks),
   };
 }
 
@@ -30,13 +30,13 @@ function transformSeoMetadata(
 }
 
 function transformContent(
-  content: ExtractType<ContentPage, 'content'>,
+  content: ExtractType<ContentPage, 'blocks'>,
 ): Content[] {
   return content?.map(pickTransformContent) ?? [];
 }
 
 function pickTransformContent(
-  data: ExtractType<ContentPage, 'content[number]'>,
+  data: ExtractType<ContentPage, 'blocks[number]'>,
 ) {
   switch (data._type) {
     case 'fullWidthBanner':
@@ -47,7 +47,7 @@ function pickTransformContent(
 }
 
 function transformFullWidthBanner(
-  fullWidthBanner: ExtractType<ContentPage, 'content[number]'>,
+  fullWidthBanner: ExtractType<ContentPage, 'blocks[number]'>,
 ): FullWidthBanner {
   return {
     title: fullWidthBanner.title ?? '',
