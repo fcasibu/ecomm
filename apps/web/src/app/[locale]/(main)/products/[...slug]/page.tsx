@@ -3,8 +3,10 @@ import { RecentlyViewedProducts } from '@/features/products/components/recently-
 import { RecentlyViewedSetter } from '@/features/products/components/recently-viewed-setter';
 import { getProductBySku } from '@/features/products/services/queries';
 import { slugify } from '@ecomm/lib/transformers';
+import type { ProductDTO } from '@ecomm/services/products/product-dto';
 import { setStaticParamsLocale } from 'next-international/server';
 import { notFound, redirect, RedirectType } from 'next/navigation';
+import assert from 'node:assert';
 
 export default async function Page({
   params,
@@ -18,15 +20,16 @@ export default async function Page({
 
   if (!result.success || !result.data.variants.length) return notFound();
 
-  const sku = result.data.sku;
-  const transformedProductSlug =
-    `${slugify(result.data.name)}/${sku}`.toLowerCase();
+  const sku = result.data.variants[0]?.sku;
+  assert(sku, 'sku must be present');
 
-  if (transformedProductSlug !== slug.join('/'))
-    return redirect(
-      `/${locale}/products/${transformedProductSlug}`,
-      RedirectType.replace,
-    );
+  const productSlugs = transformProductSkusToSlugs(result.data);
+  const joinedSlug = slug.join('/');
+
+  if (productSlugs.every((productSlug) => productSlug !== joinedSlug)) {
+    const formattedSlug = `/${locale}/products/${joinedSlug}`;
+    return redirect(formattedSlug, RedirectType.replace);
+  }
 
   return (
     <div className="flex flex-col gap-8 pb-12">
@@ -35,4 +38,13 @@ export default async function Page({
       <RecentlyViewedSetter sku={sku} />
     </div>
   );
+}
+
+function transformProductSkusToSlugs(product: ProductDTO) {
+  const baseProductSlug =
+    `${slugify(product.name)}/${product.sku}`.toLowerCase();
+
+  return product.variants
+    .map((variant) => `${slugify(product.name)}/${variant.sku}`.toLowerCase())
+    .concat(baseProductSlug);
 }
