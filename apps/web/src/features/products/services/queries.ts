@@ -12,3 +12,13 @@ export async function getProductBySku(locale: string, sku: string) {
     productsController().getBySku(locale, sku),
   );
 }
+
+export async function getProductsBySkus(locale: string, skus: string[]) {
+  'use cache';
+
+  cacheTag('product', ...skus.map((sku) => `product_${sku}`));
+
+  return await executeOperation(() =>
+    productsController().getProductsBySkus(locale, skus),
+  );
+}

@@ -12,6 +12,8 @@ import {
   createTextSearchCondition,
   createNestedTextSearchCondition,
   combineSearchConditions,
+  createInCondition,
+  createNestedInCondition,
 } from '../utils/prisma-helpers';
 import { omitFields } from '@ecomm/lib/omit-fields';
 
@@ -91,22 +93,18 @@ export class ProductsService extends BaseService {
     });
   }
   public async getBySku(locale: string, sku: string) {
+    const directSearch = createTextSearchCondition(sku, ['sku']);
+    const nestedSearch = createNestedTextSearchCondition(sku, [
+      { model: 'variants', field: 'sku' },
+    ]);
+
+    const whereCondition = {
+      locale,
+      ...combineSearchConditions(directSearch, nestedSearch),
+    };
+
     return await this.prismaClient.product.findFirst({
-      where: {
-        locale,
-        OR: [
-          {
-            sku,
-          },
-          {
-            variants: {
-              some: {
-                sku,
-              },
-            },
-          },
-        ],
-      },
+      where: whereCondition,
       include: PRODUCT_INCLUDE,
     });
   }
@@ -137,6 +135,21 @@ export class ProductsService extends BaseService {
     ]);
 
     return this.formatPaginatedResponse(products, totalCount, options);
+  }
+
+  public async getAllBySkus(locale: string, skus: string[]) {
+    if (!skus.length) return [];
+
+    const directSearch = createInCondition('sku', skus);
+    const nestedSearch = createNestedInCondition('variants', 'sku', skus);
+
+    return await this.prismaClient.product.findMany({
+      include: PRODUCT_INCLUDE,
+      where: {
+        locale: locale,
+        ...combineSearchConditions(directSearch, nestedSearch),
+      },
+    });
   }
 
   public async update(

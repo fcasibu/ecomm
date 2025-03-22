@@ -1,3 +1,5 @@
+import type { Locale } from './locale-helper';
+
 export interface ServerContext {
   user: {
     anonymousId: string | null | undefined;
@@ -6,5 +8,5 @@ export interface ServerContext {
   cart: {
     id: string | null | undefined;
   };
-  locale: string;
+  locale: Locale;
 }

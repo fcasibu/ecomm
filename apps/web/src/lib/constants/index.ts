@@ -1,0 +1,1 @@
+export const MAX_RECENTLY_VIEWED_PRODUCTS_DAYS = 10;

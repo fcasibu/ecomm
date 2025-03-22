@@ -1,11 +1,12 @@
-import { toUnderscoreLocale } from '../utils/locale-helper';
+import { toUnderscoreLocale, type Locale } from '@ecomm/lib/locale-helper';
 
 export const cookieKeys = {
   customer: {
-    anonymousId: (locale: string) =>
-      `anonymous_id_${toUnderscoreLocale(locale)}`,
+    anonymousId: (locale: Locale) =>
+      `anonymous_id_${toUnderscoreLocale(locale)}` as const,
   },
   cart: {
-    cartId: (locale: string) => `cart_id_${toUnderscoreLocale(locale)}`,
+    cartId: (locale: Locale) =>
+      `cart_id_${toUnderscoreLocale(locale)}` as const,
   },
 } as const;

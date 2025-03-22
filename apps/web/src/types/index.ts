@@ -51,3 +51,5 @@ export type ExtractType<
   T extends Record<string, unknown>,
   Path extends ExtractKeys<T>,
 > = Get<T, PathSegments<Path>>;
+
+export type StorageType = 'localStorage' | 'sessionStorage';

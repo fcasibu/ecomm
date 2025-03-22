@@ -14,7 +14,7 @@ import { Input } from '@ecomm/ui/input';
 import { categoryCreateSchema } from '@ecomm/validations/cms/categories/category-schema';
 import { useForm } from 'react-hook-form';
 import type { z } from 'zod';
-import { slugify } from '@ecomm/ui/lib/utils';
+import { slugify } from '@ecomm/lib/transformers';
 import { createCategory } from '@/features/categories/services/mutations';
 import { toast } from '@ecomm/ui/hooks/use-toast';
 import { Suspense, useTransition } from 'react';

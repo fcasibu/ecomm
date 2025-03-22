@@ -1,6 +1,5 @@
 'use client';
 
-import { AVAILABLE_LOCALES } from '@/lib/utils/locale-helper';
 import {
   useChangeLocale,
   useCurrentLocale,
@@ -15,6 +14,7 @@ import { ChevronsUpDown, Check } from 'lucide-react';
 import { Text } from '@ecomm/ui/typography';
 import { dynamicImport } from '@/lib/utils/dynamic-import';
 import { LazyLoader } from '../lazy-loader';
+import { AVAILABLE_LOCALES } from '@ecomm/lib/locale-helper';
 
 const CommandComponents = dynamicImport(
   () => import('@ecomm/ui/command'),
@@ -48,7 +48,7 @@ export function LocalePicker() {
   const t = useScopedI18n('footer.language');
 
   return (
-    <LazyLoader skeleton={LocalePickerSkeleton}>
+    <LazyLoader skeleton={<LocalePickerSkeleton />}>
       <PopoverComponents.Popover open={open} onOpenChange={setOpen}>
         <Text size="md" className="mb-2 !font-semibold">
           {t('title')}

@@ -8,12 +8,12 @@ import { I18nProviderClient } from '@/locales/client';
 import { Header } from '@/components/header';
 import { getStaticParams } from '@/locales/server';
 import { setStaticParamsLocale } from 'next-international/server';
-import { AVAILABLE_LOCALES, type Locale } from '@/lib/utils/locale-helper';
 import { notFound } from 'next/navigation';
 import { Suspense } from 'react';
 import { Footer } from '@/components/footer';
 import { getStoreByLocale } from '@/features/store/services/queries';
 import { StoreProvider } from '@/features/store/providers/store-provider';
+import { AVAILABLE_LOCALES, type Locale } from '@ecomm/lib/locale-helper';
 
 const inter = Inter({ subsets: ['latin'] });
 

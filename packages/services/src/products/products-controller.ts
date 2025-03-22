@@ -179,4 +179,24 @@ export class ProductsController extends BaseController {
       });
     }
   }
+
+  public async getProductsBySkus(locale: string, skus: string[]) {
+    logger.info({ skus }, 'Fetching products by skus');
+
+    try {
+      const result = await this.productsService.getAllBySkus(locale, skus);
+
+      const transformedProducts = result
+        .map((item) => this.transformer.toDTO(item))
+        .filter((product): product is ProductDTO => Boolean(product));
+
+      logger.info('Products by skus fetched successfully');
+
+      return transformedProducts;
+    } catch (error) {
+      this.logAndThrowError(error, {
+        message: 'Error fetching all products',
+      });
+    }
+  }
 }

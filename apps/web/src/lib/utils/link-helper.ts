@@ -1,9 +1,12 @@
+import { slugify } from '@ecomm/lib/transformers';
+
 export const link = {
   category: {
-    single: (slug: string) => `/categories/${slug}`,
+    single: (slug: string) => `/categories/${slug}`.toLowerCase(),
   },
   product: {
-    single: (sku: string) => `/products/${sku}`,
+    single: (name: string, sku: string) =>
+      `/products/${slugify(name)}/${sku}`.toLowerCase(),
   },
   auth: {
     signIn: '/sign-in',

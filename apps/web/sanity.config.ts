@@ -13,7 +13,7 @@ import { schema } from './src/sanity/schemaTypes';
 import { structure } from './src/sanity/structure';
 import { clientEnv } from '@/env/client';
 import { documentInternationalization } from '@sanity/document-internationalization';
-import { AVAILABLE_LOCALES } from '@/lib/utils/locale-helper';
+import { AVAILABLE_LOCALES } from '@ecomm/lib/locale-helper';
 
 export default defineConfig({
   basePath: '/en-US/studio',

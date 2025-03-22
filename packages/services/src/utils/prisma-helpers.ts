@@ -19,6 +19,24 @@ export function createNestedTextSearchCondition(
   };
 }
 
+export function createInCondition(field: string, values: string[]) {
+  return {
+    [field]: { in: values },
+  };
+}
+
+export function createNestedInCondition(
+  model: string,
+  field: string,
+  values: string[],
+) {
+  return {
+    [model]: {
+      some: { [field]: { in: values } },
+    },
+  };
+}
+
 export function combineSearchConditions(...conditions: object[]) {
   return {
     OR: conditions,

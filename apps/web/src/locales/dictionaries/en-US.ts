@@ -97,32 +97,35 @@ export default {
       loading: 'Adding...',
     },
     wishlist: {
-      title: 'Wishlist'
+      title: 'Wishlist',
     },
     share: {
       title: 'Share',
-      copied: 'Copied!'
+      copied: 'Copied!',
     },
     guarantees: {
       freeShipping: {
         title: 'Free Shipping',
-        subtitle: 'On orders over {value}'
+        subtitle: 'On orders over {value}',
       },
       easyReturns: {
         title: 'Easy Returns',
-        subtitleL: '30-day return policy'
+        subtitleL: '30-day return policy',
       },
       secureCheckout: {
         title: 'Secure Checkout',
-        subtitle: 'Protected payments'
-      }
+        subtitle: 'Protected payments',
+      },
     },
     tabs: {
       description: 'Description',
-      features: 'Features'
+      features: 'Features',
     },
     errors: {
       size: 'Please select a size',
     },
+  },
+  recentlyViewedProducts: {
+    title: 'Recently Viewed',
   },
 } as const;

@@ -1,6 +1,6 @@
+import { AVAILABLE_LOCALES, DEFAULT_LOCALE } from '@ecomm/lib/locale-helper';
 import { createI18nMiddleware } from 'next-international/middleware';
 import { NextRequest } from 'next/server';
-import { AVAILABLE_LOCALES, DEFAULT_LOCALE } from './lib/utils/locale-helper';
 
 const I18nMiddleware = createI18nMiddleware({
   locales: AVAILABLE_LOCALES,

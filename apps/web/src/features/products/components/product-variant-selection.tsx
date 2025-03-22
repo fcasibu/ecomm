@@ -24,7 +24,9 @@ export function ProductVariantSelection() {
         <Heading as="h2" className="!text-sm">
           {t('title')}
         </Heading>
-        <span className='text-sm text-muted-foreground'>{selectedVariant.attributes.color}</span>
+        <span className="text-muted-foreground text-sm">
+          {selectedVariant.attributes.color}
+        </span>
       </div>
       <div className="flex gap-3">
         {product.variants.map((variant) => (
@@ -33,7 +35,7 @@ export function ProductVariantSelection() {
             key={variant.id}
             replace
             scroll={false}
-            href={link.product.single(variant.sku)}
+            href={link.product.single(product.name, variant.sku)}
             className="hover:no-underline"
             onClick={() => {
               if (variant.id === selectedVariant.id) return;

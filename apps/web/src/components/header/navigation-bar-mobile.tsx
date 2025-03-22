@@ -8,7 +8,7 @@ import type {
   HeaderTier2NavigationItem,
 } from '@/sanity/queries/header/types';
 import { Button } from '@ecomm/ui/button';
-import { Globe, Heart, Menu, Search, ShoppingCart, X } from 'lucide-react';
+import { Globe, Heart, Menu, Search, ShoppingCart } from 'lucide-react';
 import { Fragment, useEffect, useState } from 'react';
 import type { CategoryHierarchy } from '@ecomm/services/categories/category-dto';
 import { ConditionalLink, NextLink } from '../link';
@@ -34,13 +34,7 @@ const AccordionComponents = dynamicImport(
 const SheetComponents = dynamicImport(
   () => import('@ecomm/ui/sheet'),
   {
-    Sheet: {
-      loading: () => (
-        <Button variant="none" size="icon" className="h-min w-min">
-          <Menu aria-hidden />
-        </Button>
-      ),
-    },
+    Sheet: null,
     SheetContent: null,
     SheetTitle: null,
     SheetTrigger: null,
@@ -117,45 +111,48 @@ function NavigationMenu({
   }, [width]);
 
   return (
-    <SheetComponents.Sheet open={isNavMenuOpen} onOpenChange={setIsNavMenuOpen}>
-      <SheetComponents.SheetTrigger asChild>
-        <Button
-          aria-label={
-            isNavMenuOpen ? t('actions.menu.close') : t('actions.menu.open')
-          }
-          variant="none"
-          size="icon"
-          className="h-min w-min"
-        >
-          {isNavMenuOpen ? <X /> : <Menu aria-hidden />}
-        </Button>
-      </SheetComponents.SheetTrigger>
-      <SheetComponents.SheetContent
-        className="sticky top-0 flex h-screen w-full max-w-full flex-col overflow-y-auto px-4 pt-10"
-        side="right"
+    <>
+      <Button
+        aria-label={t('actions.menu.open')}
+        variant="none"
+        size="icon"
+        className="h-min w-min"
+        onClick={() => setIsNavMenuOpen(true)}
       >
-        <SheetComponents.SheetTitle className="sr-only">
-          Menu
-        </SheetComponents.SheetTitle>
-        {isNavMenuOpen &&
-          filteredNavigationItems.map((navigationItem, index) => (
-            <Fragment key={`${navigationItem.type}-${index}`}>
-              {navigationItem.type === 'categoryNavigationItem' ? (
-                <AccordionComponents.Accordion type="multiple">
-                  <CategoryNavigationItemTier1
-                    navigationItem={navigationItem}
-                  />
-                </AccordionComponents.Accordion>
-              ) : (
-                <AccordionComponents.Accordion type="multiple">
-                  <NavigationItemTier1 navigationItem={navigationItem} />
-                </AccordionComponents.Accordion>
-              )}
-            </Fragment>
-          ))}
-        <NavigationMenuFooter />
-      </SheetComponents.SheetContent>
-    </SheetComponents.Sheet>
+        <Menu aria-hidden />
+      </Button>
+      {isNavMenuOpen && (
+        <SheetComponents.Sheet
+          open={isNavMenuOpen}
+          onOpenChange={setIsNavMenuOpen}
+        >
+          <SheetComponents.SheetContent
+            className="sticky top-0 flex h-screen w-full max-w-full flex-col overflow-y-auto px-4 pt-10"
+            side="right"
+          >
+            <SheetComponents.SheetTitle className="sr-only">
+              Menu
+            </SheetComponents.SheetTitle>
+            {filteredNavigationItems.map((navigationItem, index) => (
+              <Fragment key={`${navigationItem.type}-${index}`}>
+                {navigationItem.type === 'categoryNavigationItem' ? (
+                  <AccordionComponents.Accordion type="multiple">
+                    <CategoryNavigationItemTier1
+                      navigationItem={navigationItem}
+                    />
+                  </AccordionComponents.Accordion>
+                ) : (
+                  <AccordionComponents.Accordion type="multiple">
+                    <NavigationItemTier1 navigationItem={navigationItem} />
+                  </AccordionComponents.Accordion>
+                )}
+              </Fragment>
+            ))}
+            <NavigationMenuFooter />
+          </SheetComponents.SheetContent>
+        </SheetComponents.Sheet>
+      )}
+    </>
   );
 }
 
