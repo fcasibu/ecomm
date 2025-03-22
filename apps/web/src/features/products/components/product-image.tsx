@@ -30,7 +30,7 @@ export function ProductImage() {
   if (!mounted) return <ProductImageSkeleton />;
 
   return (
-    <CarouselComponents.Carousel className="flex w-full flex-col gap-4">
+    <CarouselComponents.Carousel className="flex w-full flex-col gap-4" opts={{ active: selectedVariant.images.length > 1 }}>
       <div className="relative">
         <CarouselComponents.CarouselContent>
           {selectedVariant.images.map((image, index) => (
@@ -48,8 +48,8 @@ export function ProductImage() {
             </CarouselComponents.CarouselItem>
           ))}
         </CarouselComponents.CarouselContent>
-        <CarouselComponents.CarouselPrevious className="left-[7px] shadow" />
-        <CarouselComponents.CarouselNext className="right-[7px] shadow" />
+        {selectedVariant.images.length > 1 && <CarouselComponents.CarouselPrevious className="left-[7px] shadow" />}
+        {selectedVariant.images.length > 1 && <CarouselComponents.CarouselNext className="right-[7px] shadow" />}
       </div>
       <Thumbnails images={selectedVariant.images} />
     </CarouselComponents.Carousel>
