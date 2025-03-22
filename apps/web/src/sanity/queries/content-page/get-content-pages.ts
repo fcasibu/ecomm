@@ -20,7 +20,7 @@ const CONTENT_PAGES_QUERY = groq`
     indexing,
   },
   blocks[] {
-    _type == "fullWidthBanner" => {
+    _type == "fullScreenBanner" => {
       _key,
       _type,
       title, 

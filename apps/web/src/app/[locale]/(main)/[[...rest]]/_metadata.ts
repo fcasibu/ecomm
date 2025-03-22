@@ -1,4 +1,4 @@
-import { clientEnv } from '@/env/client';
+import { getStorefrontBaseURL } from '@/lib/utils/get-storefront-url';
 import { getContentPage } from '@/sanity/queries/content-page/get-content-page';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
@@ -24,7 +24,7 @@ export async function generateContentPageMetadata(
     indexing,
   } = result.data.seoMetadata;
 
-  const seoURL = `${clientEnv.NEXT_PUBLIC_STOREFRONT_BASE_URL}/${locale}${slug}`;
+  const seoURL = `${getStorefrontBaseURL()}/${locale}${slug}`;
 
   return {
     title: title,

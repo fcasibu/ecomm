@@ -26,7 +26,7 @@ export async function generateStaticParams({
 
   return result.data.map((contentPage) => ({
     locale,
-    rest: [contentPage.slug],
+    rest: contentPage.slug === '/' ? [] : [contentPage.slug],
   }));
 }
 

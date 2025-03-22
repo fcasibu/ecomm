@@ -4,6 +4,11 @@ export const footerType = defineType({
   name: 'footer',
   title: 'Footer',
   type: 'document',
+  preview: {
+    select: {
+      title: 'title',
+    },
+  },
   fields: [
     defineField({
       name: 'language',
@@ -11,6 +16,11 @@ export const footerType = defineType({
       type: 'string',
       readOnly: true,
       hidden: true,
+    }),
+    defineField({
+      name: 'title',
+      title: 'Title',
+      type: 'string',
     }),
     defineField({
       name: 'navigation',

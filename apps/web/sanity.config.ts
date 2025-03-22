@@ -14,6 +14,7 @@ import { structure } from './src/sanity/structure';
 import { clientEnv } from '@/env/client';
 import { documentInternationalization } from '@sanity/document-internationalization';
 import { AVAILABLE_LOCALES } from '@ecomm/lib/locale-helper';
+import { colorInput } from '@sanity/color-input';
 
 export default defineConfig({
   basePath: '/en-US/studio',
@@ -26,6 +27,7 @@ export default defineConfig({
     // Vision is for querying with GROQ from inside the Studio
     // https://www.sanity.io/docs/the-vision-plugin
     visionTool({ defaultApiVersion: clientEnv.NEXT_PUBLIC_SANITY_API_VERSION }),
+    colorInput(),
     documentInternationalization({
       supportedLanguages: AVAILABLE_LOCALES.map((locale) => ({
         id: locale,

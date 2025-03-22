@@ -98,6 +98,11 @@ export const heading = defineType({
       type: 'string',
     }),
     defineField({
+      name: 'textColor',
+      title: 'Text Color',
+      type: 'color',
+    }),
+    defineField({
       name: 'type',
       title: 'Type',
       type: 'string',
@@ -111,6 +116,40 @@ export const heading = defineType({
           { title: 'H6', value: 'h6' },
         ],
       },
+    }),
+  ],
+});
+
+export const textAlignment = defineField({
+  name: 'textAlignment',
+  title: 'Text Alignment',
+  type: 'string',
+  options: {
+    list: [
+      { title: 'Left', value: 'left' },
+      { title: 'Center', value: 'center' },
+      { title: 'Right', value: 'right' },
+    ],
+    layout: 'radio',
+  },
+});
+
+export const textContent = defineType({
+  name: 'textContent',
+  title: 'Text',
+  type: 'object',
+  fields: [
+    defineField({
+      name: 'value',
+      title: 'Text Content',
+      type: 'text',
+      rows: 3,
+      validation: (Rule) => Rule.required(),
+    }),
+    defineField({
+      name: 'textColor',
+      title: 'Text Color',
+      type: 'color',
     }),
   ],
 });

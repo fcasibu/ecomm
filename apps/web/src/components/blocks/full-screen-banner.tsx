@@ -1,7 +1,7 @@
 import type {
   ContentAlignment,
   ContentPosition,
-  FullWidthBanner,
+  FullScreenBanner as FullScreenBannerType,
 } from '@/sanity/queries/content-page/types';
 import { Button } from '@ecomm/ui/button';
 import { ImageComponent } from '@ecomm/ui/image';
@@ -9,13 +9,13 @@ import { Heading } from '@ecomm/ui/typography';
 import { NextLink } from '../link';
 import { cn } from '@ecomm/ui/lib/utils';
 
-export function FullWidthBanner({ data }: { data: FullWidthBanner }) {
+export function FullScreenBanner({ data }: { data: FullScreenBannerType }) {
   const { cta, image, title, description, contentPosition, contentAlignment } =
     data;
 
   return (
-    <div className="relative h-screen">
-      <div className='absolute inset-0'>
+    <div className="relative h-screen py-8">
+      <div className="absolute inset-0">
         <ImageComponent
           className="object-cover"
           alt={image.alt}
@@ -28,14 +28,18 @@ export function FullWidthBanner({ data }: { data: FullWidthBanner }) {
       <div className="container relative h-full w-full">
         <div
           className={cn(
-            'absolute flex flex-col gap-6',
+            'absolute flex flex-col gap-6 px-4',
             getAlignmentClass(contentAlignment),
             getPositionClass(contentPosition),
           )}
         >
           <div>
-            <Heading as={title.type}>{title.value}</Heading>
-            <p className="text-lg">{description}</p>
+            <Heading style={{ color: title.textColor }} as={title.type}>
+              {title.value}
+            </Heading>
+            <p style={{ color: description.textColor }} className="text-lg">
+              {description.value}
+            </p>
           </div>
           <Button
             asChild

@@ -4,6 +4,11 @@ export const headerType = defineType({
   name: 'header',
   title: 'Header',
   type: 'document',
+  preview: {
+    select: {
+      title: 'title',
+    },
+  },
   fields: [
     defineField({
       name: 'language',
@@ -11,6 +16,11 @@ export const headerType = defineType({
       type: 'string',
       readOnly: true,
       hidden: true,
+    }),
+    defineField({
+      name: 'title',
+      title: 'Title',
+      type: 'string',
     }),
     defineField({
       name: 'navigation',

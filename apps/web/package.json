@@ -7,7 +7,7 @@
     "dev": "npx rimraf ./.next/cache/fetch-cache && next dev -p 3001",
     "build": "next build",
     "build:analyze": "ANALYZE=true next build",
-    "start": "NEXT_PUBLIC_STOREFRONT_BASE_URL=http://localhost:3000 next start",
+    "start": "next start",
     "lint": "next lint --max-warnings 0",
     "check-types": "tsc --noEmit"
   },
@@ -18,6 +18,7 @@
     "@ecomm/validations": "workspace:*",
     "@hookform/resolvers": "^4.1.2",
     "@prisma/nextjs-monorepo-workaround-plugin": "^6.4.1",
+    "@sanity/color-input": "^4.0.3",
     "@sanity/document-internationalization": "^3.3.1",
     "@sanity/image-url": "^1.1.0",
     "@sanity/vision": "^3.79.0",

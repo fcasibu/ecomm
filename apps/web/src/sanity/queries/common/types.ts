@@ -14,4 +14,10 @@ export interface CustomImage {
 export interface Heading {
   value: string;
   type: NonNullable<HeadingType['type']>;
+  textColor: string;
+}
+
+export interface TextContent {
+  value: string;
+  textColor: string;
 }

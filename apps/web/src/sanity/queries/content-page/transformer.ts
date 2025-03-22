@@ -2,7 +2,7 @@ import type { ContentPage } from '@/sanity.types';
 import type {
   Block,
   ContentPageDTO,
-  FullWidthBanner,
+  FullScreenBanner,
   SEOMetadata,
 } from './types';
 import type { ExtractType } from '@/types';
@@ -11,7 +11,7 @@ export function transformContentPage(contentPage: ContentPage): ContentPageDTO {
   return {
     slug: contentPage.slug ?? '',
     seoMetadata: transformSeoMetadata(contentPage?.seoMetadata),
-    blocks: transformContent(contentPage.blocks),
+    blocks: transformBlocks(contentPage.blocks),
   };
 }
 
@@ -29,44 +29,42 @@ function transformSeoMetadata(
   };
 }
 
-function transformContent(
-  content: ExtractType<ContentPage, 'blocks'>,
-): Block[] {
-  return content?.map(pickTransformContent) ?? [];
+function transformBlocks(blocks: ExtractType<ContentPage, 'blocks'>): Block[] {
+  return blocks?.map(pickTransformBlock) ?? [];
 }
 
-function pickTransformContent(
-  data: ExtractType<ContentPage, 'blocks[number]'>,
-) {
+function pickTransformBlock(data: ExtractType<ContentPage, 'blocks[number]'>) {
   switch (data._type) {
-    case 'fullWidthBanner':
+    case 'fullScreenBanner':
       return transformFullWidthBanner(data);
-    default:
-      throw new Error(`Unimplemented type: ${data._type}`);
   }
 }
 
 function transformFullWidthBanner(
-  fullWidthBanner: ExtractType<ContentPage, 'blocks[number]'>,
-): FullWidthBanner {
+  fullScreenBanner: ExtractType<ContentPage, 'blocks[number]'>,
+): FullScreenBanner {
   return {
-    key: fullWidthBanner._key,
-    type: fullWidthBanner._type,
+    key: fullScreenBanner._key,
+    type: fullScreenBanner._type,
     title: {
-      value: fullWidthBanner.title?.title ?? '',
-      type: fullWidthBanner.title?.type ?? 'h2',
+      value: fullScreenBanner.title?.title ?? '',
+      type: fullScreenBanner.title?.type ?? 'h2',
+      textColor: fullScreenBanner.title?.textColor?.hex ?? 'h2',
     },
-    description: fullWidthBanner.description ?? '',
+    description: {
+      value: fullScreenBanner.description?.value ?? '',
+      textColor: fullScreenBanner.description?.textColor?.hex ?? '',
+    },
     cta: {
-      title: fullWidthBanner.cta?.title ?? '',
-      url: fullWidthBanner.cta?.url ?? '',
-      newTab: fullWidthBanner.cta?.newTab ?? false,
+      title: fullScreenBanner.cta?.title ?? '',
+      url: fullScreenBanner.cta?.url ?? '',
+      newTab: fullScreenBanner.cta?.newTab ?? false,
     },
     image: {
-      url: fullWidthBanner.image?.image ?? '',
-      alt: fullWidthBanner.image?.alt ?? '',
+      url: fullScreenBanner.image?.image ?? '',
+      alt: fullScreenBanner.image?.alt ?? '',
     },
-    contentAlignment: fullWidthBanner.contentAlignment ?? 'center',
-    contentPosition: fullWidthBanner.contentPosition ?? 'center',
+    contentAlignment: fullScreenBanner.contentAlignment ?? 'center',
+    contentPosition: fullScreenBanner.contentPosition ?? 'center',
   };
 }

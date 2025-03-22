@@ -3,14 +3,14 @@ import type {
   BlockKeys,
   ContentPageDTO,
 } from '@/sanity/queries/content-page/types';
-import { FullWidthBanner } from '../blocks/full-width-banner';
+import { FullScreenBanner } from '../blocks/full-screen-banner';
 import { Spacer } from '../spacer';
 
 const BLOCKS = {
-  fullWidthBanner: FullWidthBanner,
+  fullScreenBanner: FullScreenBanner,
 } as const satisfies Record<BlockKeys, React.ElementType>;
 
-const BLOCKS_WITH_NO_SPACING: BlockKeys[] = ['fullWidthBanner'];
+const BLOCKS_WITH_NO_SPACING: BlockKeys[] = ['fullScreenBanner'];
 
 export function ContentPage({ contentPage }: { contentPage: ContentPageDTO }) {
   if (!contentPage.blocks.length) return null;
@@ -28,7 +28,7 @@ export function ContentPage({ contentPage }: { contentPage: ContentPageDTO }) {
           hasSpacing && index !== contentPage.blocks.length - 1;
 
         return (
-          <Spacer key={block.key} top={topSpacing} bottom={bottomSpacing}>
+          <Spacer key={block.key} top={!topSpacing} bottom={!bottomSpacing}>
             <Component data={block} />
           </Spacer>
         );

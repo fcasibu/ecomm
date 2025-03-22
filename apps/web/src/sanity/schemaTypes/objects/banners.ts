@@ -1,9 +1,14 @@
 import { defineType, defineField } from 'sanity';
 
-export const fullWidthBanner = defineType({
-  name: 'fullWidthBanner',
-  title: 'Full Width Banner',
+export const fullScreenBanner = defineType({
+  name: 'fullScreenBanner',
+  title: 'Full Screen Banner',
   type: 'object',
+  preview: {
+    select: {
+      title: 'title.title',
+    },
+  },
   fields: [
     defineField({
       name: 'title',
@@ -13,7 +18,7 @@ export const fullWidthBanner = defineType({
     defineField({
       name: 'description',
       title: 'Description',
-      type: 'string',
+      type: 'textContent',
     }),
     defineField({
       name: 'cta',
@@ -28,14 +33,7 @@ export const fullWidthBanner = defineType({
     defineField({
       name: 'contentAlignment',
       title: 'Content Alignment',
-      type: 'string',
-      options: {
-        list: [
-          { title: 'Text Left', value: 'left' },
-          { title: 'Text Center', value: 'center' },
-          { title: 'Text Right', value: 'right' },
-        ],
-      },
+      type: 'textAlignment',
     }),
     defineField({
       name: 'contentPosition',

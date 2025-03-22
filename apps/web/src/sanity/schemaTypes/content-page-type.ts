@@ -4,6 +4,11 @@ export const contentPageType = defineType({
   name: 'contentPage',
   title: 'Content Page',
   type: 'document',
+  preview: {
+    select: {
+      title: 'title',
+    },
+  },
   fields: [
     defineField({
       name: 'language',
@@ -90,7 +95,7 @@ export const contentPageType = defineType({
       title: 'Blocks',
       type: 'array',
       validation: (Rule) => Rule.min(1).max(12),
-      of: [{ type: 'fullWidthBanner' }],
+      of: [{ type: 'fullScreenBanner' }],
     }),
   ],
 });

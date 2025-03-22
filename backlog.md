@@ -20,6 +20,11 @@
 - [ ] Fix sheet size in CMS
 - [ ] Use localized text on ui components
 - [ ] Add more correct validations in sanity
+- [ ] Breadcrumbs
+- [ ] Thin Banners
+- [ ] Full Width Banners
+- [ ] Hero Banner
+- [ ] Feature Section
 
 ## Notes
 

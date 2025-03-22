@@ -1,29 +1,18 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { parseHTML } from 'linkedom';
+import { getStorefrontBaseURL } from '@/lib/utils/get-storefront-url';
 
 export const dynamic = 'force-static';
 
-function getHostname() {
-  if (process.env.NODE_ENV === 'development') {
-    return 'localhost:3001';
-  }
-  if (process.env.VERCEL_ENV === 'production') {
-    return process.env.VERCEL_PROJECT_PRODUCTION_URL;
-  }
-  return process.env.VERCEL_BRANCH_URL ?? 'localhost:3000';
-}
-
-const HOSTNAME = getHostname();
+const STOREFRONT_BASE_URL = getStorefrontBaseURL();
 
 export async function GET(
   _: NextRequest,
   { params }: { params: Promise<{ rest: string[] }> },
 ) {
-  const schema = 'http';
-
-  if (!HOSTNAME) {
+  if (!STOREFRONT_BASE_URL) {
     return NextResponse.json(
-      { error: 'Failed to get hostname from env' },
+      { error: 'Failed to get url from env' },
       { status: 500 },
     );
   }
@@ -36,7 +25,7 @@ export async function GET(
     );
   }
 
-  const url = `${schema}://${HOSTNAME}/${href.startsWith('/') ? href.slice(1) : href}`;
+  const url = `${STOREFRONT_BASE_URL}/${href.startsWith('/') ? href.slice(1) : href}`;
   const response = await fetch(url);
   if (!response.ok) {
     return NextResponse.json(
