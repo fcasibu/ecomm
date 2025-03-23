@@ -4,6 +4,7 @@ import type {
   BreadcrumbItem,
   ContentPageDTO,
   FullScreenBanner,
+  HeroBanner,
   SEOMetadata,
   ThinBanner,
 } from './types';
@@ -63,6 +64,8 @@ function pickTransformBlock(data: ExtractType<ContentPage, 'blocks[number]'>) {
       return transformFullWidthBanner(data);
     case 'thinBanner':
       return transformThinBanner(data);
+    case 'heroBanner':
+      return transformHeroBanner(data);
   }
 }
 
@@ -132,5 +135,39 @@ function transformThinBanner(
       alt: thinBanner.image?.alt ?? '',
     },
     contentAlignment: thinBanner.contentAlignment ?? 'left',
+  };
+}
+
+function transformHeroBanner(
+  heroBanner: ExtractType<ContentPage, 'blocks[number]'>,
+): HeroBanner {
+  assert(heroBanner._type === 'heroBanner');
+
+  return {
+    key: heroBanner._key,
+    type: heroBanner._type,
+    title: {
+      value: heroBanner.title?.title ?? '',
+      type: heroBanner.title?.type ?? 'h2',
+      textColor: heroBanner.title?.textColor?.hex ?? '',
+    },
+    description: {
+      value: heroBanner.description?.value ?? '',
+      textColor: heroBanner.description?.textColor?.hex ?? '',
+    },
+    tag: {
+      value: heroBanner.tag?.value ?? '',
+      textColor: heroBanner.tag?.textColor?.hex ?? '',
+    },
+    cta: {
+      title: heroBanner.cta?.title ?? '',
+      url: heroBanner.cta?.url ?? '',
+      newTab: heroBanner.cta?.newTab ?? false,
+    },
+    image: {
+      url: heroBanner.image?.image ?? '',
+      alt: heroBanner.image?.alt ?? '',
+    },
+    layout: heroBanner.layout ?? 'image-left',
   };
 }

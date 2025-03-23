@@ -2,7 +2,7 @@ import type { ThinBanner as ThinBannerType } from '@/sanity/queries/content-page
 import { Button } from '@ecomm/ui/button';
 import { ImageComponent } from '@ecomm/ui/image';
 import { Heading } from '@ecomm/ui/typography';
-import { NextLink } from '../link';
+import { ConditionalLink } from '../link';
 import { cn } from '@ecomm/ui/lib/utils';
 import { getAlignmentClass } from '@/lib/utils/block-classname-transformers';
 import { Badge } from '@ecomm/ui/badge';
@@ -51,10 +51,11 @@ export function ThinBanner({ data }: { data: ThinBannerType }) {
               asChild
               className="w-full max-w-max hover:no-underline"
               variant="outline"
+              type="button"
             >
-              <NextLink href={cta.url} newTab={cta.newTab}>
+              <ConditionalLink href={cta.url} newTab={cta.newTab}>
                 {cta.title}
-              </NextLink>
+              </ConditionalLink>
             </Button>
           )}
         </div>

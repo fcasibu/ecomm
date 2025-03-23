@@ -7,11 +7,13 @@ import { FullScreenBanner } from '../blocks/full-screen-banner';
 import { Spacer } from '../spacer';
 import { ContentPageBreadcrumb } from '../content-page-breadcrumb';
 import { ThinBanner } from '../blocks/thin-banner';
+import { HeroBanner } from '../blocks/hero-banner';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const BLOCKS: Record<BlockKeys, ComponentType<{ data: any }>> = {
   fullScreenBanner: FullScreenBanner,
   thinBanner: ThinBanner,
+  heroBanner: HeroBanner,
 };
 
 const BLOCKS_WITH_NO_SPACING: BlockKeys[] = ['fullScreenBanner'];

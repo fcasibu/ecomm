@@ -105,3 +105,64 @@ export const thinBanner = defineType({
     }),
   ],
 });
+
+export const heroBanner = defineType({
+  name: 'heroBanner',
+  title: 'Hero Banner',
+  type: 'object',
+  preview: {
+    select: {
+      title: 'title.title',
+    },
+  },
+  fields: [
+    defineField({
+      name: 'title',
+      title: 'Title',
+      type: 'heading',
+      validation: (Rule) => Rule.required(),
+    }),
+    defineField({
+      name: 'description',
+      title: 'Description',
+      type: 'textContent',
+    }),
+    defineField({
+      name: 'tag',
+      title: 'Tag',
+      type: 'textContent',
+    }),
+    defineField({
+      name: 'cta',
+      title: 'Call to Action',
+      type: 'link',
+    }),
+    defineField({
+      name: 'image',
+      title: 'Image',
+      type: 'customImage',
+      validation: (Rule) => Rule.required(),
+    }),
+    defineField({
+      name: 'layout',
+      title: 'Layout',
+      type: 'string',
+      options: {
+        list: [
+          {
+            title:
+              'Desktop Image Left, Text Right / Mobile Image Top, Text Bottom',
+            value: 'image-left',
+          },
+          {
+            title:
+              'Desktop Image Right, Text Left / Mobile Image Bottom, Text Top',
+            value: 'image-right',
+          },
+        ],
+        layout: 'radio',
+      },
+      initialValue: 'image-left',
+    }),
+  ],
+});

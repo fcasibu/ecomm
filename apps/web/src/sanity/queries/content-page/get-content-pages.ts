@@ -44,6 +44,16 @@ const CONTENT_PAGES_QUERY = groq`
       cta,
       image,
       contentAlignment
+    },
+    _type == "heroBanner" => {
+      _key,
+      _type,
+      title, 
+      description,
+      tag,
+      cta,
+      image,
+      layout
     }
   }
 }
