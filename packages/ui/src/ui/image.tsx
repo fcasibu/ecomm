@@ -6,7 +6,8 @@ import type {
 import NextImage from 'next/image';
 import type { Ref } from 'react';
 
-interface CustomImageProps extends Omit<NextImageProps, 'src' | 'loader'> {
+export interface CustomImageProps
+  extends Omit<NextImageProps, 'src' | 'loader'> {
   src: NextImageProps['src'] | null | undefined;
   ref?: Ref<HTMLImageElement>;
   loader?: ImageLoader;

@@ -13,6 +13,9 @@ export default {
       },
     },
     extend: {
+      screens: {
+        '2xl': '1450px',
+      },
       colors: {
         'primary-hover': 'hsl(var(--primary-over))',
         'secondary-hover': 'hsl(var(--secondary-hover))',

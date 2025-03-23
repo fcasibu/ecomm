@@ -2,12 +2,21 @@ import type { HeroBanner as HeroBannerType } from '@/sanity/queries/content-page
 import type { HeroBanner } from '@/sanity.types';
 import { Badge } from '@ecomm/ui/badge';
 import { Button } from '@ecomm/ui/button';
-import { ImageComponent } from '@ecomm/ui/image';
+import { ImageComponent, type CustomImageProps } from '@ecomm/ui/image';
 import { Heading } from '@ecomm/ui/typography';
 import { ConditionalLink } from '../link';
 import { cn } from '@ecomm/ui/lib/utils';
 
-export function HeroBanner({ data }: { data: HeroBannerType }) {
+export function HeroBanner({
+  data,
+  imageLoadingStrategy = null,
+}: {
+  data: HeroBannerType;
+  imageLoadingStrategy?: Pick<
+    CustomImageProps,
+    'loading' | 'fetchPriority'
+  > | null;
+}) {
   const { layout, cta, tag, image, title, description } = data;
 
   return (
@@ -17,9 +26,8 @@ export function HeroBanner({ data }: { data: HeroBannerType }) {
         alt={image.alt}
         width={900}
         height={1000}
-        loading="eager"
-        fetchPriority="high"
         className="h-[600px] object-cover lg:h-[1000px] lg:w-1/2"
+        {...imageLoadingStrategy}
       />
       <div className="container flex w-full flex-col items-center justify-center lg:w-1/2">
         <div className="max-w-md">

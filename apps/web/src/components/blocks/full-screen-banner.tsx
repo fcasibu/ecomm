@@ -1,6 +1,6 @@
 import type { FullScreenBanner as FullScreenBannerType } from '@/sanity/queries/content-page/types';
 import { Button } from '@ecomm/ui/button';
-import { ImageComponent } from '@ecomm/ui/image';
+import { ImageComponent, type CustomImageProps } from '@ecomm/ui/image';
 import { Heading } from '@ecomm/ui/typography';
 import { cn } from '@ecomm/ui/lib/utils';
 import {
@@ -10,7 +10,16 @@ import {
 import { Badge } from '@ecomm/ui/badge';
 import { ConditionalLink } from '../link';
 
-export function FullScreenBanner({ data }: { data: FullScreenBannerType }) {
+export function FullScreenBanner({
+  data,
+  imageLoadingStrategy = null,
+}: {
+  data: FullScreenBannerType;
+  imageLoadingStrategy?: Pick<
+    CustomImageProps,
+    'loading' | 'fetchPriority'
+  > | null;
+}) {
   const {
     cta,
     image,
@@ -30,8 +39,7 @@ export function FullScreenBanner({ data }: { data: FullScreenBannerType }) {
             alt={image.alt}
             src={image.url}
             fill
-            loading="eager"
-            fetchPriority="high"
+            {...imageLoadingStrategy}
           />
         </div>
       )}

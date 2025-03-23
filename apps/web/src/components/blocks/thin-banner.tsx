@@ -1,26 +1,34 @@
 import type { ThinBanner as ThinBannerType } from '@/sanity/queries/content-page/types';
 import { Button } from '@ecomm/ui/button';
-import { ImageComponent } from '@ecomm/ui/image';
+import { ImageComponent, type CustomImageProps } from '@ecomm/ui/image';
 import { Heading } from '@ecomm/ui/typography';
 import { ConditionalLink } from '../link';
 import { cn } from '@ecomm/ui/lib/utils';
 import { getAlignmentClass } from '@/lib/utils/block-classname-transformers';
 import { Badge } from '@ecomm/ui/badge';
 
-export function ThinBanner({ data }: { data: ThinBannerType }) {
+export function ThinBanner({
+  data,
+  imageLoadingStrategy = null,
+}: {
+  data: ThinBannerType;
+  imageLoadingStrategy?: Pick<
+    CustomImageProps,
+    'loading' | 'fetchPriority'
+  > | null;
+}) {
   const { cta, image, title, description, tag, contentAlignment } = data;
 
   return (
-    <div className="container relative min-h-[300px] px-6 py-12">
+    <div className="container relative min-h-[300px] py-12">
       {image?.url && (
-        <div className="absolute inset-0 -z-10 overflow-hidden">
+        <div className="absolute inset-0 -z-10 overflow-hidden 2xl:rounded-xl">
           <ImageComponent
             className="h-full w-full object-cover"
             alt={image.alt || 'Banner Image'}
             src={image.url}
             fill
-            loading="eager"
-            fetchPriority="high"
+            {...imageLoadingStrategy}
           />
           <div className="absolute inset-0 bg-black/40" />
         </div>
@@ -29,7 +37,7 @@ export function ThinBanner({ data }: { data: ThinBannerType }) {
       <div className="flex h-full w-full items-center">
         <div
           className={cn(
-            'relative flex flex-col gap-6 px-4',
+            'relative flex flex-col gap-6 lg:px-4',
             getAlignmentClass(contentAlignment),
           )}
         >
