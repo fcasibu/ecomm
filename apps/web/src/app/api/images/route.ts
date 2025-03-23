@@ -1,8 +1,10 @@
 import { getImages } from '@/features/image/services/queries';
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 
-export async function GET() {
-  const result = await getImages();
+export async function GET(request: NextRequest) {
+  const cursor = request.nextUrl.searchParams.get('cursor');
+
+  const result = await getImages(cursor ?? '');
 
   return NextResponse.json(result);
 }

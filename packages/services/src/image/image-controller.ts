@@ -16,9 +16,9 @@ export class ImageController extends BaseController {
     }
   }
 
-  public async getImages() {
+  public async getImages(cursor: string) {
     try {
-      return await this.imageService.getImages();
+      return await this.imageService.getImages(cursor);
     } catch (error) {
       this.logAndThrowError(error, {
         message: 'Image upload failed',

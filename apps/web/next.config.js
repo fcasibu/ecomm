@@ -25,6 +25,9 @@ const nextConfig = {
     ppr: true,
     reactCompiler: true,
     useCache: true,
+    serverActions: {
+      bodySizeLimit: '2mb',
+    },
   },
   images: {
     remotePatterns: [

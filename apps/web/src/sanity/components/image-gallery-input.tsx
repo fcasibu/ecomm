@@ -1,7 +1,6 @@
 import React, { useReducer, useTransition } from 'react';
 import { set, type StringInputProps } from 'sanity';
 import { uploadImage } from '@/features/image/services/mutations';
-import { useGetImages } from '@/features/image/hooks/use-get-images';
 import { Button } from '@ecomm/ui/button';
 import { Input } from '@ecomm/ui/input';
 import {
@@ -16,6 +15,7 @@ import { Card } from '@ecomm/ui/card';
 import { Skeleton } from '@ecomm/ui/skeleton';
 import { Badge } from '@ecomm/ui/badge';
 import { toast } from '@ecomm/ui/hooks/use-toast';
+import { useGetInfiniteImages } from '@/features/image/hooks/use-get-infinite-images';
 
 const readFileAsDataURL = (file: File): Promise<string> => {
   return new Promise((resolve, reject) => {
@@ -99,15 +99,9 @@ export function ImageGalleryInput({ onChange, value }: StringInputProps) {
   });
 
   const [isPending, startTransition] = useTransition();
-  const imagesPerPage = 12;
 
-  const { data: result, isLoading, error } = useGetImages();
-  const images = result?.success ? result.data : [];
-
-  const paginatedImages = images.slice(
-    (state.currentPage - 1) * imagesPerPage,
-    state.currentPage * imagesPerPage,
-  );
+  const { images, isLoading, error, loadMore, isReachingEnd } =
+    useGetInfiniteImages();
 
   const handleUpload = async () => {
     if (!state.uploadedFile) return;
@@ -200,7 +194,10 @@ export function ImageGalleryInput({ onChange, value }: StringInputProps) {
                 <TabsTrigger value="upload">Upload New</TabsTrigger>
               </TabsList>
 
-              <TabsContent value="browse" className="space-y-4">
+              <TabsContent
+                value="browse"
+                className="max-h-[600px] space-y-4 overflow-y-auto"
+              >
                 <div className="flex justify-end">
                   <Badge variant="outline">{images.length} images</Badge>
                 </div>
@@ -223,8 +220,8 @@ export function ImageGalleryInput({ onChange, value }: StringInputProps) {
                   </div>
                 ) : (
                   <>
-                    <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4">
-                      {paginatedImages.map((imageUrl, index) => (
+                    <div className="grid grid-cols-2 gap-4 overflow-y-auto sm:grid-cols-3 md:grid-cols-4">
+                      {images.map((imageUrl, index) => (
                         <Card
                           key={index}
                           className={`hover:ring-primary cursor-pointer overflow-hidden transition-all hover:ring-2 hover:ring-offset-2 ${
@@ -244,6 +241,13 @@ export function ImageGalleryInput({ onChange, value }: StringInputProps) {
                         </Card>
                       ))}
                     </div>
+                    {!isReachingEnd && (
+                      <div className="mt-4 flex justify-center">
+                        <Button onClick={loadMore} disabled={isLoading}>
+                          Load More
+                        </Button>
+                      </div>
+                    )}
                   </>
                 )}
               </TabsContent>
