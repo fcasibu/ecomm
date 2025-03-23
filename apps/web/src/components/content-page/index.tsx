@@ -1,4 +1,4 @@
-import type { ContentPage } from '@/sanity.types';
+import type { ComponentType } from 'react';
 import type {
   BlockKeys,
   ContentPageDTO,
@@ -6,10 +6,13 @@ import type {
 import { FullScreenBanner } from '../blocks/full-screen-banner';
 import { Spacer } from '../spacer';
 import { ContentPageBreadcrumb } from '../content-page-breadcrumb';
+import { ThinBanner } from '../blocks/thin-banner';
 
-const BLOCKS = {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const BLOCKS: Record<BlockKeys, ComponentType<{ data: any }>> = {
   fullScreenBanner: FullScreenBanner,
-} as const satisfies Record<BlockKeys, React.ElementType>;
+  thinBanner: ThinBanner,
+};
 
 const BLOCKS_WITH_NO_SPACING: BlockKeys[] = ['fullScreenBanner'];
 
@@ -19,18 +22,20 @@ export function ContentPage({ contentPage }: { contentPage: ContentPageDTO }) {
   return (
     <>
       <ContentPageBreadcrumb data={contentPage.breadcrumb} />
-      {contentPage.blocks.map((block, index) => {
+      {contentPage.blocks.map((block) => {
         const Component = BLOCKS[block.type];
 
         if (!Component) return null;
 
         const hasSpacing = !BLOCKS_WITH_NO_SPACING.includes(block.type);
-        const topSpacing = hasSpacing && index !== 0;
-        const bottomSpacing =
-          hasSpacing && index !== contentPage.blocks.length - 1;
 
         return (
-          <Spacer key={block.key} top={!topSpacing} bottom={!bottomSpacing}>
+          <Spacer
+            size="xl"
+            key={block.key}
+            top={!hasSpacing}
+            bottom={!hasSpacing}
+          >
             <Component data={block} />
           </Spacer>
         );

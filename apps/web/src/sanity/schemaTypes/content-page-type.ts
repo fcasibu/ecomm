@@ -108,7 +108,7 @@ export const contentPageType = defineType({
       title: 'Blocks',
       type: 'array',
       validation: (Rule) => Rule.min(1).max(12),
-      of: [{ type: 'fullScreenBanner' }],
+      of: [{ type: 'fullScreenBanner' }, { type: 'thinBanner' }],
     }),
   ],
 });

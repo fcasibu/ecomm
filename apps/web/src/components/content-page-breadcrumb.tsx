@@ -28,6 +28,8 @@ export function ContentPageBreadcrumb({
 
   const breadcrumb = createBreadcrumb(data, pathname, t('label'), locale);
 
+  if (!breadcrumb.length) return null;
+
   return (
     <Breadcrumb className="container my-4">
       <BreadcrumbList>

@@ -20,11 +20,12 @@
 - [ ] Fix sheet size in CMS
 - [ ] Use localized text on ui components
 - [ ] Add more correct validations in sanity
-- [ ] Thin Banners
 - [ ] Full Width Banners
 - [ ] Hero Banner
 - [ ] Feature Section
 - [ ] Sanity revalidation webhook is off by one (?) 
+- [ ] Configure content page to allow external components
+  - Refactor carousels to be re-usable
 
 ## Notes
 

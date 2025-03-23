@@ -29,10 +29,21 @@ const CONTENT_PAGES_QUERY = groq`
       _type,
       title, 
       description,
+      tag,
       cta,
       image,
       contentAlignment,
       contentPosition
+    },
+    _type == "thinBanner" => {
+      _key,
+      _type,
+      title, 
+      description,
+      tag,
+      cta,
+      image,
+      contentAlignment
     }
   }
 }

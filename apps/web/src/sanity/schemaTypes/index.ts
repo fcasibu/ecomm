@@ -10,7 +10,7 @@ import {
 } from './objects';
 import { footerType } from './footer-type';
 import { contentPageType } from './content-page-type';
-import { fullScreenBanner } from './objects/banners';
+import { fullScreenBanner, thinBanner } from './objects/banners';
 
 export const schema: { types: SchemaTypeDefinition[] } = {
   types: [
@@ -24,6 +24,7 @@ export const schema: { types: SchemaTypeDefinition[] } = {
     image,
     rootCategorySelect,
     fullScreenBanner,
+    thinBanner,
     heading,
     textAlignment,
     textContent,

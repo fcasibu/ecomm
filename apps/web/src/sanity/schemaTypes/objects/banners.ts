@@ -21,6 +21,11 @@ export const fullScreenBanner = defineType({
       type: 'textContent',
     }),
     defineField({
+      name: 'tag',
+      title: 'Tag',
+      type: 'textContent',
+    }),
+    defineField({
       name: 'cta',
       title: 'Call to Action',
       type: 'link',
@@ -54,6 +59,49 @@ export const fullScreenBanner = defineType({
           { title: 'Bottom Right', value: 'bottom-right' },
         ],
       },
+    }),
+  ],
+});
+
+export const thinBanner = defineType({
+  name: 'thinBanner',
+  title: 'Thin Banner',
+  type: 'object',
+  preview: {
+    select: {
+      title: 'title.title',
+    },
+  },
+  fields: [
+    defineField({
+      name: 'title',
+      title: 'Title',
+      type: 'heading',
+    }),
+    defineField({
+      name: 'description',
+      title: 'Description',
+      type: 'textContent',
+    }),
+    defineField({
+      name: 'tag',
+      title: 'Tag',
+      type: 'textContent',
+    }),
+    defineField({
+      name: 'cta',
+      title: 'Call to Action',
+      type: 'link',
+    }),
+    defineField({
+      name: 'image',
+      title: 'Image',
+      type: 'customImage',
+    }),
+    defineField({
+      name: 'contentAlignment',
+      title: 'Content Alignment',
+      type: 'textAlignment',
     }),
   ],
 });
