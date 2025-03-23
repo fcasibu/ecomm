@@ -24,6 +24,7 @@
 - [ ] Full Width Banners
 - [ ] Hero Banner
 - [ ] Feature Section
+- [ ] Sanity revalidation webhook is off by one (?) 
 
 ## Notes
 

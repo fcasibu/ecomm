@@ -13,7 +13,8 @@
     "VERCEL_ENV",
     "VERCEL_PROJECT_PRODUCTION_URL",
     "VERCEL_BRANCH_URL",
-    "SANITY_TOKEN"
+    "SANITY_TOKEN",
+    "SANITY_WEBHOOK_SECRET"
   ],
   "tasks": {
     "build": {
