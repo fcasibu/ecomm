@@ -27,6 +27,7 @@ const BLOCKS: Record<
   thinBanner: ThinBanner,
   heroBanner: HeroBanner,
   featureBlock: FeatureBlock,
+  categorySpecificNewArrivals: () => null,
 };
 
 const BLOCKS_WITH_NO_SPACING: BlockKeys[] = ['fullScreenBanner'];

@@ -20,10 +20,9 @@
 - [ ] Fix sheet size in CMS
 - [ ] Use localized text on ui components
 - [ ] Add more correct validations in sanity
-- [ ] Full Width Banners
 - [ ] Sanity revalidation webhook is off by one (?) 
-- [ ] Configure content page to allow external components
-  - Refactor carousels to be re-usable
+- [ ] Product Best Seller
+- [ ] Implement algolia integration
 
 ## Notes
 

@@ -64,6 +64,15 @@ const CONTENT_PAGE_QUERY = groq`
         title,
         description
       }
+    },
+    _type == "categorySpecificNewArrivals" => {
+      _key,
+      _type,
+      category {
+        category {
+          id
+        }
+      }
     }
   }
 }[0]

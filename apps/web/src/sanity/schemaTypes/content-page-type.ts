@@ -113,6 +113,9 @@ export const contentPageType = defineType({
         { type: 'thinBanner' },
         { type: 'heroBanner' },
         { type: 'featureBlock' },
+
+        // external blocks
+        { type: 'categorySpecificNewArrivals' },
       ],
     }),
   ],

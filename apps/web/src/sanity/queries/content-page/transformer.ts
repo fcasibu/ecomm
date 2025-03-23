@@ -9,6 +9,7 @@ import type {
   ThinBanner,
   FeatureBlock,
   FeatureItem,
+  CategoryNewArrivalsCarousel,
 } from './types';
 import type { ExtractType } from '@/types';
 import assert from 'node:assert';
@@ -72,6 +73,8 @@ function pickTransformBlock(
       return transformHeroBanner(data);
     case 'featureBlock':
       return transformFeatureBlock(data);
+    case 'categorySpecificNewArrivals':
+      return transformCategorySpecificNewArrivals(data);
   }
 }
 
@@ -205,5 +208,16 @@ function transformFeatureItem(
       url: featureItem.icon?.image ?? '',
       alt: featureItem.icon?.alt ?? '',
     },
+  };
+}
+function transformCategorySpecificNewArrivals(
+  categoryNewArrivals: ExtractType<ContentPage, 'blocks[number]'>,
+): CategoryNewArrivalsCarousel {
+  assert(categoryNewArrivals._type === 'categorySpecificNewArrivals');
+
+  return {
+    key: categoryNewArrivals._key,
+    type: categoryNewArrivals._type,
+    categoryId: categoryNewArrivals.category?.category?.id ?? '',
   };
 }

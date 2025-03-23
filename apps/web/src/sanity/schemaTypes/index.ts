@@ -12,6 +12,7 @@ import { footerType } from './footer-type';
 import { contentPageType } from './content-page-type';
 import { fullScreenBanner, heroBanner, thinBanner } from './objects/banners';
 import { featureBlockType } from './objects/blocks';
+import { categorySpecificNewArrivals } from './objects/external-blocks';
 
 export const schema: { types: SchemaTypeDefinition[] } = {
   types: [
@@ -31,5 +32,8 @@ export const schema: { types: SchemaTypeDefinition[] } = {
     textAlignment,
     textContent,
     featureBlockType,
+
+    // exterrnal blocks
+    categorySpecificNewArrivals,
   ],
 };
