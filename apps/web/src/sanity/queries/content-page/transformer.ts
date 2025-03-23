@@ -1,6 +1,7 @@
 import type { ContentPage } from '@/sanity.types';
 import type {
   Block,
+  BreadcrumbItem,
   ContentPageDTO,
   FullScreenBanner,
   SEOMetadata,
@@ -10,8 +11,28 @@ import type { ExtractType } from '@/types';
 export function transformContentPage(contentPage: ContentPage): ContentPageDTO {
   return {
     slug: contentPage.slug ?? '',
+    breadcrumb: transformBreadcrumb(contentPage.breadcrumb),
     seoMetadata: transformSeoMetadata(contentPage?.seoMetadata),
     blocks: transformBlocks(contentPage.blocks),
+  };
+}
+
+function transformBreadcrumb(
+  breadcrumb: ExtractType<ContentPage, 'breadcrumb'>,
+): BreadcrumbItem[] {
+  return breadcrumb?.map(transformBreadcrumbItem) ?? [];
+}
+
+function transformBreadcrumbItem(
+  item: ExtractType<ContentPage, 'breadcrumb[number]'>,
+): BreadcrumbItem {
+  return {
+    link: {
+      title: item.url?.title ?? '',
+      url: item.url?.url ?? '',
+      newTab: item.url?.newTab ?? false,
+    },
+    label: item.label ?? '',
   };
 }
 

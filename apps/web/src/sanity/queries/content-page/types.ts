@@ -16,8 +16,14 @@ export type ContentPosition =
 
 export interface ContentPageDTO {
   slug: string;
+  breadcrumb: BreadcrumbItem[];
   seoMetadata: SEOMetadata;
   blocks: Block[];
+}
+
+export interface BreadcrumbItem {
+  link: Link;
+  label: string;
 }
 
 export interface SEOMetadata {

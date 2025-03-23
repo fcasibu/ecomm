@@ -5,6 +5,7 @@ import type {
 } from '@/sanity/queries/content-page/types';
 import { FullScreenBanner } from '../blocks/full-screen-banner';
 import { Spacer } from '../spacer';
+import { ContentPageBreadcrumb } from '../content-page-breadcrumb';
 
 const BLOCKS = {
   fullScreenBanner: FullScreenBanner,
@@ -17,6 +18,7 @@ export function ContentPage({ contentPage }: { contentPage: ContentPageDTO }) {
 
   return (
     <>
+      <ContentPageBreadcrumb data={contentPage.breadcrumb} />
       {contentPage.blocks.map((block, index) => {
         const Component = BLOCKS[block.type];
 

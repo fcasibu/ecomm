@@ -1,4 +1,9 @@
 export default {
+  breadcrumb: {
+    home: {
+      label: 'Home',
+    },
+  },
   header: {
     menu: {
       actions: {

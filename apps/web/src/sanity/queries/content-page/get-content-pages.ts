@@ -10,6 +10,10 @@ const CONTENT_PAGES_QUERY = groq`
 *[_type == "contentPage" && language == $lang]{
   title,
   slug,
+  breadcrumb[] {
+    label,
+    url
+  },
   seoMetadata {
     title,
     description,

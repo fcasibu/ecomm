@@ -26,7 +26,20 @@ export const contentPageType = defineType({
       name: 'slug',
       title: 'Slug',
       type: 'string',
-      validation: (Rule) => Rule.required().lowercase(),
+    }),
+    defineField({
+      name: 'breadcrumb',
+      title: 'Breadcrumb',
+      type: 'array',
+      of: [
+        {
+          type: 'object',
+          fields: [
+            defineField({ name: 'label', title: 'Label', type: 'string' }),
+            defineField({ name: 'url', title: 'URL', type: 'link' }),
+          ],
+        },
+      ],
     }),
     defineField({
       name: 'seoMetadata',
