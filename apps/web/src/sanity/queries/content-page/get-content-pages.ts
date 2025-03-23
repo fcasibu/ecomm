@@ -54,6 +54,16 @@ const CONTENT_PAGES_QUERY = groq`
       cta,
       image,
       layout
+    },
+    _type == "featureBlock" => {
+      _key,
+      _type,
+      title, 
+      features[] {
+        icon,
+        title,
+        description
+      }
     }
   }
 }

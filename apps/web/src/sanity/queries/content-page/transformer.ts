@@ -7,6 +7,8 @@ import type {
   HeroBanner,
   SEOMetadata,
   ThinBanner,
+  FeatureBlock,
+  FeatureItem,
 } from './types';
 import type { ExtractType } from '@/types';
 import assert from 'node:assert';
@@ -58,7 +60,9 @@ function transformBlocks(blocks: ExtractType<ContentPage, 'blocks'>): Block[] {
   return blocks?.map(pickTransformBlock).filter(isDefined) ?? [];
 }
 
-function pickTransformBlock(data: ExtractType<ContentPage, 'blocks[number]'>) {
+function pickTransformBlock(
+  data: ExtractType<ContentPage, 'blocks[number]'>,
+): Block {
   switch (data._type) {
     case 'fullScreenBanner':
       return transformFullWidthBanner(data);
@@ -66,6 +70,8 @@ function pickTransformBlock(data: ExtractType<ContentPage, 'blocks[number]'>) {
       return transformThinBanner(data);
     case 'heroBanner':
       return transformHeroBanner(data);
+    case 'featureBlock':
+      return transformFeatureBlock(data);
   }
 }
 
@@ -169,5 +175,35 @@ function transformHeroBanner(
       alt: heroBanner.image?.alt ?? '',
     },
     layout: heroBanner.layout ?? 'image-left',
+  };
+}
+
+function transformFeatureBlock(
+  featureBlock: ExtractType<ContentPage, 'blocks[number]'>,
+): FeatureBlock {
+  assert(featureBlock._type === 'featureBlock');
+
+  return {
+    key: featureBlock._key,
+    type: featureBlock._type,
+    title: {
+      value: featureBlock.title?.title ?? '',
+      type: featureBlock.title?.type ?? 'h2',
+      textColor: featureBlock.title?.textColor?.hex ?? '',
+    },
+    features: featureBlock.features?.map(transformFeatureItem) ?? [],
+  };
+}
+
+function transformFeatureItem(
+  featureItem: ExtractType<ContentPage, 'blocks[number].features[number]'>,
+): FeatureItem {
+  return {
+    title: featureItem.title ?? '',
+    description: featureItem.description ?? '',
+    icon: {
+      url: featureItem.icon?.image ?? '',
+      alt: featureItem.icon?.alt ?? '',
+    },
   };
 }

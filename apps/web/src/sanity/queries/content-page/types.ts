@@ -36,7 +36,7 @@ export interface SEOMetadata {
   indexing: string;
 }
 
-export type Block = FullScreenBanner | ThinBanner | HeroBanner;
+export type Block = FullScreenBanner | ThinBanner | HeroBanner | FeatureBlock;
 export type BlockKeys = ExtractType<ContentPage, 'blocks[number]._type'>;
 
 export interface FullScreenBanner {
@@ -71,4 +71,17 @@ export interface HeroBanner {
   cta: Link;
   image: CustomImage;
   layout: 'image-left' | 'image-right';
+}
+
+export interface FeatureBlock {
+  key: string;
+  type: BlockKeys;
+  title: Heading;
+  features: FeatureItem[];
+}
+
+export interface FeatureItem {
+  icon: CustomImage;
+  title: string;
+  description: string;
 }

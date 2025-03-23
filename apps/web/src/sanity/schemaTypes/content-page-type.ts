@@ -112,6 +112,7 @@ export const contentPageType = defineType({
         { type: 'fullScreenBanner' },
         { type: 'thinBanner' },
         { type: 'heroBanner' },
+        { type: 'featureBlock' },
       ],
     }),
   ],
