@@ -120,7 +120,7 @@ function QueriedProducts({ skus }: { skus: string[] }) {
         >
           <NextLink
             href={link.product.single(product.name, product.sku)}
-            className="flex aspect-square flex-col gap-2"
+            className="flex aspect-square flex-col gap-2 hover:no-underline"
             prefetch
           >
             <div className="overflow-hidden rounded-md">
