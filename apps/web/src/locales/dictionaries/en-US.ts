@@ -133,4 +133,7 @@ export default {
   recentlyViewedProducts: {
     title: 'Recently Viewed',
   },
+  categoryProductNewArrivals: {
+    title: 'New Arrivals',
+  },
 } as const;

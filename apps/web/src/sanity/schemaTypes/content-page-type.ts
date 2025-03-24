@@ -115,7 +115,7 @@ export const contentPageType = defineType({
         { type: 'featureBlock' },
 
         // external blocks
-        { type: 'categorySpecificNewArrivals' },
+        { type: 'categoryProductNewArrivals' },
       ],
     }),
   ],

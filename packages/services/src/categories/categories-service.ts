@@ -105,6 +105,19 @@ export class CategoriesService extends BaseService {
     return this.formatPaginatedResponse(categories, totalCount, options);
   }
 
+  public async getAllNonRootCategories(locale: string) {
+    return this.prismaClient.category.findMany({
+      include: CATEGORY_INCLUDE,
+      where: {
+        locale,
+        parentId: {
+          not: null,
+        },
+      },
+      orderBy: { updatedAt: 'desc' },
+    });
+  }
+
   public async getRootCategories(locale: string) {
     return await this.prismaClient.category.findMany({
       where: {

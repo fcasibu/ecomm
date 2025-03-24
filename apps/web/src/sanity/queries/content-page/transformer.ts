@@ -73,7 +73,7 @@ function pickTransformBlock(
       return transformHeroBanner(data);
     case 'featureBlock':
       return transformFeatureBlock(data);
-    case 'categorySpecificNewArrivals':
+    case 'categoryProductNewArrivals':
       return transformCategorySpecificNewArrivals(data);
   }
 }
@@ -213,7 +213,7 @@ function transformFeatureItem(
 function transformCategorySpecificNewArrivals(
   categoryNewArrivals: ExtractType<ContentPage, 'blocks[number]'>,
 ): CategoryNewArrivalsCarousel {
-  assert(categoryNewArrivals._type === 'categorySpecificNewArrivals');
+  assert(categoryNewArrivals._type === 'categoryProductNewArrivals');
 
   return {
     key: categoryNewArrivals._key,

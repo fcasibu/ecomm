@@ -65,7 +65,7 @@ const CONTENT_PAGE_QUERY = groq`
         description
       }
     },
-    _type == "categorySpecificNewArrivals" => {
+    _type == "categoryProductNewArrivals" => {
       _key,
       _type,
       category {

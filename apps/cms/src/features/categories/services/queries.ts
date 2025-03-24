@@ -37,6 +37,16 @@ export const getRootCategories = async (locale: string) => {
   );
 };
 
+export const getNonRootCategories = async (locale: string) => {
+  'use cache';
+
+  cacheTag('all', 'non_root_categories', `store_${locale}`);
+
+  return await executeOperation(() =>
+    categoriesController().getAllNonRootCategories(locale),
+  );
+};
+
 export const getCategoryById = async (locale: string, id: string) => {
   'use cache';
   cacheTag('all', 'category', `category_${id}`, `store_${locale}`);

@@ -11,6 +11,7 @@ import { ThinBanner } from '../blocks/thin-banner';
 import { HeroBanner } from '../blocks/hero-banner';
 import { FeatureBlock } from '../blocks/feature-block';
 import type { CustomImageProps } from '@ecomm/ui/image';
+import { CategoryProductNewArrivals } from '../blocks/category-product-new-arrivals';
 
 const BLOCKS: Record<
   BlockKeys,
@@ -27,7 +28,7 @@ const BLOCKS: Record<
   thinBanner: ThinBanner,
   heroBanner: HeroBanner,
   featureBlock: FeatureBlock,
-  categorySpecificNewArrivals: () => null,
+  categoryProductNewArrivals: CategoryProductNewArrivals,
 };
 
 const BLOCKS_WITH_NO_SPACING: BlockKeys[] = ['fullScreenBanner'];

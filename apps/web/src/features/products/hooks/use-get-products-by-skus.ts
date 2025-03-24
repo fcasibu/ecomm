@@ -1,3 +1,5 @@
+'use client';
+
 import { createQueryString } from '@ecomm/lib/create-query-string';
 import type { Result } from '@ecomm/lib/execute-operation';
 import type { ProductDTO } from '@ecomm/services/products/product-dto';

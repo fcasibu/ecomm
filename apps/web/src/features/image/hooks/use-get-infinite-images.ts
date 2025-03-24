@@ -1,3 +1,5 @@
+'use client';
+
 import useSWRInfinite from 'swr/infinite';
 import type { Result } from '@ecomm/lib/execute-operation';
 

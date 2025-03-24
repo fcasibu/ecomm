@@ -199,4 +199,27 @@ export class ProductsController extends BaseController {
       });
     }
   }
+
+  public async getNewArrivalsByCategoryId(locale: string, categoryId: string) {
+    logger.info({ categoryId }, 'Fetching new arrivals by category id');
+
+    try {
+      const result = await this.productsService.getNewArrivalsByCategoryId(
+        locale,
+        categoryId,
+      );
+
+      const transformedProducts = result
+        .map((item) => this.transformer.toDTO(item))
+        .filter((product): product is ProductDTO => Boolean(product));
+
+      logger.info('New arrivals by category id fetched successfully');
+
+      return transformedProducts;
+    } catch (error) {
+      this.logAndThrowError(error, {
+        message: 'Error fetching new arrivals by category id',
+      });
+    }
+  }
 }

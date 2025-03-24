@@ -1,8 +1,8 @@
 import { defineType, defineField } from 'sanity';
 
-export const categorySpecificNewArrivals = defineType({
-  name: 'categorySpecificNewArrivals',
-  title: 'Category Specific New Arrivals',
+export const categoryProductNewArrivals = defineType({
+  name: 'categoryProductNewArrivals',
+  title: 'Category Product New Arrivals',
   type: 'object',
   fields: [
     defineField({
@@ -13,7 +13,7 @@ export const categorySpecificNewArrivals = defineType({
     defineField({
       name: 'category',
       title: 'Category',
-      type: 'rootCategorySelect',
+      type: 'nonRootCategorySelect',
     }),
   ],
 });

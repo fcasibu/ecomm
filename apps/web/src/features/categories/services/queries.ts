@@ -22,3 +22,13 @@ export async function getCategoriesHierarchy(locale: string, ids: string[]) {
     categoriesController().getHierarhchyOfCategoryIds(locale, ids),
   );
 }
+
+export async function getNonRootCategories(locale: string) {
+  'use cache';
+
+  cacheTag('non_root_categories');
+
+  return await executeOperation(() =>
+    categoriesController().getAllNonRootCategories(locale),
+  );
+}

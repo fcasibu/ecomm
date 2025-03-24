@@ -3,7 +3,7 @@ import { getCurrentLocale } from '@/locales/server';
 import { NextRequest, NextResponse } from 'next/server';
 
 export async function GET(request: NextRequest) {
-  const categoryId = request.nextUrl.searchParams.get('category');
+  const categoryId = request.nextUrl.searchParams.get('categoryId');
 
   if (!categoryId) {
     return NextResponse.json({

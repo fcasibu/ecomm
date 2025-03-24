@@ -240,6 +240,21 @@ export class ProductsService extends BaseService {
     });
   }
 
+  public async getNewArrivalsByCategoryId(locale: string, categoryId: string) {
+    const maxDays = 14;
+
+    return await this.prismaClient.product.findMany({
+      include: PRODUCT_INCLUDE,
+      where: {
+        categoryId,
+        locale,
+        createdAt: {
+          gte: new Date(Date.now() - maxDays * 24 * 60 * 60 * 1000),
+        },
+      },
+    });
+  }
+
   public async delete(locale: string, productId: string) {
     return await this.prismaClient.product.delete({
       where: { id: productId, locale },

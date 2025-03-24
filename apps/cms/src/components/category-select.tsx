@@ -1,5 +1,6 @@
 'use client';
 
+import 'client-only';
 import { useState } from 'react';
 import { Check, ChevronsUpDown } from 'lucide-react';
 import { Button } from '@ecomm/ui/button';
@@ -12,10 +13,8 @@ import {
   CommandList,
 } from '@ecomm/ui/command';
 import { Popover, PopoverContent, PopoverTrigger } from '@ecomm/ui/popover';
-import { useGetCategories } from '../features/categories/hooks/use-get-categories';
 import { cn } from '@ecomm/ui/lib/utils';
-import { useSearchParams } from 'next/navigation';
-import { CATEGORIES_PAGE_SIZE } from '@/lib/constants';
+import { useGetNonRootCategories } from '@/features/categories/hooks/use-get-non-root-categories';
 
 interface CategorySelectProps {
   value: string | undefined;
@@ -23,14 +22,10 @@ interface CategorySelectProps {
 }
 
 export function CategorySelect({ value, onChange }: CategorySelectProps) {
-  const searchParams = useSearchParams();
   const [open, setOpen] = useState(false);
-  const { result } = useGetCategories({
-    page: Number(searchParams.get('page') || '1'),
-    pageSize: CATEGORIES_PAGE_SIZE,
-  });
+  const { result } = useGetNonRootCategories();
 
-  const categories = result?.success ? result.data.categories : [];
+  const categories = result?.success ? result.data : [];
 
   const category = categories.find((category) => category.id === value);
 

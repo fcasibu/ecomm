@@ -1,17 +1,17 @@
 'use client';
 
 import useSWR from 'swr';
-import type { CategoryDTO } from '@ecomm/services/categories/category-dto';
 import type { Result } from '@ecomm/lib/execute-operation';
+import type { CategoryDTO } from '@ecomm/services/categories/category-dto';
 
-export const fetcher = (url: string) => fetch(url).then((res) => res.json());
+const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
-export function useGetRootCategories(): {
+export function useGetNonRootCategories(): {
   result: Result<CategoryDTO[]>;
   isLoading: boolean;
 } {
-  const { data, error, isLoading } = useSWR<Result<CategoryDTO[]>>(
-    `/api/root-categories`,
+  const { data, isLoading, error } = useSWR<Result<CategoryDTO[]>>(
+    '/api/non-root-categories',
     fetcher,
   );
 

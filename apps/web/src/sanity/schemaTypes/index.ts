@@ -4,6 +4,7 @@ import {
   heading,
   image,
   link,
+  nonRootCategorySelect,
   rootCategorySelect,
   textAlignment,
   textContent,
@@ -12,7 +13,7 @@ import { footerType } from './footer-type';
 import { contentPageType } from './content-page-type';
 import { fullScreenBanner, heroBanner, thinBanner } from './objects/banners';
 import { featureBlockType } from './objects/blocks';
-import { categorySpecificNewArrivals } from './objects/external-blocks';
+import { categoryProductNewArrivals } from './objects/external-blocks';
 
 export const schema: { types: SchemaTypeDefinition[] } = {
   types: [
@@ -25,6 +26,7 @@ export const schema: { types: SchemaTypeDefinition[] } = {
     link,
     image,
     rootCategorySelect,
+    nonRootCategorySelect,
     fullScreenBanner,
     thinBanner,
     heroBanner,
@@ -34,6 +36,6 @@ export const schema: { types: SchemaTypeDefinition[] } = {
     featureBlockType,
 
     // exterrnal blocks
-    categorySpecificNewArrivals,
+    categoryProductNewArrivals,
   ],
 };

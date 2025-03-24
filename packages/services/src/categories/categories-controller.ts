@@ -187,6 +187,27 @@ export class CategoriesController extends BaseController {
     }
   }
 
+  public async getAllNonRootCategories(locale: string) {
+    logger.info('Fetching all non root categories');
+
+    try {
+      const result =
+        await this.categoriesService.getAllNonRootCategories(locale);
+
+      const transformedCategories = result
+        .map((category) => this.transformer.toDTO(category))
+        .filter((category): category is CategoryDTO => Boolean(category));
+
+      logger.info('Non root categories fetched successfully');
+
+      return transformedCategories;
+    } catch (error) {
+      this.logAndThrowError(error, {
+        message: 'Error fetching all non root categories',
+      });
+    }
+  }
+
   public async getRootCategories(locale: string) {
     logger.info('Fetching all root categories');
 

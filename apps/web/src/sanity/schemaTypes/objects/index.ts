@@ -1,4 +1,7 @@
-import { RootCategorySelect } from '@/sanity/components/root-category-select';
+import {
+  NonRootCategorySelect,
+  RootCategorySelect,
+} from '@/sanity/components/category-select';
 import { ImageGalleryInput } from '@/sanity/components/image-gallery-input';
 import { defineType, defineField } from 'sanity';
 
@@ -26,6 +29,35 @@ export const rootCategorySelect = defineType({
       ],
       components: {
         input: RootCategorySelect,
+      },
+    }),
+  ],
+});
+
+export const nonRootCategorySelect = defineType({
+  name: 'nonRootCategorySelect',
+  title: 'Non Root Category',
+  type: 'object',
+  fields: [
+    defineField({
+      name: 'category',
+      title: 'Category',
+      type: 'object',
+      fields: [
+        defineField({
+          name: 'id',
+          title: 'Category ID',
+          type: 'string',
+        }),
+        defineField({
+          name: 'name',
+          title: 'Category Name',
+          type: 'string',
+          readOnly: true,
+        }),
+      ],
+      components: {
+        input: NonRootCategorySelect,
       },
     }),
   ],

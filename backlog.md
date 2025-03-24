@@ -20,7 +20,7 @@
 - [ ] Fix sheet size in CMS
 - [ ] Use localized text on ui components
 - [ ] Add more correct validations in sanity
-- [ ] Sanity revalidation webhook is off by one (?) 
+- [ ] Sanity revalidation webhook is off by one (?)
 - [ ] Product Best Seller
 - [ ] Implement algolia integration
 
