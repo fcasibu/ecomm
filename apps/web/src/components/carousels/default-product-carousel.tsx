@@ -10,8 +10,6 @@ const CarouselComponents = dynamicImport(
   () => import('@ecomm/ui/carousel'),
   {
     CarouselItem: null,
-    CarouselNext: null,
-    CarouselPrevious: null,
     CarouselContent: {
       loading: () => <DefaultProductCarouselContentSkeleton />,
     },

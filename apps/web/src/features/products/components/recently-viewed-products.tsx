@@ -18,11 +18,13 @@ const CarouselComponents = dynamicImport(
     Carousel: {
       loading: () => <RecentlyViewedProductsSkeleton />,
     },
+    CarouselNext: null,
+    CarouselPrevious: null,
   },
   { ssr: false },
 );
 
-export function RecentlyViewedProducts({ sku }: { sku: string }) {
+export function RecentlyViewedProducts({ sku }: { sku?: string }) {
   const locale = useCurrentLocale();
   const recentlyViewedProductSkus = useStorage(
     storageKeys.recentlyViewedProducts(locale),
