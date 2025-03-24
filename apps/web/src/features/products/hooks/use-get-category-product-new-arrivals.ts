@@ -5,12 +5,12 @@ import useSWR from 'swr';
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
-export function useGetProductsBySkus(skus: string[]): {
+export function useGetCategoryProductNewArrivals(categoryId: string): {
   result: Result<ProductDTO[]>;
   isLoading: boolean;
 } {
   const { data, error, isLoading } = useSWR<Result<ProductDTO[]>>(
-    `/api/recently-viewed-products${createQueryString('', { skus: skus.join(',') })}`,
+    `/api/category-product-new-arrivals${createQueryString('', { categoryId })}`,
     fetcher,
   );
 
@@ -18,5 +18,8 @@ export function useGetProductsBySkus(skus: string[]): {
     ? { success: true, data: data.data }
     : { success: false, error: data?.error ?? error };
 
-  return { result, isLoading };
+  return {
+    result,
+    isLoading,
+  };
 }
