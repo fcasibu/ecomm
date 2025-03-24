@@ -41,7 +41,8 @@ export type Block =
   | ThinBanner
   | HeroBanner
   | FeatureBlock
-  | CategoryNewArrivalsCarousel;
+  | CategoryNewArrivalsCarousel
+  | RecentlyViewedProductsCarousel;
 export type BlockKeys = ExtractType<ContentPage, 'blocks[number]._type'>;
 
 export interface FullScreenBanner {
@@ -95,4 +96,9 @@ export interface CategoryNewArrivalsCarousel {
   key: string;
   type: BlockKeys;
   categoryId: string;
+}
+
+export interface RecentlyViewedProductsCarousel {
+  key: string;
+  type: BlockKeys;
 }

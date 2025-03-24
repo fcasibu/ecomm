@@ -116,6 +116,7 @@ export const contentPageType = defineType({
 
         // external blocks
         { type: 'categoryProductNewArrivals' },
+        { type: 'recentlyViewedProducts' },
       ],
     }),
   ],

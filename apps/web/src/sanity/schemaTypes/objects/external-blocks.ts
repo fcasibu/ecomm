@@ -17,3 +17,16 @@ export const categoryProductNewArrivals = defineType({
     }),
   ],
 });
+
+export const recentlyViewedProducts = defineType({
+  name: 'recentlyViewedProducts',
+  title: 'Recently Viewed Products',
+  type: 'object',
+  fields: [
+    defineField({
+      name: 'title',
+      title: 'Title',
+      type: 'string',
+    }),
+  ],
+});

@@ -73,6 +73,10 @@ const CONTENT_PAGES_QUERY = groq`
           id
         }
       }
+    },
+    _type == "recentlyViewedProducts" => {
+      _key,
+      _type
     }
   }
 }

@@ -12,12 +12,14 @@ import { HeroBanner } from '../blocks/hero-banner';
 import { FeatureBlock } from '../blocks/feature-block';
 import type { CustomImageProps } from '@ecomm/ui/image';
 import { CategoryProductNewArrivals } from '../blocks/category-product-new-arrivals';
+import { RecentlyViewedProducts } from '@/features/products/components/recently-viewed-products';
 
 const BLOCKS: Record<
   BlockKeys,
   ComponentType<{
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     data: any;
+    sku?: string;
     imageLoadingStrategy?: Pick<
       CustomImageProps,
       'loading' | 'fetchPriority'
@@ -29,6 +31,7 @@ const BLOCKS: Record<
   heroBanner: HeroBanner,
   featureBlock: FeatureBlock,
   categoryProductNewArrivals: CategoryProductNewArrivals,
+  recentlyViewedProducts: RecentlyViewedProducts,
 };
 
 const BLOCKS_WITH_NO_SPACING: BlockKeys[] = ['fullScreenBanner'];

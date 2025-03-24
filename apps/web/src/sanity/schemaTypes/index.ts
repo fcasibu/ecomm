@@ -13,7 +13,10 @@ import { footerType } from './footer-type';
 import { contentPageType } from './content-page-type';
 import { fullScreenBanner, heroBanner, thinBanner } from './objects/banners';
 import { featureBlockType } from './objects/blocks';
-import { categoryProductNewArrivals } from './objects/external-blocks';
+import {
+  categoryProductNewArrivals,
+  recentlyViewedProducts,
+} from './objects/external-blocks';
 
 export const schema: { types: SchemaTypeDefinition[] } = {
   types: [
@@ -37,5 +40,6 @@ export const schema: { types: SchemaTypeDefinition[] } = {
 
     // exterrnal blocks
     categoryProductNewArrivals,
+    recentlyViewedProducts,
   ],
 };

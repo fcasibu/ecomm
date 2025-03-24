@@ -10,6 +10,7 @@ import type {
   FeatureBlock,
   FeatureItem,
   CategoryNewArrivalsCarousel,
+  RecentlyViewedProductsCarousel,
 } from './types';
 import type { ExtractType } from '@/types';
 import assert from 'node:assert';
@@ -75,6 +76,8 @@ function pickTransformBlock(
       return transformFeatureBlock(data);
     case 'categoryProductNewArrivals':
       return transformCategorySpecificNewArrivals(data);
+    case 'recentlyViewedProducts':
+      return transformRecentlyViewedProducts(data);
   }
 }
 
@@ -219,5 +222,14 @@ function transformCategorySpecificNewArrivals(
     key: categoryNewArrivals._key,
     type: categoryNewArrivals._type,
     categoryId: categoryNewArrivals.category?.category?.id ?? '',
+  };
+}
+
+function transformRecentlyViewedProducts(
+  recentlyViewedProducts: ExtractType<ContentPage, 'blocks[number]'>,
+): RecentlyViewedProductsCarousel {
+  return {
+    key: recentlyViewedProducts._key,
+    type: recentlyViewedProducts._type,
   };
 }
