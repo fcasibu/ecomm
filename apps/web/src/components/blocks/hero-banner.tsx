@@ -26,7 +26,7 @@ export function HeroBanner({
         alt={image.alt}
         width={900}
         height={1000}
-        className="h-[600px] object-cover lg:h-[1000px] lg:w-1/2"
+        className="h-[50vh] w-full object-cover lg:h-[80vh] lg:w-1/2"
         {...imageLoadingStrategy}
       />
       <div className="container flex w-full flex-col items-center justify-center lg:w-1/2">

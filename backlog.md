@@ -22,7 +22,6 @@
 - [ ] Add more correct validations in sanity
 - [ ] Sanity revalidation webhook is off by one (?)
 - [ ] Product Best Seller
-- [ ] Implement algolia integration
 
 ## Notes
 

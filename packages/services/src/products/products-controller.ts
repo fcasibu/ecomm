@@ -8,9 +8,9 @@ import type { ProductsService } from './products-service';
 import { ValidationError } from '../errors/validation-error';
 import { BaseController } from '../base-controller';
 import { logger } from '@ecomm/lib/logger';
-import type { ProductDTO } from './product-dto';
 import { NotFoundError } from '../errors/not-found-error';
 import { ProductTransformer } from './product-transformer';
+import { isDefined } from '@ecomm/lib/is-defined';
 
 export class ProductsController extends BaseController {
   private readonly transformer = new ProductTransformer();
@@ -152,7 +152,7 @@ export class ProductsController extends BaseController {
 
       const transformedProducts = result.items
         .map((item) => this.transformer.toDTO(item))
-        .filter((product): product is ProductDTO => Boolean(product));
+        .filter(isDefined);
 
       const response = {
         products: transformedProducts,
@@ -188,9 +188,9 @@ export class ProductsController extends BaseController {
 
       const transformedProducts = result
         .map((item) => this.transformer.toDTO(item))
-        .filter((product): product is ProductDTO => Boolean(product));
+        .filter(isDefined);
 
-      logger.info('Products by skus fetched successfully');
+      logger.info('ProduisDefinedcts by skus fetched successfully');
 
       return transformedProducts;
     } catch (error) {
@@ -211,7 +211,7 @@ export class ProductsController extends BaseController {
 
       const transformedProducts = result
         .map((item) => this.transformer.toDTO(item))
-        .filter((product): product is ProductDTO => Boolean(product));
+        .filter(isDefined);
 
       logger.info('New arrivals by category id fetched successfully');
 
@@ -219,6 +219,25 @@ export class ProductsController extends BaseController {
     } catch (error) {
       this.logAndThrowError(error, {
         message: 'Error fetching new arrivals by category id',
+      });
+    }
+  }
+
+  public async getProductsWithAssociatedCategory(locale: string) {
+    try {
+      const products =
+        await this.productsService.getProductsWithAssociatedCategory(locale);
+
+      const transformedProducts = products
+        .map((product) => this.transformer.toDTO(product))
+        .filter(isDefined);
+
+      logger.info('Products with associated category fetched successfully');
+
+      return transformedProducts;
+    } catch (error) {
+      this.logAndThrowError(error, {
+        message: 'Error fetching products with associated category',
       });
     }
   }

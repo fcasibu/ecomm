@@ -29,9 +29,19 @@ export async function getNewArrivalsByCategoryId(
 ) {
   'use cache';
 
-  cacheTag('product', `product_${categoryId}`);
+  cacheTag('products', `products_${categoryId}`);
 
   return await executeOperation(() =>
     productsController().getNewArrivalsByCategoryId(locale, categoryId),
+  );
+}
+
+export async function getProductsWithAssociatedCategory(locale: string) {
+  'use cache';
+
+  cacheTag('products', 'products_with_associated_category');
+
+  return await executeOperation(() =>
+    productsController().getProductsWithAssociatedCategory(locale),
   );
 }

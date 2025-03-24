@@ -14,7 +14,8 @@
     "VERCEL_PROJECT_PRODUCTION_URL",
     "VERCEL_BRANCH_URL",
     "SANITY_TOKEN",
-    "SANITY_WEBHOOK_SECRET"
+    "SANITY_WEBHOOK_SECRET",
+    "ALGOLIA_WRITE_KEY"
   ],
   "tasks": {
     "build": {

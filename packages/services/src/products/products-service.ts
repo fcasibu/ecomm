@@ -240,6 +240,13 @@ export class ProductsService extends BaseService {
     });
   }
 
+  public async getProductsWithAssociatedCategory(locale: string) {
+    return await this.prismaClient.product.findMany({
+      include: PRODUCT_INCLUDE,
+      where: { locale, category: { isNot: null } },
+    });
+  }
+
   public async getNewArrivalsByCategoryId(locale: string, categoryId: string) {
     const maxDays = 14;
 

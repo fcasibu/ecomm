@@ -1,0 +1,12 @@
+{
+  "crons": [
+    {
+      "path": "/api/categories-sync-hook",
+      "schedule": "0 0 * * 1"
+    },
+{
+      "path": "/api/products-sync-hook",
+      "schedule": "0 0 * * 1"
+    }
+  ]
+}
