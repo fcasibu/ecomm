@@ -14,6 +14,9 @@ export function InstantSearchCategoryProvider({
 
   return (
     <InstantSearchNext
+      future={{
+        preserveSharedStateOnUnmount: true,
+      }}
       indexName={algoliaKeys.category.index(locale)}
       searchClient={client}
     >

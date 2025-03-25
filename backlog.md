@@ -25,6 +25,7 @@
 - [ ] Customize query parameters in algolia instant search provider
 - [ ] Add Brand model
 - [ ] Implement wishlist
+- [ ] Product/Category seo metadata
 
 ## Notes
 

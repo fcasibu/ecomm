@@ -162,6 +162,19 @@ export default {
         },
       },
     },
+    noResult: {
+      title: 'No products match your filters',
+      description:
+        'We could not find any products in this category. Please try browsing a different category or check back later.',
+      descriptionWithFilters:
+        'We could not find any products that match your current filter selections. Try adjusting or clearing your filters to see more products.',
+      suggestions: {
+        title: 'Filter suggestions',
+        suggestionOne: 'Clear your filters and try again',
+        suggestionTwo: 'Try selecting fewer filters at once',
+        suggestionThree: 'Expand your price range',
+      },
+    },
     showing:
       'Showing <bold1>{count}</bold1> of <bold2>{total}</bold2> products',
     actions: {

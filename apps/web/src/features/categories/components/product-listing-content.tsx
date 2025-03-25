@@ -10,11 +10,14 @@ import { useHits } from 'react-instantsearch-core';
 import { ProductHits } from './product-hits';
 import { ProductFilters } from './product-filters';
 import { ProductFiltersMobile } from './product-filters-mobile';
+import { ProductNoResults } from './product-no-results';
 
 export function ProductListingContent() {
   const { results } = useHits<AlgoliaProductHit>();
   const t = useScopedI18n('productListing');
   const [gridLayout, setGridLayout] = useState<'2x2' | '3x3'>('3x3');
+
+  const hits = results?.hits ?? [];
 
   return (
     <div className="flex flex-col gap-8 lg:flex-row">
@@ -59,7 +62,11 @@ export function ProductListingContent() {
             </Button>
           </div>
         </div>
-        <ProductHits gridLayout={gridLayout} hits={results?.hits ?? []} />
+        {hits.length ? (
+          <ProductHits gridLayout={gridLayout} hits={hits} />
+        ) : (
+          <ProductNoResults />
+        )}
       </div>
     </div>
   );
