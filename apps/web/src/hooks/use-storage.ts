@@ -1,7 +1,7 @@
 'use client';
 
-import type { StorageKeys, StorageValues } from '@/lib/constants/storage-keys';
 import { storage } from '@/lib/utils/storage';
+import type { StorageKeys, StorageValues } from '@/lib/utils/storage-keys';
 import type { StorageType } from '@/types';
 import { useEffect, useState } from 'react';
 

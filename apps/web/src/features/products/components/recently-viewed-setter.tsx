@@ -1,7 +1,7 @@
 'use client';
 
-import { storageKeys } from '@/lib/constants/storage-keys';
 import { storage } from '@/lib/utils/storage';
+import { storageKeys } from '@/lib/utils/storage-keys';
 import { useCurrentLocale } from '@/locales/client';
 import { useEffect } from 'react';
 

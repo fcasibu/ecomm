@@ -1,7 +1,6 @@
 'use client';
 
 import { useStorage } from '@/hooks/use-storage';
-import { storageKeys } from '@/lib/constants/storage-keys';
 import { useCurrentLocale, useScopedI18n } from '@/locales/client';
 import { useGetProductsBySkus } from '../hooks/use-get-products-by-skus';
 import { dynamicImport } from '@/lib/utils/dynamic-import';
@@ -11,6 +10,7 @@ import {
   DefaultProductCarouselContent,
   DefaultProductCarouselContentSkeleton,
 } from '@/components/carousels/default-product-carousel';
+import { storageKeys } from '@/lib/utils/storage-keys';
 
 const CarouselComponents = dynamicImport(
   () => import('@ecomm/ui/carousel'),

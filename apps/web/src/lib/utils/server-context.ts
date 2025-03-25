@@ -1,10 +1,10 @@
 import 'server-only';
 
 import { cookies } from 'next/headers';
-import { cookieKeys } from '../constants/cookie-keys';
 import { getCurrentLocale } from '@/locales/server';
 import { cache } from 'react';
 import type { ServerContext } from '@ecomm/lib/types';
+import { cookieKeys } from './cookie-keys';
 
 // NOTE(fcasibu): This is only used in dynamic environments (not using cache)
 export const getServerContext = cache(async (): Promise<ServerContext> => {

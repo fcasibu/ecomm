@@ -6,7 +6,7 @@ import { cartController } from '@ecomm/services/registry';
 import { executeOperation } from '@ecomm/lib/execute-operation';
 import { getServerContext } from '../utils/server-context';
 import { cookies } from 'next/headers';
-import { cookieKeys } from '../constants/cookie-keys';
+import { cookieKeys } from '../utils/cookie-keys';
 
 export const addToCart = validateAction(addToCartSchema, async (data) => {
   const context = await getServerContext();
