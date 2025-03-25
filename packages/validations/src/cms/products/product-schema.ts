@@ -2,7 +2,7 @@ import { z } from 'zod';
 
 export const AttributeKey = {
   COLOR: 'color',
-  SIZE: 'size',
+  WIDTH: 'width',
 } as const;
 
 export const productAttributes = {
@@ -10,12 +10,16 @@ export const productAttributes = {
     title: 'Color',
     validation: z.string().min(1, 'Color is required'),
   },
+  [AttributeKey.WIDTH]: {
+    title: 'Width',
+    validation: z.string(),
+  },
 } as const;
 
 const variantAttributeSchema = z.array(
   z
     .object({
-      title: z.enum([AttributeKey.COLOR]),
+      title: z.enum([AttributeKey.COLOR, AttributeKey.WIDTH]),
       value: z.any(),
     })
     .superRefine((attr, ctx) => {

@@ -1,16 +1,11 @@
-import { clientEnv } from '@/env/client';
-import { serverEnv } from '@/env/server';
+import { algoliaWriteClient } from '@/features/algolia/algolia-write-client';
 import { getNonRootCategories } from '@/features/categories/services/queries';
 import { getCurrentLocale } from '@/locales/server';
-import { algoliasearch } from 'algoliasearch';
 import { NextResponse } from 'next/server';
 
-const client = algoliasearch(
-  clientEnv.NEXT_PUBLIC_ALGOLIA_APP_ID,
-  serverEnv.ALGOLIA_WRITE_KEY,
-);
+const client = algoliaWriteClient();
 
-// TODO(fcasibu): create service for algolia / make it secure
+// TODO(fcasibu): make it secure
 export async function GET() {
   const locale = await getCurrentLocale();
   const result = await getNonRootCategories(locale);

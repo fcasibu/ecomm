@@ -1,6 +1,6 @@
 import 'client-only';
-import type { StorageKeys, StorageValues } from '../constants/storage-keys';
 import type { StorageType } from '@/types';
+import type { StorageKeys, StorageValues } from './storage-keys';
 
 export const storage = {
   set: <T extends StorageKeys>(

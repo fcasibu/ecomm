@@ -22,6 +22,7 @@
 - [ ] Add more correct validations in sanity
 - [ ] Sanity revalidation webhook is off by one (?)
 - [ ] Product Best Seller
+- [ ] Customize query parameters in algolia instant search provider
 
 ## Notes
 

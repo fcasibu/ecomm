@@ -1,18 +1,13 @@
-import { clientEnv } from '@/env/client';
-import { serverEnv } from '@/env/server';
+import { algoliaWriteClient } from '@/features/algolia/algolia-write-client';
 import { getProductsWithAssociatedCategory } from '@/features/products/services/queries';
 import { getCurrentLocale } from '@/locales/server';
 import { isDefined } from '@ecomm/lib/is-defined';
-import { algoliasearch } from 'algoliasearch';
 import { NextResponse } from 'next/server';
 import assert from 'node:assert';
 
-const client = algoliasearch(
-  clientEnv.NEXT_PUBLIC_ALGOLIA_APP_ID,
-  serverEnv.ALGOLIA_WRITE_KEY,
-);
+const client = algoliaWriteClient();
 
-// TODO(fcasibu): create service for algolia / make it secure
+// TODO(fcasibu): make it secure
 export async function GET() {
   const locale = await getCurrentLocale();
   const result = await getProductsWithAssociatedCategory(locale);
@@ -32,8 +27,23 @@ export async function GET() {
   const envName =
     process.env.NODE_ENV === 'production' ? 'production' : 'development';
 
+  const indexName = `${envName}_products_${locale}`;
+
+  client.setSettings({
+    indexName,
+    indexSettings: {
+      searchableAttributes: ['categorySlug'],
+      attributesForFaceting: [
+        'filterOnly(categorySlug)',
+        'attributes.color',
+        'attributes.width',
+        'price.value',
+      ],
+    },
+  });
+
   client.partialUpdateObjects({
-    indexName: `${envName}_products_${locale}`,
+    indexName,
     objects: products.map((product) => {
       const variant = product.variants[0];
 
@@ -47,11 +57,16 @@ export async function GET() {
         description: product.description,
         image: variant.images[0],
         sku: variant.sku,
-        categoryId: product.category.id,
+        categorySlug: product.category.slug,
         price: {
           value: variant.price.value,
           currency: variant.price.currency,
         },
+        variants: product.variants.map((variant) => ({
+          id: variant.id,
+          image: variant.images[0],
+          sku: variant.sku,
+        })),
         updatedAt: product.updatedAt,
         createdAt: product.createdAt,
         attributes: variant.attributes,

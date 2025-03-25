@@ -43,6 +43,7 @@ export interface ProductVariantDTO {
   sizes: Size[];
   attributes: {
     color: string;
+    width: string;
   };
 }
 

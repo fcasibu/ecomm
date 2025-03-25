@@ -9,6 +9,7 @@
     "@ecomm/lib": "workspace:*",
     "@ecomm/validations": "workspace:*",
     "@paralleldrive/cuid2": "^2.2.2",
+    "algoliasearch": "^5.22.0",
     "bcryptjs": "^3.0.2",
     "cloudinary": "^2.6.0"
   },
