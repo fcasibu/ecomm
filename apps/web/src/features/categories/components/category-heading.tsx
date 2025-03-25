@@ -8,7 +8,7 @@ export function CategoryHeading({ category }: { category: CategoryDTO }) {
       <Heading as="h1" className="!text-3xl">
         {toTitleCase(category.name)}
       </Heading>
-      <p>{category.description}</p>
+      <p className="text-muted-foreground text-sm">{category.description}</p>
     </div>
   );
 }
