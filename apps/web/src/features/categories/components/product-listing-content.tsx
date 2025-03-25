@@ -1,0 +1,64 @@
+'use client';
+
+import type { AlgoliaProductHit } from '@/features/algolia/types';
+import { renderRichText } from '@/lib/utils/render-rich-text';
+import { useScopedI18n } from '@/locales/client';
+import { Button } from '@ecomm/ui/button';
+import { Grid2x2, Grid3X3 } from 'lucide-react';
+import { useState } from 'react';
+import { useHits } from 'react-instantsearch-core';
+import { ProductHits } from './product-hits';
+import { ProductFilters } from './product-filters';
+
+export function ProductListingContent() {
+  const { results } = useHits<AlgoliaProductHit>();
+  const t = useScopedI18n('productListing');
+  const [gridLayout, setGridLayout] = useState<'2x2' | '3x3'>('3x3');
+
+  return (
+    <div className="flex gap-8">
+      <div className="basis-[350px]">
+        <ProductFilters />
+      </div>
+      <div className="flex-1">
+        <div className="mb-4 flex items-center justify-between">
+          <span className="text-muted-foreground text-sm">
+            {Boolean(results?.hits.length) &&
+              Boolean(results?.nbHits) &&
+              renderRichText(
+                t('showing', {
+                  count: results?.hits.length,
+                  total: results?.nbHits,
+                }),
+                {
+                  bold1: (props) => <b {...props} />,
+                  bold2: (props) => <b {...props} />,
+                },
+              )}
+          </span>
+          <div className="border-input invisible rounded-lg border lg:visible">
+            <Button
+              aria-label={t('actions.gridLayout.two')}
+              type="button"
+              variant="outline"
+              className="border-none"
+              onClick={() => setGridLayout('2x2')}
+            >
+              <Grid2x2 aria-hidden />
+            </Button>
+            <Button
+              aria-label={t('actions.gridLayout.three')}
+              type="button"
+              variant="outline"
+              className="border-none"
+              onClick={() => setGridLayout('3x3')}
+            >
+              <Grid3X3 aria-hidden />
+            </Button>
+          </div>
+        </div>
+        <ProductHits gridLayout={gridLayout} hits={results?.hits ?? []} />
+      </div>
+    </div>
+  );
+}

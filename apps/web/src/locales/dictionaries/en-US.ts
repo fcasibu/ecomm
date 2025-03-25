@@ -136,4 +136,50 @@ export default {
   categoryProductNewArrivals: {
     title: 'New Arrivals',
   },
+  productListing: {
+    filters: {
+      title: 'Filters',
+      appliedFilters: {
+        title: 'Applied Filters',
+        actions: {
+          remove: 'Remove {value}',
+        },
+      },
+      actions: {
+        clearAll: 'Clear All',
+      },
+      labels: {
+        price: 'Price',
+        color: 'Color',
+        width: 'Width',
+      },
+      checkbox: {
+        action: {
+          toggle: {
+            more: 'Show more',
+            less: 'Show less',
+          },
+        },
+      },
+    },
+    showing:
+      'Showing <bold1>{count}</bold1> of <bold2>{total}</bold2> products',
+    actions: {
+      gridLayout: {
+        two: '2 Columns',
+        three: '3 Columns',
+      },
+    },
+    productCard: {
+      variants: {
+        more: '+ {count} more',
+      },
+      wishlist: {
+        actions: {
+          add: 'Add to Wishlist',
+          remove: 'Remove from Wishlist',
+        },
+      },
+    },
+  },
 } as const;

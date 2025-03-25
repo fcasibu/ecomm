@@ -3,6 +3,16 @@ import { categoriesController } from '@ecomm/services/registry';
 import { executeOperation } from '@ecomm/lib/execute-operation';
 import { unstable_cacheTag as cacheTag } from 'next/cache';
 
+export async function getCategoryBySlug(locale: string, slug: string) {
+  'use cache';
+
+  cacheTag('category', `category_${slug}`);
+
+  return await executeOperation(() =>
+    categoriesController().getBySlug(locale, slug),
+  );
+}
+
 export async function getRootCategories(locale: string) {
   'use cache';
 

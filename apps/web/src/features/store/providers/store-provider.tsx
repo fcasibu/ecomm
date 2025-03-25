@@ -3,7 +3,16 @@
 import type { StoreDTO } from '@ecomm/services/store/store-dto';
 import { createContext, useContext } from 'react';
 
-const StoreContext = createContext<StoreDTO | null>({
+const DEFAULT_STORE = {
+  currency: '',
+  locale: '',
+  id: '',
+  freeShippingThreshold: -1,
+  createdAt: '',
+  updatedAt: '',
+} as const;
+
+const StoreContext = createContext<StoreDTO>({
   currency: '',
   locale: '',
   id: '',
@@ -22,6 +31,8 @@ export function StoreProvider({
   store: StoreDTO | null;
 }) {
   return (
-    <StoreContext.Provider value={store}>{children}</StoreContext.Provider>
+    <StoreContext.Provider value={store ?? DEFAULT_STORE}>
+      {children}
+    </StoreContext.Provider>
   );
 }

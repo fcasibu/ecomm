@@ -13,6 +13,8 @@ import { FeatureBlock } from '../blocks/feature-block';
 import type { CustomImageProps } from '@ecomm/ui/image';
 import { CategoryProductNewArrivals } from '../blocks/category-product-new-arrivals';
 import { RecentlyViewedProducts } from '@/features/products/components/recently-viewed-products';
+import type { CategoryDTO } from '@ecomm/services/categories/category-dto';
+import { CategoryHeading } from '@/features/categories/components/category-heading';
 
 const BLOCKS: Record<
   BlockKeys,
@@ -42,6 +44,50 @@ export function ContentPage({ contentPage }: { contentPage: ContentPageDTO }) {
   return (
     <>
       <ContentPageBreadcrumb data={contentPage.breadcrumb} />
+      {contentPage.blocks.map((block, index) => {
+        const Component = BLOCKS[block.type];
+
+        if (!Component) return null;
+
+        const hasSpacing = !BLOCKS_WITH_NO_SPACING.includes(block.type);
+
+        const imageLoadingStrategy = getImageLoadingStrategy(
+          contentPage.blocks,
+          index,
+        );
+
+        return (
+          <Spacer
+            size="xl"
+            key={block.key}
+            top={!hasSpacing}
+            bottom={!hasSpacing}
+          >
+            <Component
+              data={block}
+              imageLoadingStrategy={imageLoadingStrategy}
+            />
+          </Spacer>
+        );
+      })}
+    </>
+  );
+}
+
+export function CategoryContentPage({
+  contentPage,
+  category,
+}: {
+  contentPage: ContentPageDTO;
+  category: CategoryDTO | null | undefined;
+}) {
+  return (
+    <>
+      {category && (
+        <div className="py-10">
+          <CategoryHeading category={category} />
+        </div>
+      )}
       {contentPage.blocks.map((block, index) => {
         const Component = BLOCKS[block.type];
 
