@@ -17,7 +17,7 @@ export function ProductListingContent() {
 
   return (
     <div className="flex gap-8">
-      <div className="basis-[350px]">
+      <div className="sticky top-[100px] h-full basis-[350px]">
         <ProductFilters />
       </div>
       <div className="flex-1">
