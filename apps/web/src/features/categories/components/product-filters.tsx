@@ -29,7 +29,6 @@ export function ProductFilters() {
   const filters = Object.values(ATTRIBUTES_FOR_FACETING).flat();
   const { refine: clearRefine, canRefine: canClearRefine } =
     useClearRefinements();
-  const currentRefinements = useCurrentRefinements();
   const t = useScopedI18n('productListing.filters');
 
   return (
@@ -39,7 +38,7 @@ export function ProductFilters() {
         <AppliedFilters />
         <Accordion
           type="multiple"
-          defaultValue={currentRefinements.items.map((item) => item.attribute)}
+          defaultValue={filters.map((filter) => filter.attribute)}
         >
           {filters.map((filter) => (
             <AccordionItem value={filter.attribute} key={filter.attribute}>
@@ -124,6 +123,7 @@ function AppliedFilters() {
                 variant="outline"
                 className="flex items-center gap-2 rounded-full px-3 py-1 !text-xs [&_svg]:!size-3"
                 onClick={() => item.refine(refinement)}
+                key={refinement.value}
               >
                 <span>{refinement.value}</span>
                 <X />

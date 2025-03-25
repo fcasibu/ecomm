@@ -13,6 +13,7 @@ import { ProductFilters } from './product-filters';
 import { useScopedI18n } from '@/locales/client';
 import { useWindowResize } from '@ecomm/ui/hooks/use-window-resize';
 import { useEffect, useState } from 'react';
+import { Filter } from 'lucide-react';
 
 export function ProductFiltersMobile() {
   const { width } = useWindowResize();
@@ -29,7 +30,14 @@ export function ProductFiltersMobile() {
     <div className="lg:hidden">
       <Sheet open={open} onOpenChange={setOpen}>
         <SheetTrigger asChild>
-          <Button variant="outline">{t('title')}</Button>
+          <Button
+            variant="outline"
+            type="button"
+            className="flex items-center gap-2"
+          >
+            <Filter />
+            <span>{t('title')}</span>
+          </Button>
         </SheetTrigger>
         <SheetContent side="right" className="h-full overflow-y-auto">
           <SheetHeader>
