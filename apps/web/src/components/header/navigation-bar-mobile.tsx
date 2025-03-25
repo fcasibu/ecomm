@@ -282,6 +282,7 @@ function CategoryNavigationItemTier1({
 }: {
   navigationItem: HeaderCategoryNavigationItem;
 }) {
+  const locale = useCurrentLocale();
   const router = useRouter();
 
   return (
@@ -293,7 +294,9 @@ function CategoryNavigationItemTier1({
         <span
           onClick={(e) => {
             e.stopPropagation();
-            router.push(link.category.single(navigationItem.slug ?? ''));
+            router.push(
+              `/${locale}${link.category.single(navigationItem.slug ?? '')}`,
+            );
           }}
         >
           {navigationItem.name}

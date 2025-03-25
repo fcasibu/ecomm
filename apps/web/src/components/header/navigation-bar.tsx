@@ -317,7 +317,7 @@ function CategoryNavigationItem({
   return (
     <li onMouseEnter={onMouseEnter}>
       <ConditionalLink
-        href={navigationItem.slug}
+        href={link.category.single(navigationItem.slug ?? '')}
         prefetch
         className="flex items-center gap-1"
       >
