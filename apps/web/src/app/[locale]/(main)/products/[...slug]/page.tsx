@@ -1,3 +1,5 @@
+import { ProductDetailPageBreadcrumb } from '@/components/breadcrumbs/product-detail-page-breadcrumb';
+import { getCategoriesPath } from '@/features/categories/services/queries';
 import { ProductDetail } from '@/features/products/components/product-detail';
 import { RecentlyViewedProducts } from '@/features/products/components/recently-viewed-products';
 import { RecentlyViewedSetter } from '@/features/products/components/recently-viewed-setter';
@@ -41,8 +43,21 @@ export default async function Page({
     return redirect(`/${locale}${formattedSlug}`, RedirectType.replace);
   }
 
+  const categoriesPathResult = result.data.category?.id
+    ? await getCategoriesPath(locale, result.data.category.id)
+    : null;
+
+  console.log(
+    categoriesPathResult?.success
+      ? JSON.stringify(categoriesPathResult.data)
+      : null,
+  );
+
   return (
-    <div className="flex flex-col gap-8 pb-12">
+    <div className="flex flex-col pb-12">
+      {categoriesPathResult?.success && categoriesPathResult.data.length && (
+        <ProductDetailPageBreadcrumb data={categoriesPathResult.data} />
+      )}
       <ProductDetail product={result.data} selectedSku={querySku} />
       <RecentlyViewedProducts sku={baseProductSku} />
       <RecentlyViewedSetter sku={baseProductSku} />

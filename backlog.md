@@ -26,6 +26,9 @@
 - [ ] Add Brand model
 - [ ] Implement wishlist
 - [ ] Product/Category seo metadata
+- [ ] Implement pagination
+- [ ] Filter accordion should be removed when there are no refinements
+- [ ] Allow for root category selection in sanity content page
 
 ## Notes
 

@@ -29,7 +29,7 @@ export function ProductDetail({
   return (
     <ProductDetailProvider selectedVariant={selectedVariant} product={product}>
       <ProductVariantProvider currentVariant={selectedVariant}>
-        <div className="container flex h-full flex-col gap-4 pt-12 lg:flex-row lg:gap-6">
+        <div className="container flex h-full flex-col gap-4 lg:flex-row lg:gap-6">
           <div className="relative flex-1">
             <div className="sticky top-[100px]">
               <ProductImage />

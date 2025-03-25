@@ -6,7 +6,7 @@ import type {
 } from '@/sanity/queries/content-page/types';
 import { FullScreenBanner } from '../blocks/full-screen-banner';
 import { Spacer } from '../spacer';
-import { ContentPageBreadcrumb } from '../content-page-breadcrumb';
+import { ContentPageBreadcrumb } from '../breadcrumbs/content-page-breadcrumb';
 import { ThinBanner } from '../blocks/thin-banner';
 import { HeroBanner } from '../blocks/hero-banner';
 import { FeatureBlock } from '../blocks/feature-block';
