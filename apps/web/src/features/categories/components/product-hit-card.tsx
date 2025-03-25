@@ -6,11 +6,20 @@ import { link } from '@/lib/utils/link-helper';
 import { useScopedI18n } from '@/locales/client';
 import { formatPrice } from '@ecomm/lib/format-price';
 import { Button } from '@ecomm/ui/button';
-import { ImageComponent } from '@ecomm/ui/image';
+import { ImageComponent, type CustomImageProps } from '@ecomm/ui/image';
 import { Heading } from '@ecomm/ui/typography';
 import { Heart } from 'lucide-react';
 
-export function ProductHitCard({ product }: { product: AlgoliaProductHit }) {
+export function ProductHitCard({
+  product,
+  imageLoadingStrategy,
+}: {
+  product: AlgoliaProductHit;
+  imageLoadingStrategy: Pick<
+    CustomImageProps,
+    'loading' | 'fetchPriority'
+  > | null;
+}) {
   const { name, image, price, variants } = product;
   const t = useScopedI18n('productListing.productCard');
 
@@ -26,7 +35,8 @@ export function ProductHitCard({ product }: { product: AlgoliaProductHit }) {
             width={360}
             height={360}
             className="aspect-square w-full object-cover"
-            quality={80}
+            quality={75}
+            {...imageLoadingStrategy}
           />
         </NextLink>
         <Button

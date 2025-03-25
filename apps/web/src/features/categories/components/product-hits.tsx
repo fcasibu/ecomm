@@ -1,6 +1,7 @@
 import type { AlgoliaProductHit } from '@/features/algolia/types';
 import { ProductHitCard } from './product-hit-card';
 import { cn } from '@ecomm/ui/lib/utils';
+import type { CustomImageProps } from '@ecomm/ui/image';
 
 export function ProductHits({
   gridLayout,
@@ -18,9 +19,24 @@ export function ProductHits({
         'lg:grid-cols-2': gridLayout === '2x2',
       })}
     >
-      {hits.map((hit) => (
-        <ProductHitCard key={hit.id} product={hit} />
+      {hits.map((hit, index) => (
+        <ProductHitCard
+          imageLoadingStrategy={getImageLoadingStrategy(index)}
+          key={hit.id}
+          product={hit}
+        />
       ))}
     </div>
   );
+}
+
+function getImageLoadingStrategy(
+  index: number,
+): Pick<CustomImageProps, 'loading' | 'fetchPriority'> | null {
+  return index < 6
+    ? ({
+        loading: 'eager',
+        fetchPriority: 'high',
+      } as const)
+    : null;
 }
