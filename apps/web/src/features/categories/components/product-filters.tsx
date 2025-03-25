@@ -33,24 +33,26 @@ export function ProductFilters() {
   const t = useScopedI18n('productListing.filters');
 
   return (
-    <div className="flex flex-col gap-4">
-      <FiltersHeader onClear={clearRefine} canClear={canClearRefine} />
-      <AppliedFilters />
-      <Accordion
-        type="multiple"
-        defaultValue={currentRefinements.items.map((item) => item.attribute)}
-      >
-        {filters.map((filter) => (
-          <AccordionItem value={filter.attribute} key={filter.attribute}>
-            <AccordionTrigger className="hover:no-underline">
-              <span className="text-sm">{t(`labels.${filter.label}`)}</span>
-            </AccordionTrigger>
-            <AccordionContent>
-              <RefinementComponent {...filter} />
-            </AccordionContent>
-          </AccordionItem>
-        ))}
-      </Accordion>
+    <div className="lg:sticky lg:top-[100px]">
+      <div className="flex flex-col gap-4">
+        <FiltersHeader onClear={clearRefine} canClear={canClearRefine} />
+        <AppliedFilters />
+        <Accordion
+          type="multiple"
+          defaultValue={currentRefinements.items.map((item) => item.attribute)}
+        >
+          {filters.map((filter) => (
+            <AccordionItem value={filter.attribute} key={filter.attribute}>
+              <AccordionTrigger className="hover:no-underline">
+                <span className="text-sm">{t(`labels.${filter.label}`)}</span>
+              </AccordionTrigger>
+              <AccordionContent>
+                <RefinementComponent {...filter} />
+              </AccordionContent>
+            </AccordionItem>
+          ))}
+        </Accordion>
+      </div>
     </div>
   );
 }
@@ -117,11 +119,15 @@ function AppliedFilters() {
         {items.flatMap((item) =>
           item.attribute !== 'price.value' ? (
             item.refinements.map((refinement) => (
-              <FilterButton
-                key={refinement.value}
-                refinement={refinement}
+              <Button
+                type="button"
+                variant="outline"
+                className="flex items-center gap-2 rounded-full px-3 py-1 !text-xs [&_svg]:!size-3"
                 onClick={() => item.refine(refinement)}
-              />
+              >
+                <span>{refinement.value}</span>
+                <X />
+              </Button>
             ))
           ) : (
             <PriceAppliedFilter
@@ -134,26 +140,6 @@ function AppliedFilters() {
         )}
       </div>
     </div>
-  );
-}
-
-function FilterButton({
-  refinement,
-  onClick,
-}: {
-  refinement: { value: string | number };
-  onClick: () => void;
-}) {
-  return (
-    <Button
-      type="button"
-      variant="outline"
-      className="flex items-center gap-2 rounded-full px-3 py-1 !text-xs [&_svg]:!size-3"
-      onClick={onClick}
-    >
-      <span>{refinement.value}</span>
-      <X />
-    </Button>
   );
 }
 

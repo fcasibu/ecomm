@@ -9,6 +9,7 @@ import { useState } from 'react';
 import { useHits } from 'react-instantsearch-core';
 import { ProductHits } from './product-hits';
 import { ProductFilters } from './product-filters';
+import { ProductFiltersMobile } from './product-filters-mobile';
 
 export function ProductListingContent() {
   const { results } = useHits<AlgoliaProductHit>();
@@ -16,8 +17,9 @@ export function ProductListingContent() {
   const [gridLayout, setGridLayout] = useState<'2x2' | '3x3'>('3x3');
 
   return (
-    <div className="flex gap-8">
-      <div className="sticky top-[100px] h-full basis-[350px]">
+    <div className="flex flex-col gap-8 lg:flex-row">
+      <ProductFiltersMobile />
+      <div className="hidden basis-[350px] lg:block">
         <ProductFilters />
       </div>
       <div className="flex-1">
