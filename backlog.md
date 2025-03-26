@@ -22,15 +22,22 @@
 - [ ] Add more correct validations in sanity
 - [ ] Sanity revalidation webhook is off by one (?)
 - [ ] Product Best Seller
-- [ ] Customize query parameters in algolia instant search provider
 - [ ] Add Brand model
-- [ ] Implement wishlist
 - [ ] Product/Category seo metadata
 - [ ] Implement pagination
-- [ ] Filter accordion should be removed when there are no refinements
+- [ ] Implement wishlist
+- [ ] Customize query parameters in algolia instant search provider
 - [ ] Allow for root category selection in sanity content page
+- [ ] Figure out why TBT is >= 50 in PLP
+
+- [=] Fix plp content shift (accordions are initially closed even with the default value added)
 
 ## Notes
+
+> Fix plp content shift (accordions are closed for some reason)
+
+Issue seems to be the same as https://github.com/radix-ui/primitives/issues/2891 that is from 2024 :facepalm:
+and it can also be reproduced in their example.
 
 > Fix issue with form errors not showing up
 

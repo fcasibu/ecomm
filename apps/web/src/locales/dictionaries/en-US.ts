@@ -137,6 +137,11 @@ export default {
     title: 'New Arrivals',
   },
   productListing: {
+    sortBy: {
+      main: 'Relevance',
+      priceAsc: 'Price: Low to High',
+      priceDesc: 'Price: High to Low',
+    },
     filters: {
       title: 'Filters',
       appliedFilters: {

@@ -8,8 +8,10 @@ import {
   VirtualAlgoliaConfigure,
   VirtualRange,
   VirtualRefinementList,
+  VirtualSortBy,
 } from '../hooks/virtuals';
 import { ATTRIBUTES_FOR_FACETING } from '../utils/attributes-for-faceting';
+import { getProductSortByOptions } from '../utils/get-sort-by-options';
 
 const client = algoliaSearchClient();
 
@@ -21,6 +23,8 @@ export function InstantSearchProductProvider({
   filters: string;
 }) {
   const locale = useCurrentLocale();
+
+  const sortByOptions = getProductSortByOptions(locale);
 
   return (
     <InstantSearchNext
@@ -41,6 +45,7 @@ export function InstantSearchProductProvider({
           attribute={item.attribute}
         />
       ))}
+      <VirtualSortBy items={sortByOptions} />
       {children}
     </InstantSearchNext>
   );

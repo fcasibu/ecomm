@@ -11,6 +11,7 @@ import { ProductHits } from './product-hits';
 import { ProductFilters } from './product-filters';
 import { ProductFiltersMobile } from './product-filters-mobile';
 import { ProductNoResults } from './product-no-results';
+import { ProductSortBy } from './product-sort-by';
 
 export function ProductListingContent() {
   const { results } = useHits<AlgoliaProductHit>();
@@ -41,25 +42,28 @@ export function ProductListingContent() {
                 },
               )}
           </span>
-          <div className="border-input invisible rounded-lg border lg:visible">
-            <Button
-              aria-label={t('actions.gridLayout.two')}
-              type="button"
-              variant="outline"
-              className="border-none"
-              onClick={() => setGridLayout('2x2')}
-            >
-              <Grid2x2 aria-hidden />
-            </Button>
-            <Button
-              aria-label={t('actions.gridLayout.three')}
-              type="button"
-              variant="outline"
-              className="border-none"
-              onClick={() => setGridLayout('3x3')}
-            >
-              <Grid3X3 aria-hidden />
-            </Button>
+          <div className="flex items-center gap-4">
+            <ProductSortBy />
+            <div className="border-input invisible rounded-lg border lg:visible">
+              <Button
+                aria-label={t('actions.gridLayout.two')}
+                type="button"
+                variant="outline"
+                className="border-none"
+                onClick={() => setGridLayout('2x2')}
+              >
+                <Grid2x2 aria-hidden />
+              </Button>
+              <Button
+                aria-label={t('actions.gridLayout.three')}
+                type="button"
+                variant="outline"
+                className="border-none"
+                onClick={() => setGridLayout('3x3')}
+              >
+                <Grid3X3 aria-hidden />
+              </Button>
+            </div>
           </div>
         </div>
         {hits.length ? (
