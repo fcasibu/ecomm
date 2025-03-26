@@ -29,26 +29,15 @@ export function ProductFilters() {
   const filters = Object.values(ATTRIBUTES_FOR_FACETING).flat();
   const { refine: clearRefine, canRefine: canClearRefine } =
     useClearRefinements();
-  const t = useScopedI18n('productListing.filters');
 
   return (
     <div className="lg:sticky lg:top-[100px]">
       <div className="flex flex-col gap-4">
         <FiltersHeader onClear={clearRefine} canClear={canClearRefine} />
         <AppliedFilters />
-        <Accordion
-          type="multiple"
-          defaultValue={filters.map((filter) => filter.attribute)}
-        >
+        <Accordion type="multiple">
           {filters.map((filter) => (
-            <AccordionItem value={filter.attribute} key={filter.attribute}>
-              <AccordionTrigger className="hover:no-underline">
-                <span className="text-sm">{t(`labels.${filter.label}`)}</span>
-              </AccordionTrigger>
-              <AccordionContent>
-                <RefinementComponent {...filter} />
-              </AccordionContent>
-            </AccordionItem>
+            <RefinementComponent key={filter.attribute} {...filter} />
           ))}
         </Accordion>
       </div>
@@ -85,22 +74,45 @@ function FiltersHeader({
 function RefinementComponent({ type, ...props }: Attribute) {
   switch (type) {
     case 'range':
-      return <RangeFilter attribute={props.attribute} />;
+      return <RangeFilter {...props} />;
     case 'checkbox':
-      return <CheckboxFilter attribute={props.attribute} />;
+      return <CheckboxFilter {...props} />;
     default:
       return null;
   }
 }
 
-function RangeFilter({ attribute }: Pick<Attribute, 'attribute'>) {
+function RangeFilter({
+  attribute,
+  label,
+}: Pick<Attribute, 'attribute' | 'label'>) {
   const rangeProps = useRange({ attribute });
-  return <RangeRefinement {...rangeProps} />;
+  const t = useScopedI18n('productListing.filters');
+
+  return (
+    <div className="flex flex-col gap-4">
+      <span className="text-sm">{t(`labels.${label}`)}</span>
+      <RangeRefinement {...rangeProps} />
+    </div>
+  );
 }
 
-function CheckboxFilter({ attribute }: Pick<Attribute, 'attribute'>) {
+function CheckboxFilter({ attribute, label }: Omit<Attribute, 'type'>) {
   const refinementListProps = useRefinementList({ attribute });
-  return <CheckboxRefinement {...refinementListProps} />;
+  const t = useScopedI18n('productListing.filters');
+
+  if (!refinementListProps.items.length) return null;
+
+  return (
+    <AccordionItem value={attribute} key={attribute}>
+      <AccordionTrigger className="hover:no-underline">
+        <span className="text-sm">{t(`labels.${label}`)}</span>
+      </AccordionTrigger>
+      <AccordionContent>
+        <CheckboxRefinement {...refinementListProps} />
+      </AccordionContent>
+    </AccordionItem>
+  );
 }
 
 function AppliedFilters() {
