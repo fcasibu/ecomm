@@ -22,12 +22,10 @@ export default async function Page({
 
   if (contentPageResult.success) {
     return (
-      <div className="flex flex-col gap-8 py-10">
-        <CategoryContentPage
-          contentPage={contentPageResult.data}
-          category={categoryResult.success ? categoryResult.data : null}
-        />
-      </div>
+      <CategoryContentPage
+        contentPage={contentPageResult.data}
+        category={categoryResult.success ? categoryResult.data : null}
+      />
     );
   }
 

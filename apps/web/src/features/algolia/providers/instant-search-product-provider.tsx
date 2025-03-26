@@ -47,7 +47,7 @@ export function InstantSearchProductProvider({
       )}
     >
       <VirtualPagination />
-      <VirtualAlgoliaConfigure filters={filters} hitsPerPage={1} />
+      <VirtualAlgoliaConfigure filters={filters} />
       {ATTRIBUTES_FOR_FACETING['range'].map((item) => (
         <VirtualRange key={item.attribute} attribute={item.attribute} />
       ))}

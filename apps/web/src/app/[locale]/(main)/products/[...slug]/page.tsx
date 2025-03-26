@@ -47,12 +47,6 @@ export default async function Page({
     ? await getCategoriesPath(locale, result.data.category.id)
     : null;
 
-  console.log(
-    categoriesPathResult?.success
-      ? JSON.stringify(categoriesPathResult.data)
-      : null,
-  );
-
   return (
     <div className="flex flex-col pb-12">
       {categoriesPathResult?.success && categoriesPathResult.data.length && (

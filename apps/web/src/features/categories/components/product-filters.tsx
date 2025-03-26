@@ -13,19 +13,12 @@ import {
   useRefinementList,
 } from 'react-instantsearch-core';
 import { useScopedI18n } from '@/locales/client';
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from '@ecomm/ui/accordion';
 import { Heading } from '@ecomm/ui/typography';
 import { Button } from '@ecomm/ui/button';
 import { X } from 'lucide-react';
 import { useStore } from '@/features/store/providers/store-provider';
 import { formatPrice } from '@ecomm/lib/format-price';
 
-// TODO(fcasibu): decide whether to use accordion or not since it is buggy
 export function ProductFilters() {
   const filters = Object.values(ATTRIBUTES_FOR_FACETING).flat();
   const { refine: clearRefine, canRefine: canClearRefine } =
@@ -36,11 +29,9 @@ export function ProductFilters() {
       <div className="flex flex-col gap-4">
         <FiltersHeader onClear={clearRefine} canClear={canClearRefine} />
         <AppliedFilters />
-        <Accordion type="multiple">
-          {filters.map((filter) => (
-            <RefinementComponent key={filter.attribute} {...filter} />
-          ))}
-        </Accordion>
+        {filters.map((filter) => (
+          <RefinementComponent key={filter.attribute} {...filter} />
+        ))}
       </div>
     </div>
   );
@@ -56,7 +47,7 @@ function FiltersHeader({
   const t = useScopedI18n('productListing.filters');
   return (
     <div className="flex items-center justify-between">
-      <Heading as="h2" className="!text-sm">
+      <Heading as="h2" className="!text-lg">
         {t('title')}
       </Heading>
       <Button
@@ -105,14 +96,10 @@ function CheckboxFilter({ attribute, label }: Omit<Attribute, 'type'>) {
   if (!refinementListProps.items.length) return null;
 
   return (
-    <AccordionItem value={attribute} key={attribute}>
-      <AccordionTrigger className="hover:no-underline">
-        <span className="text-sm">{t(`labels.${label}`)}</span>
-      </AccordionTrigger>
-      <AccordionContent>
-        <CheckboxRefinement {...refinementListProps} />
-      </AccordionContent>
-    </AccordionItem>
+    <div className="flex flex-col gap-4">
+      <span className="text-sm">{t(`labels.${label}`)}</span>
+      <CheckboxRefinement {...refinementListProps} />
+    </div>
   );
 }
 

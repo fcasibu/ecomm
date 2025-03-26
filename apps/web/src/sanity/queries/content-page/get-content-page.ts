@@ -171,8 +171,6 @@ export async function getContentPage(locale: string, slug: string) {
       }),
   );
 
-  console.log(result);
-
   if (!result.success) {
     return result;
   }

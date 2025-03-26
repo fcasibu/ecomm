@@ -1,6 +1,7 @@
 import { algoliaWriteClient } from '@/features/algolia/algolia-write-client';
 import { getNonRootCategories } from '@/features/categories/services/queries';
 import { getCurrentLocale } from '@/locales/server';
+import { isDefined } from '@ecomm/lib/is-defined';
 import type { CategoryDTO } from '@ecomm/services/categories/category-dto'; // Assuming this exists
 import { NextResponse } from 'next/server';
 import assert from 'node:assert';
@@ -34,7 +35,7 @@ async function syncCategoriesToAlgolia(
   try {
     const objects = categories
       .map(transformCategoryForAlgolia)
-      .filter((obj) => obj !== null);
+      .filter(isDefined);
 
     if (objects.length === 0) {
       return { success: true, message: 'No valid categories to sync' };

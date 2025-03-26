@@ -1,6 +1,7 @@
 import { algoliaWriteClient } from '@/features/algolia/algolia-write-client';
 import { getProductsWithAssociatedCategory } from '@/features/products/services/queries';
 import { getCurrentLocale } from '@/locales/server';
+import { isDefined } from '@ecomm/lib/is-defined';
 import type { ProductDTO } from '@ecomm/services/products/product-dto';
 import { NextResponse } from 'next/server';
 import assert from 'node:assert';
@@ -9,7 +10,8 @@ const client = algoliaWriteClient();
 
 function transformProductForAlgolia(product: ProductDTO) {
   const variant = product.variants[0];
-  assert(variant, 'Product must have a variant');
+
+  if (!variant) return null;
   assert(product.category?.id, 'Product must have a category');
 
   return {
@@ -36,7 +38,7 @@ function transformProductForAlgolia(product: ProductDTO) {
   };
 }
 
-async function syncProductsToAlgolia(locale: string, products: any[]) {
+async function syncProductsToAlgolia(locale: string, products: ProductDTO[]) {
   const envName =
     process.env.NODE_ENV === 'production' ? 'production' : 'development';
   const indexName = `${envName}_products_${locale}`;
@@ -76,9 +78,7 @@ async function syncProductsToAlgolia(locale: string, products: any[]) {
       },
     });
 
-    const objects = products
-      .map(transformProductForAlgolia)
-      .filter((obj) => obj !== null);
+    const objects = products.map(transformProductForAlgolia).filter(isDefined);
 
     if (objects.length === 0) {
       return { success: true, message: 'No valid products to sync' };

@@ -5,7 +5,7 @@ import { SubCategories } from './product-subcategories';
 
 export function ProductListing({ category }: { category: CategoryDTO }) {
   return (
-    <div className="flex flex-col gap-8 py-6">
+    <div className="flex flex-col gap-4 py-6">
       <div className="container flex flex-col gap-3">
         <CategoryHeading category={category} />
         <SubCategories subCategories={category.children ?? []} />

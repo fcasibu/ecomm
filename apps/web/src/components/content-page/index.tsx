@@ -85,7 +85,7 @@ export function CategoryContentPage({
   return (
     <>
       {category && (
-        <div className="container flex flex-col gap-3">
+        <div className="container flex flex-col gap-3 py-8">
           <CategoryHeading category={category} />
           <SubCategories subCategories={category.children ?? []} />
         </div>
