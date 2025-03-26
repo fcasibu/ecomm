@@ -6,20 +6,38 @@ import {
 } from '@/features/algolia/utils/get-sort-by-options';
 import { useCurrentLocale, useScopedI18n } from '@/locales/client';
 import { useSortBy } from 'react-instantsearch-core';
-import {
+import { Button } from '@ecomm/ui/button';
+import { AlignCenter, SortAsc, SortDesc } from 'lucide-react';
+import { dynamicImport } from '@/lib/utils/dynamic-import';
+import { useSearchParams } from 'next/navigation';
+
+const {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from '@ecomm/ui/dropdown-menu';
-import { Button } from '@ecomm/ui/button';
-import { AlignCenter, SortAsc, SortDesc } from 'lucide-react';
+} = dynamicImport(
+  () => import('@ecomm/ui/dropdown-menu'),
+  {
+    DropdownMenu: {
+      loading: () => <MenuTriggerSkeleton />,
+    },
+    DropdownMenuContent: null,
+    DropdownMenuItem: {
+      ssr: true,
+    },
+    DropdownMenuTrigger: {
+      loading: () => <MenuTriggerSkeleton />,
+    },
+  },
+  { ssr: false },
+);
 
 const SORT_BY_ICONS = {
   main: AlignCenter,
   priceAsc: SortAsc,
   priceDesc: SortDesc,
-} as const;
+} as const satisfies Record<SortByLabel, React.ElementType>;
 
 export function ProductSortBy() {
   const locale = useCurrentLocale();
@@ -32,21 +50,20 @@ export function ProductSortBy() {
     (option) => option.value === sortBy.currentRefinement,
   );
 
-  const SelectedIcon =
-    SORT_BY_ICONS[selectedOption?.label as keyof typeof SORT_BY_ICONS];
+  const label = selectedOption?.label as SortByLabel;
+  const SelectedIcon = SORT_BY_ICONS[label];
 
   return (
     <DropdownMenu>
       <Button variant="outline" asChild type="button">
         <DropdownMenuTrigger>
-          {t(selectedOption?.label as SortByLabel)}
+          {t(label)}
           {SelectedIcon && <SelectedIcon />}
         </DropdownMenuTrigger>
       </Button>
       <DropdownMenuContent>
         {sortBy.options.map((option) => {
-          const Icon =
-            SORT_BY_ICONS[option.label as keyof typeof SORT_BY_ICONS];
+          const Icon = SORT_BY_ICONS[option.label as SortByLabel];
 
           return (
             <DropdownMenuItem
@@ -60,5 +77,23 @@ export function ProductSortBy() {
         })}
       </DropdownMenuContent>
     </DropdownMenu>
+  );
+}
+
+function MenuTriggerSkeleton() {
+  const searchParams = useSearchParams();
+  const t = useScopedI18n('productListing.sortBy');
+
+  const sortByOption = (searchParams.get('sort_by') ?? 'main') as SortByLabel;
+
+  const SelectedIcon = SORT_BY_ICONS[sortByOption];
+
+  return (
+    <Button variant="outline" asChild type="button">
+      <div>
+        {t(sortByOption)}
+        {SelectedIcon && <SelectedIcon />}
+      </div>
+    </Button>
   );
 }
