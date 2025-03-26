@@ -26,6 +26,12 @@ export const rootCategorySelect = defineType({
           type: 'string',
           readOnly: true,
         }),
+        defineField({
+          name: 'slug',
+          title: 'Category Slug',
+          type: 'string',
+          readOnly: true,
+        }),
       ],
       components: {
         input: RootCategorySelect,
@@ -52,6 +58,12 @@ export const nonRootCategorySelect = defineType({
         defineField({
           name: 'name',
           title: 'Category Name',
+          type: 'string',
+          readOnly: true,
+        }),
+        defineField({
+          name: 'slug',
+          title: 'Category Slug',
           type: 'string',
           readOnly: true,
         }),

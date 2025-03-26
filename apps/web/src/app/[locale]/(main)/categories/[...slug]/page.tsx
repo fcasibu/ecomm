@@ -2,7 +2,7 @@ import { CategoryContentPage } from '@/components/content-page';
 import { ProductListing } from '@/features/categories/components/product-listing';
 import { getCategoryBySlug } from '@/features/categories/services/queries';
 import { getCurrentLocale } from '@/locales/server';
-import { getContentPage } from '@/sanity/queries/content-page/get-content-page';
+import { getCategoryContentPage } from '@/sanity/queries/content-page/get-content-page';
 import { notFound } from 'next/navigation';
 
 export default async function Page({
@@ -16,7 +16,7 @@ export default async function Page({
   if (!categorySlug) return notFound();
 
   const [contentPageResult, categoryResult] = await Promise.all([
-    getContentPage(locale, categorySlug),
+    getCategoryContentPage(locale, categorySlug),
     getCategoryBySlug(locale, categorySlug),
   ]);
 

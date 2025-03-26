@@ -25,7 +25,49 @@ export const contentPageType = defineType({
     defineField({
       name: 'slug',
       title: 'Slug',
-      type: 'string',
+      type: 'object',
+      fields: [
+        {
+          name: 'pageType',
+          title: 'Page Type',
+          type: 'string',
+          options: {
+            list: [
+              { title: 'Content Page', value: 'content' },
+              { title: 'Category Content Page', value: 'category' },
+            ],
+            layout: 'radio',
+          },
+          initialValue: 'content',
+        },
+        {
+          name: 'contentPageSlug',
+          title: 'Content Page Slug',
+          type: 'string',
+          hidden: ({ document }) => {
+            const slug = document?.slug as { pageType: string };
+
+            return slug?.pageType !== 'content';
+          },
+        },
+        {
+          name: 'categoryContentPage',
+          title: 'Category Content Page Slug',
+          type: 'rootCategorySelect',
+          hidden: ({ document }) => {
+            const slug = document?.slug as { pageType: string };
+
+            return slug?.pageType !== 'category';
+          },
+        },
+        {
+          name: 'resolvedSlug',
+          title: 'Resolved Slug',
+          type: 'string',
+          readOnly: true,
+          hidden: true,
+        },
+      ],
     }),
     defineField({
       name: 'breadcrumb',

@@ -15,6 +15,7 @@ import { CategoryProductNewArrivals } from '../blocks/category-product-new-arriv
 import { RecentlyViewedProducts } from '@/features/products/components/recently-viewed-products';
 import type { CategoryDTO } from '@ecomm/services/categories/category-dto';
 import { CategoryHeading } from '@/features/categories/components/category-heading';
+import { SubCategories } from '@/features/categories/components/product-subcategories';
 
 const BLOCKS: Record<
   BlockKeys,
@@ -84,8 +85,9 @@ export function CategoryContentPage({
   return (
     <>
       {category && (
-        <div className="py-10">
+        <div className="container flex flex-col gap-3">
           <CategoryHeading category={category} />
+          <SubCategories subCategories={category.children ?? []} />
         </div>
       )}
       {contentPage.blocks.map((block, index) => {

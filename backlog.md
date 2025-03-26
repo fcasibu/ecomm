@@ -24,11 +24,9 @@
 - [ ] Product Best Seller
 - [ ] Add Brand model
 - [ ] Product/Category seo metadata
-- [ ] Implement pagination
 - [ ] Implement wishlist
-- [ ] Customize query parameters in algolia instant search provider
-- [ ] Allow for root category selection in sanity content page
 - [ ] Figure out why TBT is >= 50 in PLP
+- [ ] Add more sort by options in PLP
 
 - [=] Fix plp content shift (accordions are initially closed even with the default value added)
 

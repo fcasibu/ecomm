@@ -19,6 +19,7 @@ import { useState } from 'react';
 import type { ObjectInputProps } from 'sanity';
 import { set, unset } from 'sanity';
 
+// TODO(fcasibu): refactor DRY
 function CategorySelectUI({
   open,
   setOpen,
@@ -28,9 +29,9 @@ function CategorySelectUI({
 }: {
   open: boolean;
   setOpen: (open: boolean) => void;
-  selectedCategory: Pick<CategoryDTO, 'name' | 'id'> | null;
+  selectedCategory: Pick<CategoryDTO, 'name' | 'id' | 'slug'> | null;
   categories: CategoryDTO[];
-  handleSelect: (category: Pick<CategoryDTO, 'name' | 'id'>) => void;
+  handleSelect: (category: Pick<CategoryDTO, 'name' | 'id' | 'slug'>) => void;
 }) {
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -59,7 +60,11 @@ function CategorySelectUI({
                 <div key={category.id}>
                   <CommandItem
                     onSelect={() =>
-                      handleSelect({ id: category.id, name: category.name })
+                      handleSelect({
+                        id: category.id,
+                        name: category.name,
+                        slug: category.slug,
+                      })
                     }
                   >
                     <Check
@@ -88,20 +93,26 @@ export function RootCategorySelect(props: ObjectInputProps) {
   const [open, setOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<Pick<
     CategoryDTO,
-    'name' | 'id'
-  > | null>(value as Pick<CategoryDTO, 'name' | 'id'>);
+    'name' | 'id' | 'slug'
+  > | null>(value as Pick<CategoryDTO, 'name' | 'id' | 'slug'>);
   const { result } = useGetRootCategories();
 
   const categories = result?.success ? result.data : [];
 
-  const handleSelect = (category: Pick<CategoryDTO, 'name' | 'id'>) => {
+  const handleSelect = (
+    category: Pick<CategoryDTO, 'name' | 'id' | 'slug'>,
+  ) => {
     const hasBeenSelected = selectedCategory?.id === category.id;
 
     setSelectedCategory(hasBeenSelected ? null : category);
 
     const patches = hasBeenSelected
-      ? [unset(['id']), unset(['name'])]
-      : [set(category.id, ['id']), set(category.name, ['name'])];
+      ? [unset(['id']), unset(['name']), unset(['slug'])]
+      : [
+          set(category.id, ['id']),
+          set(category.name, ['name']),
+          set(category.slug, ['slug']),
+        ];
 
     onChange(patches);
     setOpen(false);
@@ -124,20 +135,26 @@ export function NonRootCategorySelect(props: ObjectInputProps) {
   const [open, setOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<Pick<
     CategoryDTO,
-    'name' | 'id'
-  > | null>(value as Pick<CategoryDTO, 'name' | 'id'>);
+    'name' | 'id' | 'slug'
+  > | null>(value as Pick<CategoryDTO, 'name' | 'id' | 'slug'>);
   const { result } = useGetNonRootCategories();
 
   const categories = result?.success ? result.data : [];
 
-  const handleSelect = (category: Pick<CategoryDTO, 'name' | 'id'>) => {
+  const handleSelect = (
+    category: Pick<CategoryDTO, 'name' | 'id' | 'slug'>,
+  ) => {
     const hasBeenSelected = selectedCategory?.id === category.id;
 
     setSelectedCategory(hasBeenSelected ? null : category);
 
     const patches = hasBeenSelected
-      ? [unset(['id']), unset(['name'])]
-      : [set(category.id, ['id']), set(category.name, ['name'])];
+      ? [unset(['id']), unset(['name']), unset(['slug'])]
+      : [
+          set(category.id, ['id']),
+          set(category.name, ['name']),
+          set(category.slug, ['slug']),
+        ];
 
     onChange(patches);
     setOpen(false);

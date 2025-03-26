@@ -7,9 +7,9 @@ import { executeQuery } from '@/sanity/lib/execute-query';
 import { transformContentPage } from './transformer';
 
 const CONTENT_PAGES_QUERY = groq`
-*[_type == "contentPage" && language == $lang]{
+*[_type == "contentPage" && language == $lang && slug.pageType == "content"]{
   title,
-  slug,
+  "slug": slug.contentPageSlug,
   breadcrumb[] {
     label,
     url
