@@ -1,9 +1,57 @@
 import { algoliaWriteClient } from '@/features/algolia/algolia-write-client';
 import { getNonRootCategories } from '@/features/categories/services/queries';
 import { getCurrentLocale } from '@/locales/server';
+import type { CategoryDTO } from '@ecomm/services/categories/category-dto'; // Assuming this exists
 import { NextResponse } from 'next/server';
+import assert from 'node:assert';
 
 const client = algoliaWriteClient();
+
+function transformCategoryForAlgolia(category: CategoryDTO) {
+  assert(category.slug, 'Category must have a slug');
+
+  return {
+    objectID: category.slug,
+    id: category.id,
+    name: category.name,
+    description: category.description || '',
+    image: category.image || '',
+    slug: category.slug,
+    parentId: category.parentId || null,
+    updatedAt: category.updatedAt,
+    createdAt: category.createdAt,
+  };
+}
+
+async function syncCategoriesToAlgolia(
+  locale: string,
+  categories: CategoryDTO[],
+) {
+  const envName =
+    process.env.NODE_ENV === 'production' ? 'production' : 'development';
+  const indexName = `${envName}_categories_${locale}`;
+
+  try {
+    const objects = categories
+      .map(transformCategoryForAlgolia)
+      .filter((obj) => obj !== null);
+
+    if (objects.length === 0) {
+      return { success: true, message: 'No valid categories to sync' };
+    }
+
+    await client.partialUpdateObjects({
+      indexName,
+      objects,
+      createIfNotExists: true,
+    });
+
+    return { success: true, message: `Synced ${objects.length} categories` };
+  } catch (error) {
+    console.error('Error syncing categories to Algolia:', error);
+    return { success: false, error: 'Failed to sync categories to Algolia' };
+  }
+}
 
 // TODO(fcasibu): make it secure
 export async function GET() {
@@ -15,32 +63,10 @@ export async function GET() {
   }
 
   const categories = result.data;
-
-  if (!categories.length) {
+  if (categories.length === 0) {
     return NextResponse.json({ success: true, message: 'No categories found' });
   }
 
-  const envName =
-    process.env.NODE_ENV === 'production' ? 'production' : 'development';
-
-  client.partialUpdateObjects({
-    indexName: `${envName}_categories_${locale}`,
-    objects: categories.map((category) => ({
-      objectID: category.slug,
-      id: category.id,
-      name: category.name,
-      description: category.description,
-      image: category.image,
-      slug: category.slug,
-      parentId: category.parentId,
-      updatedAt: category.updatedAt,
-      createdAt: category.createdAt,
-    })),
-    createIfNotExists: true,
-  });
-
-  return NextResponse.json({
-    success: true,
-    message: `Synced ${categories.length} categories`,
-  });
+  const syncResult = await syncCategoriesToAlgolia(locale, categories);
+  return NextResponse.json(syncResult);
 }
