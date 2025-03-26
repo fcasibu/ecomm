@@ -1,5 +1,4 @@
-'use client';
-
+import { usePagination } from 'react-instantsearch-core';
 import {
   Pagination,
   PaginationContent,
@@ -9,26 +8,22 @@ import {
   PaginationNext,
   PaginationEllipsis,
 } from '@ecomm/ui/pagination';
-import { useQueryState } from 'nuqs';
-import { useTransition } from 'react';
 import { getPaginationNumbers } from '@ecomm/lib/get-pagination-numbers';
 
-export function QueryPagination({ totalPages = 1 }: { totalPages?: number }) {
-  const [page, setPage] = useQueryState('page', {
-    defaultValue: '1',
-    shallow: false,
-  });
-  const [isPending, startTransition] = useTransition();
+export function ProductListingPagination() {
+  const { currentRefinement, nbPages, refine, isFirstPage, isLastPage } =
+    usePagination();
 
-  const currentPage = parseInt(page, 10);
+  const currentPage = currentRefinement + 1;
+  const totalPages = nbPages;
 
   const handlePageChange = (newPage: number) => {
     if (newPage >= 1 && newPage <= totalPages && newPage !== currentPage) {
-      startTransition(() => {
-        setPage(newPage.toString());
-      });
+      refine(newPage - 1);
     }
   };
+
+  if (totalPages === 1) return null;
 
   const pageNumbers = getPaginationNumbers(totalPages, currentPage);
 
@@ -40,10 +35,12 @@ export function QueryPagination({ totalPages = 1 }: { totalPages?: number }) {
             href="#"
             onClick={(e) => {
               e.preventDefault();
-              handlePageChange(currentPage - 1);
+              if (!isFirstPage) {
+                handlePageChange(currentPage - 1);
+              }
             }}
-            className={currentPage <= 1 ? 'pointer-events-none opacity-50' : ''}
-            aria-disabled={currentPage <= 1}
+            className={isFirstPage ? 'pointer-events-none opacity-50' : ''}
+            aria-disabled={isFirstPage}
           />
         </PaginationItem>
 
@@ -62,10 +59,9 @@ export function QueryPagination({ totalPages = 1 }: { totalPages?: number }) {
                 href="#"
                 onClick={(e) => {
                   e.preventDefault();
-                  handlePageChange(Number(pageNumber));
+                  handlePageChange(pageNumber);
                 }}
                 isActive={pageNumber === currentPage}
-                className={isPending ? 'opacity-50' : ''}
               >
                 {pageNumber}
               </PaginationLink>
@@ -78,12 +74,12 @@ export function QueryPagination({ totalPages = 1 }: { totalPages?: number }) {
             href="#"
             onClick={(e) => {
               e.preventDefault();
-              handlePageChange(currentPage + 1);
+              if (!isLastPage) {
+                handlePageChange(currentPage + 1);
+              }
             }}
-            className={
-              currentPage >= totalPages ? 'pointer-events-none opacity-50' : ''
-            }
-            aria-disabled={currentPage >= totalPages}
+            className={isLastPage ? 'pointer-events-none opacity-50' : ''}
+            aria-disabled={isLastPage}
           />
         </PaginationItem>
       </PaginationContent>

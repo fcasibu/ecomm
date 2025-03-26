@@ -49,6 +49,7 @@ import type { Result } from '@ecomm/lib/execute-operation';
 import { Skeleton } from '@ecomm/ui/skeleton';
 import { ImageUpload } from '@/components/image-upload';
 import { useStore } from '@/features/store/providers/store-provider';
+import { getPaginationNumbers } from '@ecomm/lib/get-pagination-numbers';
 
 export function CategoryUpdateForm({
   category,
@@ -358,7 +359,6 @@ function SubCategories({
 }
 
 const MAX_ITEMS_PER_PAGE = 12;
-const TOTAL_PAGE_NUMBERS = 5;
 
 function Products({ products }: { products: CategoryDTO['products'] }) {
   const [currentPage, setCurrentPage] = useState(1);
@@ -375,52 +375,7 @@ function Products({ products }: { products: CategoryDTO['products'] }) {
     indexOfLastProduct,
   );
 
-  const getPageNumbers = () => {
-    const pageNumbers = [];
-    const totalPageNumbers = TOTAL_PAGE_NUMBERS;
-
-    if (totalPages <= totalPageNumbers) {
-      for (let i = 1; i <= totalPages; ++i) {
-        pageNumbers.push(i);
-      }
-    } else {
-      const leftSiblingIndex = Math.max(currentPage - 2, 2);
-      const rightSiblingIndex = Math.min(currentPage + 2, totalPages - 1);
-
-      const shouldShowLeftDots = leftSiblingIndex > 2;
-      const shouldShowRightDots = rightSiblingIndex < totalPages - 1;
-
-      pageNumbers.push(1);
-
-      if (shouldShowLeftDots) {
-        pageNumbers.push(0);
-      } else {
-        for (let i = 2; i < leftSiblingIndex; ++i) {
-          pageNumbers.push(i);
-        }
-      }
-
-      for (let i = leftSiblingIndex; i <= rightSiblingIndex; ++i) {
-        pageNumbers.push(i);
-      }
-
-      if (shouldShowRightDots) {
-        pageNumbers.push(0);
-      } else {
-        for (let i = rightSiblingIndex + 1; i <= totalPages - 1; ++i) {
-          pageNumbers.push(i);
-        }
-      }
-
-      if (totalPages > 1) {
-        pageNumbers.push(totalPages);
-      }
-    }
-
-    return pageNumbers;
-  };
-
-  const pageNumbers = getPageNumbers();
+  const pageNumbers = getPaginationNumbers(totalPages, currentPage);
 
   return (
     <div className="space-y-6">

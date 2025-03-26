@@ -25,6 +25,7 @@ import { X } from 'lucide-react';
 import { useStore } from '@/features/store/providers/store-provider';
 import { formatPrice } from '@ecomm/lib/format-price';
 
+// TODO(fcasibu): decide whether to use accordion or not since it is buggy
 export function ProductFilters() {
   const filters = Object.values(ATTRIBUTES_FOR_FACETING).flat();
   const { refine: clearRefine, canRefine: canClearRefine } =

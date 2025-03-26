@@ -12,6 +12,7 @@ import { ProductFilters } from './product-filters';
 import { ProductFiltersMobile } from './product-filters-mobile';
 import { ProductNoResults } from './product-no-results';
 import { ProductSortBy } from './product-sort-by';
+import { ProductListingPagination } from './product-listing-pagination';
 
 export function ProductListingContent() {
   const { results } = useHits<AlgoliaProductHit>();
@@ -44,7 +45,7 @@ export function ProductListingContent() {
           </span>
           <div className="flex items-center gap-4">
             <ProductSortBy />
-            <div className="border-input invisible rounded-lg border lg:visible">
+            <div className="border-input hidden rounded-lg border lg:block">
               <Button
                 aria-label={t('actions.gridLayout.two')}
                 type="button"
@@ -67,7 +68,10 @@ export function ProductListingContent() {
           </div>
         </div>
         {hits.length ? (
-          <ProductHits gridLayout={gridLayout} hits={hits} />
+          <div>
+            <ProductHits gridLayout={gridLayout} hits={hits} />
+            <ProductListingPagination />
+          </div>
         ) : (
           <ProductNoResults />
         )}
