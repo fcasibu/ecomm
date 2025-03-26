@@ -4,6 +4,31 @@ export default {
       label: 'Home',
     },
   },
+  cart: {
+    sheet: {
+      title: 'Your Cart ({value})',
+      empty: {
+        title: 'Your cart is empty',
+        description:
+          "Looks like you haven't added any products to your cart yet.",
+      },
+      actions: {
+        close: 'Close Cart',
+        continueShopping: 'Continue Shopping',
+        checkout: 'Checkout',
+      },
+      item: {
+        actions: {
+          remove: 'Remove {name} from cart',
+          quantity: {
+            decrease: 'Decrease quantity',
+            increase: 'Increase quantity',
+          },
+        },
+      },
+      total: 'Total',
+    },
+  },
   header: {
     menu: {
       actions: {

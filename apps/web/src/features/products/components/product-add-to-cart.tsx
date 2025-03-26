@@ -1,19 +1,23 @@
 'use client';
 
-import { addToCart } from '@/lib/actions/cart';
-import { useScopedI18n } from '@/locales/client';
+import { addToCartAction } from '@/lib/actions/cart';
+import { useCurrentLocale, useScopedI18n } from '@/locales/client';
 import { Button } from '@ecomm/ui/button';
 import { Loader2, ShoppingCart } from 'lucide-react';
-import { useActionState } from 'react';
+import { useActionState, useEffect } from 'react';
 import { useProductDetail } from '../providers/product-detail-provider';
 import { useProductStore } from '../stores/product-store';
 import { cn } from '@ecomm/ui/lib/utils';
+import { useRouter } from 'next/navigation';
+import { link } from '@/lib/utils/link-helper';
 
 export function ProductAddToCart() {
+  const locale = useCurrentLocale();
   const { selectedVariant, product } = useProductDetail();
   const { selectedSize, selectedQuantity } = useProductStore();
-  const [result, formAction, isPending] = useActionState(addToCart, null);
+  const [result, formAction, isPending] = useActionState(addToCartAction, null);
   const t = useScopedI18n('productDetail');
+  const router = useRouter();
 
   const getErrorMessage = () => {
     const error = result && !result.success ? result.error : null;
@@ -27,6 +31,14 @@ export function ProductAddToCart() {
 
     return t(firstError._errors[0] as keyof typeof t);
   };
+
+  useEffect(() => {
+    if (!result) return;
+
+    if (result.success && result.data) {
+      router.push(`/${locale}${link.cart}`);
+    }
+  }, [result, locale, router]);
 
   return (
     <div className="w-full">

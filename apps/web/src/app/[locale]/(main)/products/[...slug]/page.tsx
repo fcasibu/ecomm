@@ -52,8 +52,10 @@ export default async function Page({
       {categoriesPathResult?.success && categoriesPathResult.data.length && (
         <ProductDetailPageBreadcrumb data={categoriesPathResult.data} />
       )}
-      <ProductDetail product={result.data} selectedSku={querySku} />
-      <RecentlyViewedProducts sku={baseProductSku} />
+      <div className="flex flex-col gap-12">
+        <ProductDetail product={result.data} selectedSku={querySku} />
+        <RecentlyViewedProducts sku={baseProductSku} />
+      </div>
       <RecentlyViewedSetter sku={baseProductSku} />
     </div>
   );

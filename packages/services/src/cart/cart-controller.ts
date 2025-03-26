@@ -12,6 +12,7 @@ import { NotFoundError } from '../errors/not-found-error';
 import { CartTransformer } from './cart-transformer';
 import type { AddToCartInput } from '@ecomm/validations/web/cart/add-to-cart-schema';
 import type { ServerContext } from '@ecomm/lib/types';
+import { UpdateItemQuantityError } from '../errors/update-item-quantity-error';
 
 export class CartController extends BaseController {
   private readonly transformer = new CartTransformer();
@@ -109,12 +110,12 @@ export class CartController extends BaseController {
     }
   }
 
-  public async addToCart(input: AddToCartInput, context: ServerContext) {
+  public async addToCart(context: ServerContext, input: AddToCartInput) {
     try {
       logger.info({ input }, 'Adding to cart');
 
       const cart = this.transformer.toDTO(
-        await this.cartService.addToCart(input, context),
+        await this.cartService.addToCart(context, input),
       );
 
       if (!cart) {
@@ -127,6 +128,58 @@ export class CartController extends BaseController {
     } catch (error) {
       this.logAndThrowError(error, {
         message: 'Error add to cart',
+      });
+    }
+  }
+
+  public async findCart(context: ServerContext) {
+    try {
+      logger.info('Fetching cart');
+
+      const cart = this.transformer.toDTO(
+        await this.cartService.findCart(context),
+      );
+
+      if (!cart) {
+        throw new NotFoundError('There was an issue with finding the cart');
+      }
+
+      logger.info({ cartId: cart.id }, 'Fetched cart successfully');
+
+      return cart;
+    } catch (error) {
+      this.logAndThrowError(error, {
+        message: 'Error find cart',
+      });
+    }
+  }
+
+  public async updateItemQuantity(
+    context: ServerContext,
+    itemId: string,
+    newQuantity: number,
+  ) {
+    try {
+      logger.info({ itemId }, 'Updating item quantity');
+
+      if (!context.cart.id) {
+        throw new UpdateItemQuantityError();
+      }
+
+      const cart = this.transformer.toDTO(
+        await this.cartService.updateItemQuantity(context, itemId, newQuantity),
+      );
+
+      if (!cart) {
+        throw new NotFoundError('There was an issue with finding the cart');
+      }
+
+      logger.info({ cartId: cart.id }, 'Updated item quantity successfully');
+
+      return cart;
+    } catch (error) {
+      this.logAndThrowError(error, {
+        message: 'Error updating item quantity',
       });
     }
   }

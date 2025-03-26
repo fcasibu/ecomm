@@ -12,7 +12,9 @@ export const link = {
     signIn: '/sign-in',
     joinUs: '/create-account',
   },
+  cart: '/cart',
   help: '/help',
+  checkout: '/checkout',
   home: '/',
   socials: {
     facebook: 'https://facebook.com/ecomm',

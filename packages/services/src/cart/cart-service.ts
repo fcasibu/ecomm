@@ -160,7 +160,7 @@ export class CartService extends BaseService {
     });
   }
 
-  public async addToCart(input: AddToCartInput, context: ServerContext) {
+  public async addToCart(context: ServerContext, input: AddToCartInput) {
     const { sku, quantity, size } = input;
 
     return await this.executeTransaction(async (tx) => {
@@ -170,7 +170,7 @@ export class CartService extends BaseService {
         quantity,
       );
 
-      const cart = await this.findCart(tx, context);
+      const cart = await this.findCart(context);
 
       return await this.addItemToCart(tx, cart, context, input, productVariant);
     });
@@ -248,7 +248,7 @@ export class CartService extends BaseService {
     });
   }
 
-  private async findCart(tx: Prisma.TransactionClient, context: ServerContext) {
+  public async findCart(context: ServerContext) {
     const { cart: cartContext, user, locale } = context;
     const userType = CartService.determineUserType(
       user.customerId,
@@ -258,7 +258,7 @@ export class CartService extends BaseService {
     let cart: Cart | null = null;
 
     if (cartContext.id) {
-      cart = await tx.cart.findUnique({
+      cart = await this.prismaClient.cart.findUnique({
         include: CART_INCLUDE,
         where: { id: cartContext.id, locale: locale },
       });
@@ -268,13 +268,51 @@ export class CartService extends BaseService {
       const filterValue =
         userType === 'customer' ? user.customerId : user.anonymousId;
 
-      cart = await tx.cart.findFirst({
+      cart = await this.prismaClient.cart.findFirst({
         include: CART_INCLUDE,
         where: { locale: context.locale, [filterField]: filterValue },
       });
     }
 
     return cart;
+  }
+
+  public async updateItemQuantity(
+    context: ServerContext,
+    itemId: string,
+    newQuantity: number,
+  ) {
+    const { locale, cart } = context;
+    const quantity = newQuantity < 0 ? 0 : newQuantity;
+
+    const itemsOperation =
+      quantity > 0
+        ? {
+            update: {
+              where: {
+                id: itemId,
+              },
+              data: {
+                quantity: newQuantity,
+              },
+            },
+          }
+        : {
+            delete: {
+              id: itemId,
+            },
+          };
+
+    return await this.prismaClient.cart.update({
+      include: CART_INCLUDE,
+      where: {
+        locale,
+        id: cart.id as string,
+      },
+      data: {
+        items: itemsOperation,
+      },
+    });
   }
 
   private async createAnonymousCustomer(locale: string) {

@@ -95,8 +95,11 @@ export function NavigationBar({
             variant="none"
             size="icon"
             className="h-min w-min"
+            asChild
           >
-            <ShoppingCart aria-hidden />
+            <a href={link.cart}>
+              <ShoppingCart aria-hidden />
+            </a>
           </Button>
         </div>
       </div>

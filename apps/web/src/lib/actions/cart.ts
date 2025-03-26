@@ -2,40 +2,62 @@
 
 import { addToCartSchema } from '@ecomm/validations/web/cart/add-to-cart-schema';
 import { validateAction } from '../utils/action-validator';
-import { cartController } from '@ecomm/services/registry';
-import { executeOperation } from '@ecomm/lib/execute-operation';
 import { getServerContext } from '../utils/server-context';
 import { cookies } from 'next/headers';
 import { cookieKeys } from '../utils/cookie-keys';
+import {
+  addToCart,
+  updateItemQuantity,
+} from '@/features/cart/services/mutations';
+import { updateItemQuantitySchema } from '@ecomm/validations/web/cart/update-item-quantity-schema';
+import type { Locale } from '@ecomm/lib/locale-helper';
+import type { CartDTO } from '@ecomm/services/cart/cart-dto';
 
-export const addToCart = validateAction(addToCartSchema, async (data) => {
+const commonCookieOptions = {
+  httpOnly: true,
+  secure: process.env.NODE_ENV === 'production',
+  sameSite: 'strict' as const,
+} as const;
+
+async function setCartCookies(locale: Locale, cart: CartDTO): Promise<void> {
+  if (!cart.id) {
+    return;
+  }
+
+  const cookie = await cookies();
+
+  cookie.set(cookieKeys.cart.cartId(locale), cart.id, commonCookieOptions);
+
+  if (cart.anonymousId) {
+    cookie.set(
+      cookieKeys.customer.anonymousId(locale),
+      cart.anonymousId,
+      commonCookieOptions,
+    );
+  }
+}
+
+export const addToCartAction = validateAction(addToCartSchema, async (data) => {
   const context = await getServerContext();
-  const result = await executeOperation(() =>
-    cartController().addToCart(data, context),
-  );
+  const result = await addToCart(data);
 
-  // TODO(fcasibu): build an abstraction
   if (result.success) {
-    const cookie = await cookies();
-
-    cookie.set(cookieKeys.cart.cartId(context.locale), result.data.id, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'strict',
-    });
-
-    if (result.data.anonymousId) {
-      cookie.set(
-        cookieKeys.customer.anonymousId(context.locale),
-        result.data.anonymousId,
-        {
-          httpOnly: true,
-          secure: process.env.NODE_ENV === 'production',
-          sameSite: 'strict',
-        },
-      );
-    }
+    await setCartCookies(context.locale, result.data);
   }
 
   return result;
 });
+
+export const updateItemQuantityAction = validateAction(
+  updateItemQuantitySchema,
+  async (data) => {
+    const context = await getServerContext();
+    const result = await updateItemQuantity(data);
+
+    if (result.success) {
+      await setCartCookies(context.locale, result.data);
+    }
+
+    return result;
+  },
+);

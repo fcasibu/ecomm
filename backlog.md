@@ -27,6 +27,9 @@
 - [ ] Implement wishlist
 - [ ] Figure out why TBT is >= 50 in PLP
 - [ ] Add more sort by options in PLP
+- [ ] Fix issue with incorrect cart total amount
+  - Remove total amount from cart table
+  - Calculate total amount in the cart transformer
 
 - [=] Fix plp content shift (accordions are initially closed even with the default value added)
 

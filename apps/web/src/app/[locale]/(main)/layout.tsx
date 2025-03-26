@@ -47,9 +47,11 @@ export const generateStaticParams = () => {
 export default async function RootLayout({
   params,
   children,
+  cart,
 }: Readonly<{
   params: Promise<{ locale: string }>;
   children: React.ReactNode;
+  cart: React.ReactNode;
 }>) {
   const locale = (await params).locale;
   if (!AVAILABLE_LOCALES.includes(locale as Locale)) return notFound();
@@ -63,7 +65,10 @@ export default async function RootLayout({
           <Providers locale={locale}>
             <div>
               <Header />
-              <main className="min-h-[350px]">{children}</main>
+              <main className="min-h-[350px]">
+                {cart && cart}
+                {children}
+              </main>
               <Suspense>
                 <Footer />
               </Suspense>
