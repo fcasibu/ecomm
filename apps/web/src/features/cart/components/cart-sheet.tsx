@@ -14,6 +14,7 @@ import {
   SheetContent,
   SheetHeader,
   SheetTitle,
+  SheetFooter,
 } from '@ecomm/ui/sheet';
 import { link } from '@/lib/utils/link-helper';
 import { useStore } from '@/features/store/providers/store-provider';
@@ -35,20 +36,24 @@ function CartItem({
   const t = useScopedI18n('cart.sheet.item');
 
   return (
-    <div className="flex items-start gap-4 border-b py-4 last:border-none">
+    <div className="flex items-start gap-4 border-b px-6 py-4 last:border-none">
       <ImageComponent
         src={item.image}
         alt={item.name}
-        width={120}
-        height={120}
-        className="aspect-square object-cover"
-        quality={20}
+        width={80}
+        height={80}
+        className="aspect-square rounded-md object-cover"
+        quality={50}
       />
-      <div className="flex flex-1 flex-col">
-        <div className="flex items-start justify-between">
-          <p className="font-semibold">{item.name}</p>
+      <div className="flex flex-1 flex-col gap-2">
+        <div className="flex items-start justify-between gap-2">
+          <p className="line-clamp-2 flex-1 text-sm font-semibold sm:text-base">
+            {item.name}
+          </p>
           <Button
             variant="ghost"
+            size="icon"
+            className="text-muted-foreground hover:text-destructive h-8 w-8 shrink-0"
             aria-label={t('actions.remove', { name: item.name })}
             type="submit"
             formAction={() => formAction({ itemId: item.id, newQuantity: 0 })}
@@ -57,24 +62,33 @@ function CartItem({
             <Trash2 size={16} />
           </Button>
         </div>
-        <div className="flex items-center justify-between">
-          <div className="mt-2 flex items-center gap-2">
+
+        <div className="flex items-end justify-between">
+          <div className="flex items-center gap-1 sm:gap-2">
             <Button
-              size="sm"
+              size="icon"
               variant="outline"
+              className="h-8 w-8"
               aria-label={t('actions.quantity.decrease')}
               formAction={() =>
                 formAction({ itemId: item.id, newQuantity: item.quantity - 1 })
               }
-              disabled={isPending}
+              disabled={isPending || item.quantity <= 1}
               type="submit"
             >
-              <Minus size={16} />
+              <Minus size={14} />
             </Button>
-            <span className="w-8 text-center">{item.quantity}</span>
+            <span
+              className="w-8 text-center text-sm font-medium"
+              aria-live="polite"
+              aria-atomic="true"
+            >
+              {item.quantity}
+            </span>
             <Button
-              size="sm"
+              size="icon"
               variant="outline"
+              className="h-8 w-8"
               aria-label={t('actions.quantity.increase')}
               formAction={() =>
                 formAction({ itemId: item.id, newQuantity: item.quantity + 1 })
@@ -82,10 +96,11 @@ function CartItem({
               disabled={isPending}
               type="submit"
             >
-              <Plus size={16} />
+              <Plus size={14} />
             </Button>
           </div>
-          <div className="ml-2 mt-1 whitespace-nowrap font-bold">
+
+          <div className="whitespace-nowrap text-sm font-bold sm:text-base">
             {formatPrice(item.price * item.quantity, currency)}
           </div>
         </div>
@@ -101,15 +116,11 @@ export function CartSheet({ cart }: { cart: CartDTO | null }) {
   const store = useStore();
   const [result, formAction, isPending] = useActionState(
     updateItemQuantityAction,
-    cart
-      ? {
-          success: true,
-          data: cart,
-        }
-      : null,
+    cart ? { success: true, data: cart } : null,
   );
 
   const cartData = result?.success ? result.data : cart;
+  const itemCount = cartData?.items.length ?? 0;
 
   const sortedCartItems =
     cartData?.items.toSorted(
@@ -124,17 +135,20 @@ export function CartSheet({ cart }: { cart: CartDTO | null }) {
         if (!state) router.back();
       }}
     >
-      <SheetContent side="right" className="flex h-full max-w-[600px] flex-col">
-        <SheetHeader className="border-b">
-          <SheetTitle className="flex items-center gap-2">
-            <ShoppingBag />
-            {t('title', { value: cartData?.items.length ?? 0 })}
+      <SheetContent
+        side="right"
+        className="flex h-full w-full flex-col p-0 sm:max-w-lg"
+      >
+        <SheetHeader className="border-b px-6 py-4">
+          <SheetTitle className="flex items-center gap-2 text-lg font-semibold">
+            <ShoppingBag size={20} />
+            {t('title', { value: itemCount })}
           </SheetTitle>
           <SheetClose />
         </SheetHeader>
 
         <div className="flex-1 overflow-y-auto">
-          {sortedCartItems.length > 0 ? (
+          {itemCount > 0 ? (
             <form>
               {sortedCartItems.map((item) => (
                 <CartItem
@@ -147,12 +161,12 @@ export function CartSheet({ cart }: { cart: CartDTO | null }) {
               ))}
             </form>
           ) : (
-            <div className="flex h-full flex-col items-center justify-center gap-4 py-8 text-center">
-              <div className="bg-muted rounded-full p-6">
-                <ShoppingBag size={40} />
+            <div className="flex h-full flex-col items-center justify-center gap-4 p-8 text-center">
+              <div className="bg-muted text-muted-foreground rounded-full p-4">
+                <ShoppingBag size={48} />
               </div>
-              <div>
-                <p className="text-lg">{t('empty.title')}</p>
+              <div className="space-y-1">
+                <p className="text-lg font-semibold">{t('empty.title')}</p>
                 <p className="text-muted-foreground text-sm">
                   {t('empty.description')}
                 </p>
@@ -166,38 +180,44 @@ export function CartSheet({ cart }: { cart: CartDTO | null }) {
           )}
         </div>
 
-        {sortedCartItems.length > 0 && (
-          <footer className="border-t">
-            <hr className="my-3" />
-            <div className="mb-4 flex items-center justify-between">
-              <span className="font-semibold">{t('total')}</span>
+        {itemCount > 0 && (
+          <SheetFooter className="bg-background mt-auto flex-col gap-3 border-t px-6 py-4 sm:flex-col sm:items-stretch">
+            <div className="flex items-center justify-between text-sm">
+              <span className="text-muted-foreground">Shipping</span>
+              <span className="text-muted-foreground">
+                Calculated at checkout
+              </span>
+            </div>
+            <div className="flex items-center justify-between">
+              <span className="text-base font-semibold">{t('total')}</span>
               {cartData?.totalAmount && (
-                <span className="font-semibold">
+                <span className="text-lg font-bold">
                   {formatPrice(cartData.totalAmount, store.currency)}
                 </span>
               )}
             </div>
+
             <div className="flex flex-col gap-2">
-              <Button asChild>
+              <Button asChild size="lg">
                 <NextLink
                   href={link.cart}
                   className="w-full hover:no-underline"
                   onClick={() => {
-                    console.log('runining?');
+                    // force navigate to cart page instead of intercepting the route
                     window.location.href = `/${locale}${link.cart}`;
                   }}
                 >
                   {t('actions.checkout')}
-                  <ArrowRight size={16} className="ml-2" />
+                  <ArrowRight size={18} className="ml-2" />
                 </NextLink>
               </Button>
               <SheetClose asChild>
-                <Button variant="outline" className="w-full">
+                <Button variant="outline" size="lg" className="w-full">
                   {t('actions.continueShopping')}
                 </Button>
               </SheetClose>
             </div>
-          </footer>
+          </SheetFooter>
         )}
       </SheetContent>
     </Sheet>
