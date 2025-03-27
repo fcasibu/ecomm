@@ -42,10 +42,25 @@
     --dark: 0 0% 9%;
     --dark-foreground: 0 0% 98%;
 
-    --success: 142 76% 48%;
-    --warning: 51 97% 58%;
-    --error: 0 79% 62%;
-    --info: 197 88% 61%;
+    --success-base-hsl: 142 76% 48%;
+    --warning-base-hsl: 51 97% 58%;
+    --error-base-hsl: 0 79% 62%;
+    --info-base-hsl: 197 88% 61%;
+
+    --bg-opacity: 0.10;
+    --text-opacity: 0.90;
+
+    --success: hsl(var(--success-base-hsl) / var(--bg-opacity));
+    --success-foreground: hsl(var(--success-base-hsl) / var(--text-opacity));
+
+    --warning: hsl(var(--warning-base-hsl) / var(--bg-opacity));
+    --warning-foreground: hsl(var(--warning-base-hsl) / var(--text-opacity));
+
+    --error: hsl(var(--error-base-hsl) / var(--bg-opacity));
+    --error-foreground: hsl(var(--error-base-hsl) / var(--text-opacity));
+
+    --info: hsl(var(--info-base-hsl) / var(--bg-opacity));
+    --info-foreground: hsl(var(--info-base-hsl) / var(--text-opacity));
 
     --text-primary: 0 0% 10%;
     --text-secondary: 0 0% 40%;

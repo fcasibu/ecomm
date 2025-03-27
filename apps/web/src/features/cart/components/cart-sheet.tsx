@@ -21,93 +21,7 @@ import { useStore } from '@/features/store/providers/store-provider';
 import { useActionState } from 'react';
 import { updateItemQuantityAction } from '@/lib/actions/cart';
 import type { UpdateItemQuantityInput } from '@ecomm/validations/web/cart/update-item-quantity-schema';
-
-function CartItem({
-  item,
-  currency,
-  formAction,
-  isPending,
-}: {
-  item: CartItemDTO;
-  currency: string;
-  formAction: (payload: UpdateItemQuantityInput) => void;
-  isPending: boolean;
-}) {
-  const t = useScopedI18n('cart.sheet.item');
-
-  return (
-    <div className="flex items-start gap-4 border-b px-6 py-4 last:border-none">
-      <ImageComponent
-        src={item.image}
-        alt={item.name}
-        width={80}
-        height={80}
-        className="aspect-square rounded-md object-cover"
-        quality={50}
-      />
-      <div className="flex flex-1 flex-col gap-2">
-        <div className="flex items-start justify-between gap-2">
-          <p className="line-clamp-2 flex-1 text-sm font-semibold sm:text-base">
-            {item.name}
-          </p>
-          <Button
-            variant="ghost"
-            size="icon"
-            className="text-muted-foreground hover:text-destructive h-8 w-8 shrink-0"
-            aria-label={t('actions.remove', { name: item.name })}
-            type="submit"
-            formAction={() => formAction({ itemId: item.id, newQuantity: 0 })}
-            disabled={isPending}
-          >
-            <Trash2 size={16} />
-          </Button>
-        </div>
-
-        <div className="flex items-end justify-between">
-          <div className="flex items-center gap-1 sm:gap-2">
-            <Button
-              size="icon"
-              variant="outline"
-              className="h-8 w-8"
-              aria-label={t('actions.quantity.decrease')}
-              formAction={() =>
-                formAction({ itemId: item.id, newQuantity: item.quantity - 1 })
-              }
-              disabled={isPending || item.quantity <= 1}
-              type="submit"
-            >
-              <Minus size={14} />
-            </Button>
-            <span
-              className="w-8 text-center text-sm font-medium"
-              aria-live="polite"
-              aria-atomic="true"
-            >
-              {item.quantity}
-            </span>
-            <Button
-              size="icon"
-              variant="outline"
-              className="h-8 w-8"
-              aria-label={t('actions.quantity.increase')}
-              formAction={() =>
-                formAction({ itemId: item.id, newQuantity: item.quantity + 1 })
-              }
-              disabled={isPending}
-              type="submit"
-            >
-              <Plus size={14} />
-            </Button>
-          </div>
-
-          <div className="whitespace-nowrap text-sm font-bold sm:text-base">
-            {formatPrice(item.price * item.quantity, currency)}
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
+import { CartItem } from './cart-item';
 
 export function CartSheet({ cart }: { cart: CartDTO | null }) {
   const t = useScopedI18n('cart.sheet');
@@ -149,7 +63,7 @@ export function CartSheet({ cart }: { cart: CartDTO | null }) {
 
         <div className="flex-1 overflow-y-auto">
           {itemCount > 0 ? (
-            <form>
+            <form className="flex flex-col gap-4 px-6">
               {sortedCartItems.map((item) => (
                 <CartItem
                   key={item.id}

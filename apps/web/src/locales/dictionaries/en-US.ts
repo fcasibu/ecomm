@@ -5,6 +5,47 @@ export default {
     },
   },
   cart: {
+    'title#zero': 'Shopping Cart',
+    'title#one': 'Shopping Cart ({count} item)',
+    'title#other': 'Shopping Cart ({count} items)',
+    actions: {
+      continueShopping: 'Continue Shopping',
+    },
+    orderSummary: {
+      title: 'Order Summary',
+      subtotal: 'Subtotal',
+      total: 'Total',
+      freeShippingEligibility:
+        'Your order qualifies for free shipping on eligible items',
+      cartInfo: {
+        freeShipping: 'Free shipping on orders over {price}',
+        freeReturns: 'Free 30-day return policy on all orders',
+        securePayment: 'Secure payment',
+      },
+      actions: {
+        checkout: 'Checkout',
+      },
+    },
+    item: {
+      size: 'Size: {value}',
+      actions: {
+        remove: 'Remove {name} from cart',
+        quantity: {
+          decrease: 'Decrease quantity',
+          increase: 'Increase quantity',
+        },
+      },
+    },
+    shippingMethod: {
+      title: 'Shipping Method',
+      free: 'Free',
+      STANDARD: 'Standard Delivery ({min}, {max} days)',
+      EXPRESS: 'Express Delivery ({min}, {max} days)',
+      NEXT_DAY: 'Next Day Delivery',
+      estimatedDelivery: 'Estimated delivery: {date}',
+      notEligibleForFreeShipping: 'Not eligible for free shipping',
+      addMoreForFreeShipping: 'Add <bold>{price}</bold> more for free shipping',
+    },
     sheet: {
       title: 'Your Cart ({value})',
       empty: {
@@ -16,15 +57,6 @@ export default {
         close: 'Close Cart',
         continueShopping: 'Continue Shopping',
         checkout: 'Checkout',
-      },
-      item: {
-        actions: {
-          remove: 'Remove {name} from cart',
-          quantity: {
-            decrease: 'Decrease quantity',
-            increase: 'Increase quantity',
-          },
-        },
       },
       total: 'Total',
     },
