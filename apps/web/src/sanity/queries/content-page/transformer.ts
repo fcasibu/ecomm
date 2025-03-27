@@ -17,11 +17,16 @@ import assert from 'node:assert';
 import { isDefined } from '@ecomm/lib/is-defined';
 
 export function transformContentPage(contentPage: ContentPage): ContentPageDTO {
+  const slug =
+    contentPage.slug?.pageType === 'content'
+      ? contentPage.slug.contentPageSlug
+      : contentPage.slug?.categoryContentPage?.category?.slug;
+
   return {
-    slug: contentPage.slug ?? '',
-    breadcrumb: transformBreadcrumb(contentPage.breadcrumb),
+    slug: slug ?? '',
+    breadcrumb: transformBreadcrumb(contentPage?.breadcrumb),
     seoMetadata: transformSeoMetadata(contentPage?.seoMetadata),
-    blocks: transformBlocks(contentPage.blocks),
+    blocks: transformBlocks(contentPage?.blocks),
   };
 }
 

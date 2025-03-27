@@ -9,7 +9,7 @@ import { transformContentPage } from './transformer';
 const CONTENT_PAGE_QUERY = groq`
 *[_type == "contentPage" && language == $lang && slug.contentPageSlug == $slug]{
   title,
-  "slug": slug.contentPageSlug,
+  slug,
   breadcrumb[] {
     label,
     url
@@ -85,7 +85,7 @@ const CONTENT_PAGE_QUERY = groq`
 const CATEGORY_CONTENT_PAGE_QUERY = groq`
 *[_type == "contentPage" && language == $lang && slug.categoryContentPage.category.slug == $slug] {
   title,
-  "slug": slug.categoryContentPage.category.slug,
+  slug,
   breadcrumb[] {
     label,
     url

@@ -60,13 +60,6 @@ export const contentPageType = defineType({
             return slug?.pageType !== 'category';
           },
         },
-        {
-          name: 'resolvedSlug',
-          title: 'Resolved Slug',
-          type: 'string',
-          readOnly: true,
-          hidden: true,
-        },
       ],
     }),
     defineField({
