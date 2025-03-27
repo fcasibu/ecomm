@@ -1,4 +1,15 @@
 import type { CartStatus } from '@ecomm/db';
+import type { DeliveryPromiseShippingMethod } from '../common/types';
+
+export interface CartItemDeliveryPromiseDTO {
+  id: string;
+  price: number;
+  estimatedMinDays: number;
+  estimatedMaxDays: number;
+  shippingMethod: DeliveryPromiseShippingMethod;
+  requiresShippingFee: boolean;
+  selected: boolean;
+}
 
 export interface CartItemDTO {
   id: string;
@@ -6,6 +17,8 @@ export interface CartItemDTO {
   image: string;
   name: string;
   quantity: number;
+  color: string;
+  deliveryPromises: CartItemDeliveryPromiseDTO[];
   price: number;
   size: string;
   createdAt: string;
@@ -17,7 +30,7 @@ export interface CartDTO {
   customerId: string | null;
   anonymousId: string | null;
   items: CartItemDTO[];
-  totalAmount: number;
+  subtotal: number;
   status: CartStatus;
   createdAt: string;
   updatedAt: string;

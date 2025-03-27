@@ -1,40 +1,24 @@
 import { PrismaClient } from '@ecomm/db';
-import type { Prisma, ProductVariant } from '@ecomm/db';
-import type {
-  CartCreateInput,
-  CartUpdateInput,
-} from '@ecomm/validations/cms/cart/cart-schema';
+import type { Prisma } from '@ecomm/db';
+import type { CartCreateInput } from '@ecomm/validations/cms/cart/cart-schema';
 import { BaseService } from '../base-service';
 import { randomUUID } from 'node:crypto';
 import type { AddToCartInput } from '@ecomm/validations/web/cart/add-to-cart-schema';
 import { CartArgsFactory } from '../strategies/cart-args-strategy';
 import type { ServerContext } from '@ecomm/lib/types';
 import type { StockService } from '../stock/stock-service';
+import type { UpdateDeliveryPromiseSelectionInput } from '@ecomm/validations/web/cart/update-delivery-promise-selection-schema';
 
 export type UserType = 'customer' | 'guest' | 'new';
 
 export type Cart = Prisma.CartGetPayload<{
-  include: {
-    items: {
-      include: {
-        product: {
-          include: {
-            variants: true;
-          };
-        };
-      };
-    };
-  };
+  include: { items: { include: { deliveryPromises: true } } };
 }>;
 
 const CART_INCLUDE = {
   items: {
     include: {
-      product: {
-        include: {
-          variants: true,
-        },
-      },
+      deliveryPromises: true,
     },
   },
 } as const satisfies Prisma.CartInclude;
@@ -50,45 +34,46 @@ export class CartService extends BaseService {
   public async create(locale: string, input: CartCreateInput) {
     return this.executeTransaction(async (tx) => {
       const isGuestUser = !input.customerId;
+      let anonymousId: string | undefined = undefined;
 
-      const productVariants = await tx.productVariant.findMany({
-        where: {
-          AND: [
-            {
-              productId: {
-                in: input.items.map((item) => item.productId),
-              },
-            },
-            {
-              sku: {
-                in: input.items.map((item) => item.sku),
-              },
-            },
-          ],
-        },
-      });
+      if (isGuestUser) {
+        anonymousId =
+          (await this.createAnonymousCustomer(locale)).anonymousId ?? undefined;
+      }
 
       return await tx.cart.create({
         include: CART_INCLUDE,
         data: {
-          totalAmount: CartService.calculateItemsTotalAmount(
-            input.items,
-            productVariants,
-          ),
-          anonymousId: isGuestUser
-            ? (await this.createAnonymousCustomer(locale)).anonymousId
-            : undefined,
-          customer: {
-            connect: {
-              id: !isGuestUser ? input.customerId : undefined,
+          anonymousId: anonymousId,
+          ...(input.customerId && {
+            customer: {
+              connect: {
+                id: input.customerId,
+              },
             },
-          },
-          items: {
-            createMany: {
-              data: input.items,
-            },
-          },
+          }),
           store: { connect: { locale } },
+          items: {
+            create: input.items.map((item) => ({
+              name: item.name,
+              sku: item.sku,
+              size: item.size,
+              color: item.color,
+              quantity: item.quantity,
+              image: item.image,
+              price: item.price,
+              deliveryPromises: {
+                create: item.deliveryPromises.map((dp, index) => ({
+                  price: dp.price,
+                  shippingMethod: dp.shippingMethod,
+                  estimatedMinDays: dp.estimatedMinDays,
+                  estimatedMaxDays: dp.estimatedMaxDays,
+                  enabled: index === 0,
+                  requiresShippingFee: dp.requiresShippingFee,
+                })),
+              },
+            })),
+          },
         },
       });
     });
@@ -96,67 +81,14 @@ export class CartService extends BaseService {
 
   public async getById(locale: string, cartId: string) {
     return await this.prismaClient.cart.findUnique({
-      where: { id: cartId, locale },
       include: CART_INCLUDE,
-    });
-  }
-
-  public async update(locale: string, cartId: string, input: CartUpdateInput) {
-    return this.executeTransaction(async (tx) => {
-      const productVariants = await tx.productVariant.findMany({
-        where: {
-          AND: [
-            {
-              productId: {
-                in: input.items.map((item) => item.productId),
-              },
-            },
-            {
-              sku: {
-                in: input.items.map((item) => item.sku),
-              },
-            },
-          ],
-        },
-      });
-
-      const existingSkus = input.items
-        .map((item) => item.sku)
-        .filter((sku): sku is string => Boolean(sku));
-
-      const itemsToUpdate = input.items.filter((item) => item.id);
-      const itemsToCreate = input.items.filter((item) => !item.id);
-
-      return await tx.cart.update({
-        where: { id: cartId, locale },
-        include: CART_INCLUDE,
-        data: {
-          totalAmount: CartService.calculateItemsTotalAmount(
-            input.items,
-            productVariants,
-          ),
-          items: {
-            deleteMany: {
-              cartId,
-              sku: { notIn: existingSkus },
-            },
-            updateMany: itemsToUpdate.map((item) => ({
-              where: { id: item.id },
-              data: item,
-            })),
-            createMany: {
-              data: itemsToCreate,
-            },
-          },
-        },
-      });
+      where: { id: cartId, locale },
     });
   }
 
   public async delete(locale: string, cartId: string) {
     return await this.prismaClient.cart.delete({
       where: { id: cartId, locale },
-      include: CART_INCLUDE,
     });
   }
 
@@ -164,15 +96,11 @@ export class CartService extends BaseService {
     const { sku, quantity, size } = input;
 
     return await this.executeTransaction(async (tx) => {
-      const productVariant = await this.stockService.validateStockAndGetVariant(
-        sku,
-        size,
-        quantity,
-      );
+      await this.stockService.validateStockAndGetVariant(sku, size, quantity);
 
       const cart = await this.findCart(context);
 
-      return await this.addItemToCart(tx, cart, context, input, productVariant);
+      return await this.addItemToCart(tx, cart, context, input);
     });
   }
 
@@ -181,14 +109,13 @@ export class CartService extends BaseService {
     cart: Cart | null,
     context: ServerContext,
     item: AddToCartInput,
-    productVariant: ProductVariant,
   ) {
     let currentCart: Cart | null = cart;
     if (!cart) {
       currentCart = await this.createCartIfNotExists(tx, context);
     }
 
-    return this.updateCartWithNewItem(tx, currentCart, item, productVariant);
+    return this.updateCartWithNewItem(tx, currentCart, item);
   }
 
   private async createCartIfNotExists(
@@ -209,7 +136,7 @@ export class CartService extends BaseService {
 
     return tx.cart.create({
       include: CART_INCLUDE,
-      data: { totalAmount: 0, store: { connect: { locale } }, ...args },
+      data: { store: { connect: { locale } }, ...args },
     });
   }
 
@@ -217,30 +144,51 @@ export class CartService extends BaseService {
     tx: Prisma.TransactionClient,
     cart: Cart | null,
     item: AddToCartInput,
-    productVariant: ProductVariant,
   ) {
     if (!cart) {
       throw new Error('There was an issue with updating the new cart item');
     }
 
+    const hasSelectedDeliveryPromise = item.deliveryPromises.some(
+      (dp) => dp.selected,
+    );
+
     return tx.cart.update({
       include: CART_INCLUDE,
       data: {
-        totalAmount: CartService.calculateItemsTotalAmount(
-          [...cart.items, item],
-          [productVariant],
-        ),
         items: {
           upsert: {
             where: {
-              cartId_sku_size: {
+              cartId_sku_size_color_name: {
                 cartId: cart.id,
                 sku: item.sku,
                 size: item.size,
+                color: item.color,
+                name: item.name,
               },
             },
             update: { quantity: { increment: item.quantity } },
-            create: item,
+            create: {
+              name: item.name,
+              sku: item.sku,
+              size: item.size,
+              color: item.color,
+              quantity: item.quantity,
+              image: item.image,
+              price: item.price,
+              deliveryPromises: {
+                create: item.deliveryPromises.map((dp, index) => ({
+                  price: dp.price,
+                  shippingMethod: dp.shippingMethod,
+                  estimatedMinDays: dp.estimatedMinDays,
+                  estimatedMaxDays: dp.estimatedMaxDays,
+                  selected: hasSelectedDeliveryPromise
+                    ? dp.selected
+                    : index === 0,
+                  requiresShippingFee: dp.requiresShippingFee,
+                })),
+              },
+            },
           },
         },
       },
@@ -315,6 +263,47 @@ export class CartService extends BaseService {
     });
   }
 
+  public async updateItemDeliveryPromise(
+    context: ServerContext,
+    data: UpdateDeliveryPromiseSelectionInput,
+  ) {
+    const { locale, cart } = context;
+    const selectedPromiseId = data.deliveryPromiseId;
+
+    return await this.prismaClient.cart.update({
+      include: CART_INCLUDE,
+      where: {
+        id: cart.id as string,
+        locale,
+      },
+      data: {
+        items: {
+          update: {
+            where: {
+              id: data.itemId,
+            },
+            data: {
+              deliveryPromises: {
+                updateMany: [
+                  {
+                    where: { id: selectedPromiseId },
+                    data: { selected: true },
+                  },
+                  {
+                    where: {
+                      id: { not: selectedPromiseId },
+                    },
+                    data: { selected: false },
+                  },
+                ],
+              },
+            },
+          },
+        },
+      },
+    });
+  }
+
   private async createAnonymousCustomer(locale: string) {
     const anonymousId = randomUUID();
     return await this.prismaClient.customer.create({
@@ -333,23 +322,5 @@ export class CartService extends BaseService {
     if (customerId) return 'customer';
     if (anonymousId) return 'guest';
     return 'new';
-  }
-
-  private static calculateItemsTotalAmount(
-    items: { sku: string; quantity: number }[],
-    variants: ProductVariant[],
-  ) {
-    return items
-      .flatMap((item) => {
-        const productVariant = variants.find(
-          (variant) => variant.sku === item.sku,
-        );
-
-        if (!productVariant) return [];
-
-        return [{ ...item, price: productVariant.price }];
-      })
-
-      .reduce((acc, curr) => acc + curr.price.toNumber() * curr.quantity, 0);
   }
 }

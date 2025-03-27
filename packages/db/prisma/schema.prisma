@@ -1,4 +1,4 @@
-// This is your Prisma schema file,schema
+// This is your Prisma schema file,schemaschema
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 // Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
@@ -84,7 +84,6 @@ model Product {
   createdAt        DateTime          @default(now())
   updatedAt        DateTime          @updatedAt
   variants         ProductVariant[]
-  cartItems        CartItem[]
   deliveryPromises DeliveryPromise[]
   store            Store             @relation(fields: [locale], references: [locale], onDelete: Cascade)
   locale           String
@@ -156,7 +155,6 @@ model Cart {
   userId      String?
   anonymousId String?
   items       CartItem[]
-  totalAmount Decimal
   status      CartStatus @default(ACTIVE)
   createdAt   DateTime   @default(now())
   updatedAt   DateTime   @updatedAt
@@ -166,19 +164,36 @@ model Cart {
   @@index([locale])
 }
 
-model CartItem {
-  id        String   @id @default(uuid())
-  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
-  productId String
-  sku       String
-  size      String
-  quantity  Int
-  cart      Cart     @relation(fields: [cartId], references: [id], onDelete: Cascade)
-  cartId    String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+model CartItemDeliveryPromise {
+  id                  String                        @id @default(uuid())
+  cartItem            CartItem                      @relation(fields: [cartItemId], references: [id], onDelete: Cascade)
+  cartItemId          String
+  price               Decimal
+  estimatedMinDays    Int
+  estimatedMaxDays    Int
+  shippingMethod      DeliveryPromiseShippingMethod @default(STANDARD)
+  requiresShippingFee Boolean?                      @default(false)
+  selected            Boolean                       @default(false)
+  createdAt           DateTime                      @default(now())
+  updatedAt           DateTime                      @updatedAt
+}
 
-  @@unique([cartId, sku, size])
+model CartItem {
+  id               String                    @id @default(uuid())
+  sku              String
+  name             String
+  size             String
+  color            String
+  quantity         Int
+  deliveryPromises CartItemDeliveryPromise[]
+  image            String
+  price            Decimal
+  cart             Cart                      @relation(fields: [cartId], references: [id], onDelete: Cascade)
+  cartId           String
+  createdAt        DateTime                  @default(now())
+  updatedAt        DateTime                  @updatedAt
+
+  @@unique([cartId, sku, size, color, name])
 }
 
 enum OrderStatus {
@@ -196,7 +211,6 @@ model Order {
   shippingAddressId String
   billingAddressId  String
   items             OrderItem[]
-  totalAmount       Decimal
   status            OrderStatus @default(PENDING)
   paymentId         String?
   createdAt         DateTime    @default(now())

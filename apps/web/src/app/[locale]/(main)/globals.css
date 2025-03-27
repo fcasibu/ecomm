@@ -47,8 +47,8 @@
     --error-base-hsl: 0 79% 62%;
     --info-base-hsl: 197 88% 61%;
 
-    --bg-opacity: 0.10;
-    --text-opacity: 0.90;
+    --bg-opacity: 0.1;
+    --text-opacity: 0.9;
 
     --success: hsl(var(--success-base-hsl) / var(--bg-opacity));
     --success-foreground: hsl(var(--success-base-hsl) / var(--text-opacity));

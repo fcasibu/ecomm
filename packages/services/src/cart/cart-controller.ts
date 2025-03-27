@@ -1,8 +1,6 @@
 import {
   cartCreateSchema,
-  cartUpdateSchema,
   type CartCreateInput,
-  type CartUpdateInput,
 } from '@ecomm/validations/cms/cart/cart-schema';
 import { BaseController } from '../base-controller';
 import type { CartService } from './cart-service';
@@ -13,6 +11,7 @@ import { CartTransformer } from './cart-transformer';
 import type { AddToCartInput } from '@ecomm/validations/web/cart/add-to-cart-schema';
 import type { ServerContext } from '@ecomm/lib/types';
 import { UpdateItemQuantityError } from '../errors/update-item-quantity-error';
+import type { UpdateDeliveryPromiseSelectionInput } from '@ecomm/validations/web/cart/update-delivery-promise-selection-schema';
 
 export class CartController extends BaseController {
   private readonly transformer = new CartTransformer();
@@ -42,33 +41,6 @@ export class CartController extends BaseController {
     } catch (error) {
       this.logAndThrowError(error, {
         message: 'Error creating cart',
-      });
-    }
-  }
-
-  public async update(locale: string, cartId: string, input: CartUpdateInput) {
-    try {
-      logger.info({ cartId, input }, 'Updating cart');
-      const result = cartUpdateSchema.safeParse(input);
-
-      if (!result.success) {
-        throw new ValidationError(result.error);
-      }
-
-      const updatedCart = this.transformer.toDTO(
-        await this.cartService.update(locale, cartId, result.data),
-      );
-      if (!updatedCart) {
-        throw new NotFoundError(`Cart ID "${cartId}" not found.`);
-      }
-
-      logger.info({ cartId: updatedCart.id }, 'Fetched cart');
-
-      return updatedCart;
-    } catch (error) {
-      this.logAndThrowError(error, {
-        message: `Error updating Cart`,
-        notFoundMessage: `Error updating cart: Cart ID "${cartId}" not found.`,
       });
     }
   }
@@ -180,6 +152,38 @@ export class CartController extends BaseController {
     } catch (error) {
       this.logAndThrowError(error, {
         message: 'Error updating item quantity',
+      });
+    }
+  }
+
+  public async updateItemDeliveryPromise(
+    context: ServerContext,
+    data: UpdateDeliveryPromiseSelectionInput,
+  ) {
+    try {
+      logger.info({ data }, 'Updating item delivery promise');
+
+      if (!context.cart.id) {
+        throw new UpdateItemQuantityError();
+      }
+
+      const cart = this.transformer.toDTO(
+        await this.cartService.updateItemDeliveryPromise(context, data),
+      );
+
+      if (!cart) {
+        throw new NotFoundError('There was an issue with finding the cart');
+      }
+
+      logger.info(
+        { cartId: cart.id },
+        'Updated item delivery promise successfully',
+      );
+
+      return cart;
+    } catch (error) {
+      this.logAndThrowError(error, {
+        message: 'Error updating item delivery promise',
       });
     }
   }

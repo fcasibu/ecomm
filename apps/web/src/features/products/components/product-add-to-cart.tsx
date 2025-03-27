@@ -56,10 +56,18 @@ export function ProductAddToCart() {
           size="lg"
           formAction={() =>
             formAction({
+              color: selectedVariant.attributes.color,
+              image: selectedVariant.images[0] ?? '',
+              name: product.name,
+              price: selectedVariant.price.value,
+              deliveryPromises: product.deliveryPromises.map((dp, index) => ({
+                ...dp,
+                price: dp.price.value,
+                selected: index === 0,
+              })),
               sku: selectedVariant.sku,
               size: selectedSize,
               quantity: selectedQuantity,
-              productId: product.id,
             })
           }
         >

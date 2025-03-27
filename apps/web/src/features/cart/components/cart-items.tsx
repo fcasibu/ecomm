@@ -5,6 +5,7 @@ import { CartItem } from './cart-item';
 import { updateItemQuantityAction } from '@/lib/actions/cart';
 import { useActionState } from 'react';
 import { useStore } from '@/features/store/providers/store-provider';
+import { ShippingMethods } from './shipping-methods';
 
 export function CartItems({ cart }: { cart: CartDTO }) {
   const [result, formAction, isPending] = useActionState(
@@ -30,6 +31,7 @@ export function CartItems({ cart }: { cart: CartDTO }) {
             formAction={formAction}
             isPending={isPending}
           />
+          <ShippingMethods item={item} subtotal={cart.subtotal} />
           {index < sortedCartItems.length - 1 && <hr className="my-8" />}
         </div>
       ))}

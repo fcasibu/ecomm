@@ -1,3 +1,5 @@
+import type { DeliveryPromiseShippingMethod } from '../common/types';
+
 export interface ProductAttribute {
   value?: string;
   title?: string;
@@ -12,7 +14,7 @@ export interface Size {
 
 export interface DeliveryPromiseDTO {
   id: string;
-  shippingMethod: 'STANDARD' | 'EXPRESS' | 'NEXT_DAY';
+  shippingMethod: DeliveryPromiseShippingMethod;
   estimatedMinDays: number;
   estimatedMaxDays: number;
   price: {

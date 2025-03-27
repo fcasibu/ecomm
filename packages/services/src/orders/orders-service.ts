@@ -38,7 +38,6 @@ export class OrdersService extends BaseService {
     return await this.prismaClient.order.create({
       include: ORDER_INCLUDE,
       data: {
-        totalAmount: input.cart.totalAmount,
         billingAddressId: input.billingAddressId,
         shippingAddressId: input.shippingAddressId,
         items: {

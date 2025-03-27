@@ -7,11 +7,13 @@ import { cookies } from 'next/headers';
 import { cookieKeys } from '../utils/cookie-keys';
 import {
   addToCart,
+  updateItemDeliveryPromise,
   updateItemQuantity,
 } from '@/features/cart/services/mutations';
 import { updateItemQuantitySchema } from '@ecomm/validations/web/cart/update-item-quantity-schema';
 import type { Locale } from '@ecomm/lib/locale-helper';
 import type { CartDTO } from '@ecomm/services/cart/cart-dto';
+import { updateDeliveryPromiseSelectionSchema } from '@ecomm/validations/web/cart/update-delivery-promise-selection-schema';
 
 const commonCookieOptions = {
   httpOnly: true,
@@ -53,6 +55,20 @@ export const updateItemQuantityAction = validateAction(
   async (data) => {
     const context = await getServerContext();
     const result = await updateItemQuantity(data);
+
+    if (result.success) {
+      await setCartCookies(context.locale, result.data);
+    }
+
+    return result;
+  },
+);
+
+export const updateItemDeliveryPromiseAction = validateAction(
+  updateDeliveryPromiseSelectionSchema,
+  async (data) => {
+    const context = await getServerContext();
+    const result = await updateItemDeliveryPromise(data);
 
     if (result.success) {
       await setCartCookies(context.locale, result.data);

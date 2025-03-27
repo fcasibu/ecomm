@@ -3,10 +3,9 @@
 import { NextLink } from '@/components/link';
 import { useCurrentLocale, useScopedI18n } from '@/locales/client';
 import { formatPrice } from '@ecomm/lib/format-price';
-import type { CartDTO, CartItemDTO } from '@ecomm/services/cart/cart-dto';
+import type { CartDTO } from '@ecomm/services/cart/cart-dto';
 import { Button } from '@ecomm/ui/button';
-import { ImageComponent } from '@ecomm/ui/image';
-import { ArrowRight, Minus, Plus, ShoppingBag, Trash2 } from 'lucide-react';
+import { ArrowRight, ShoppingBag } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import {
   Sheet,
@@ -20,8 +19,8 @@ import { link } from '@/lib/utils/link-helper';
 import { useStore } from '@/features/store/providers/store-provider';
 import { useActionState } from 'react';
 import { updateItemQuantityAction } from '@/lib/actions/cart';
-import type { UpdateItemQuantityInput } from '@ecomm/validations/web/cart/update-item-quantity-schema';
 import { CartItem } from './cart-item';
+import { getCartTotal } from '../utils/get-cart-total';
 
 export function CartSheet({ cart }: { cart: CartDTO | null }) {
   const t = useScopedI18n('cart.sheet');
@@ -41,6 +40,8 @@ export function CartSheet({ cart }: { cart: CartDTO | null }) {
       (a, b) =>
         new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
     ) ?? [];
+
+  const cartTotal = cart ? getCartTotal(store, cart) : 0;
 
   return (
     <Sheet
@@ -96,6 +97,14 @@ export function CartSheet({ cart }: { cart: CartDTO | null }) {
 
         {itemCount > 0 && (
           <SheetFooter className="bg-background mt-auto flex-col gap-3 border-t px-6 py-4 sm:flex-col sm:items-stretch">
+            {cartData?.subtotal && (
+              <div className="flex items-center justify-between text-sm">
+                <span className="text-muted-foreground">Subtotal</span>
+                <span className="text-muted-foreground">
+                  {formatPrice(cartData.subtotal, store.currency)}
+                </span>
+              </div>
+            )}
             <div className="flex items-center justify-between text-sm">
               <span className="text-muted-foreground">Shipping</span>
               <span className="text-muted-foreground">
@@ -104,9 +113,9 @@ export function CartSheet({ cart }: { cart: CartDTO | null }) {
             </div>
             <div className="flex items-center justify-between">
               <span className="text-base font-semibold">{t('total')}</span>
-              {cartData?.totalAmount && (
+              {cartTotal && (
                 <span className="text-lg font-bold">
-                  {formatPrice(cartData.totalAmount, store.currency)}
+                  {formatPrice(cartTotal, store.currency)}
                 </span>
               )}
             </div>

@@ -7,9 +7,10 @@ export class OrderTransformer extends BaseTransformer {
   public toDTO(order: Order | null | undefined): OrderDTO | null {
     if (!order) return null;
 
+    // TODO(fcasibu): update this with new changes in cart
     return {
       id: order.id,
-      totalAmount: order.totalAmount.toNumber(),
+      totalAmount: 0,
       status: order.status,
       items: order.items.map((item) => this.transformerOrderItem(item)),
       customer: {

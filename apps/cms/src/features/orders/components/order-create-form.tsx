@@ -401,7 +401,20 @@ function CartStage() {
 
   const form = useForm<CartCreateInput>({
     resolver: zodResolver(cartCreateSchema),
-    defaultValues: { items: [{ sku: '', productId: '', quantity: 1 }] },
+    defaultValues: {
+      items: [
+        {
+          name: '',
+          sku: '',
+          deliveryPromises: [],
+          color: '',
+          image: '',
+          price: 0,
+          size: '',
+          quantity: 1,
+        },
+      ],
+    },
   });
 
   const { fields, append, remove } = useFieldArray({
@@ -409,12 +422,14 @@ function CartStage() {
     name: 'items',
   });
 
+  console.log(fields, form.formState.errors);
+
   useEffect(() => {
     setPopoverStates(Array(fields.length).fill(false));
   }, [fields.length]);
 
-  const getProductById = (productId: string) => {
-    return products.find((p) => p.id === productId);
+  const getProductBySku = (sku: string) => {
+    return products.find((p) => p.variants[0]?.sku === sku);
   };
 
   const handlePopoverToggle = (index: number) => {
@@ -445,12 +460,40 @@ function CartStage() {
   };
 
   const updateProductSelection = (product: ProductDTO, index: number) => {
-    form.setValue(`items.${index}.productId`, product.id);
-
-    if (product.variants.length === 1) {
+    if (product.variants.length) {
       form.setValue(`items.${index}.sku`, product.variants[0]?.sku || '');
+      form.setValue(`items.${index}.name`, product.name || '');
+      form.setValue(
+        `items.${index}.price`,
+        product.variants[0]?.price.value ?? 0,
+      );
+      form.setValue(
+        `items.${index}.color`,
+        product.variants[0]?.attributes.color ?? '',
+      );
+      form.setValue(
+        `items.${index}.image`,
+        product.variants[0]?.images[0] ?? '',
+      );
+      form.setValue(
+        `items.${index}.size`,
+        product.variants[0]?.sizes[0]?.value ?? '',
+      );
+      form.setValue(
+        `items.${index}.deliveryPromises`,
+        product.deliveryPromises.map((dp) => ({
+          ...dp,
+          enabled: false,
+          price: dp.price.value,
+        })) ?? [],
+      );
     } else {
       form.setValue(`items.${index}.sku`, '');
+      form.setValue(`items.${index}.name`, '');
+      form.setValue(`items.${index}.price`, 0);
+      form.setValue(`items.${index}.color`, '');
+      form.setValue(`items.${index}.image`, '');
+      form.setValue(`items.${index}.deliveryPromises`, []);
     }
 
     closePopover(index);
@@ -461,7 +504,8 @@ function CartStage() {
 
     const existingIndex = fields.findIndex(
       (_, i) =>
-        i !== index && form.getValues(`items.${i}.productId`) === product.id,
+        i !== index &&
+        form.getValues(`items.${i}.sku`) === product.variants[0]?.sku,
     );
 
     if (existingIndex >= 0) {
@@ -483,8 +527,8 @@ function CartStage() {
     const existingIndex = fields.findIndex(
       (_, i) =>
         i !== index &&
-        form.getValues(`items.${i}.productId`) ===
-          form.getValues(`items.${index}.productId`) &&
+        form.getValues(`items.${i}.sku`) ===
+          form.getValues(`items.${index}.sku`) &&
         form.getValues(`items.${i}.sku`) === variant.sku,
     );
 
@@ -493,7 +537,7 @@ function CartStage() {
       remove(index);
 
       const product = products.find(
-        (p) => p.id === form.getValues(`items.${existingIndex}.productId`),
+        (p) => p.sku === form.getValues(`items.${existingIndex}.sku`),
       );
 
       toast({
@@ -506,17 +550,25 @@ function CartStage() {
   const handleSubmit = (data: CartCreateInput) => {
     const cartItemsForDisplay = data.items.map((item) => {
       const product = products.find(
-        (product) => product.id === item.productId,
+        (product) => product.variants[0]?.sku === item.sku,
       )!;
       const variant = product.variants.find(
         (variant) => variant.sku === item.sku,
       )!;
 
       return {
-        ...item,
         image: variant.images[0] ?? '',
         name: product.name,
         price: variant.price.value,
+        sku: item.sku,
+        quantity: item.quantity,
+        size: variant.sizes[0]?.value ?? '',
+        deliveryPromises: product.deliveryPromises.map((dp) => ({
+          ...dp,
+          enabled: false,
+          price: dp.price.value,
+        })),
+        color: variant.attributes.color ?? '',
       };
     });
 
@@ -587,7 +639,7 @@ function CartStage() {
               <div key={rootField.id} className="space-y-2 rounded border p-4">
                 <FormField
                   control={form.control}
-                  name={`items.${index}.productId`}
+                  name={`items.${index}.sku`}
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Product</FormLabel>
@@ -603,8 +655,9 @@ function CartStage() {
                               aria-expanded={popoverStates[index]}
                               className="w-full justify-between"
                             >
-                              {products.find((p) => p.id === field.value)
-                                ?.name ?? 'Search by SKU or Variant Key'}
+                              {products.find(
+                                (p) => p.variants[0]?.sku === field.value,
+                              )?.name ?? 'Search by SKU or Variant Key'}
                               <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                             </Button>
                           </PopoverTrigger>
@@ -614,25 +667,32 @@ function CartStage() {
                               <CommandList>
                                 <CommandEmpty>No products found.</CommandEmpty>
                                 <CommandGroup>
-                                  {products.map((product) => (
-                                    <CommandItem
-                                      key={`${product.id}-${rootField.id}`}
-                                      onSelect={() => {
-                                        handleSelectProduct(product, index);
-                                        field.onChange(product.id);
-                                      }}
-                                    >
-                                      <Check
-                                        className={cn(
-                                          'mr-2 h-4 w-4',
-                                          field.value === product.id
-                                            ? 'opacity-100'
-                                            : 'opacity-0',
-                                        )}
-                                      />
-                                      {product.name}
-                                    </CommandItem>
-                                  ))}
+                                  {products
+                                    .filter(
+                                      (product) => product.variants.length,
+                                    )
+                                    .map((product) => (
+                                      <CommandItem
+                                        key={`${product.id}-${rootField.id}`}
+                                        onSelect={() => {
+                                          handleSelectProduct(product, index);
+                                          field.onChange(
+                                            product.variants[0]?.sku ?? '',
+                                          );
+                                        }}
+                                      >
+                                        <Check
+                                          className={cn(
+                                            'mr-2 h-4 w-4',
+                                            field.value ===
+                                              product.variants[0]?.sku
+                                              ? 'opacity-100'
+                                              : 'opacity-0',
+                                          )}
+                                        />
+                                        {product.name}
+                                      </CommandItem>
+                                    ))}
                                 </CommandGroup>
                               </CommandList>
                             </Command>
@@ -644,7 +704,7 @@ function CartStage() {
                   )}
                 />
 
-                {form.getValues(`items.${index}.productId`) && (
+                {form.getValues(`items.${index}.sku`) && (
                   <FormField
                     control={form.control}
                     name={`items.${index}.sku`}
@@ -652,8 +712,8 @@ function CartStage() {
                       <FormItem>
                         <FormLabel>Variant</FormLabel>
                         <div className="space-y-3">
-                          {getProductById(
-                            form.getValues(`items.${index}.productId`),
+                          {getProductBySku(
+                            form.getValues(`items.${index}.sku`),
                           )?.variants.map((variant) => {
                             const isSelected = field.value === variant.sku;
                             const variantStock = variant.sizes[0]?.stock ?? 1;
@@ -781,7 +841,16 @@ function CartStage() {
               <Button
                 type="button"
                 onClick={() =>
-                  append({ sku: '', productId: '', quantity: 1, size: '' })
+                  append({
+                    name: '',
+                    sku: '',
+                    deliveryPromises: [],
+                    color: '',
+                    image: '',
+                    price: 0,
+                    size: '',
+                    quantity: 1,
+                  })
                 }
                 variant="outline"
               >

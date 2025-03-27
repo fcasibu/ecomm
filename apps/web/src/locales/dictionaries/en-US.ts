@@ -11,10 +11,20 @@ export default {
     actions: {
       continueShopping: 'Continue Shopping',
     },
+    empty: {
+      title: 'Your cart is empty',
+      description:
+        "Looks like you haven't added anything to your cart yet. Browse our collection to find something you'll love.",
+      actions: {
+        continueShopping: 'Continue Shopping',
+      },
+    },
     orderSummary: {
       title: 'Order Summary',
       subtotal: 'Subtotal',
       total: 'Total',
+      shipping: 'Shipping',
+      free: 'Free',
       freeShippingEligibility:
         'Your order qualifies for free shipping on eligible items',
       cartInfo: {

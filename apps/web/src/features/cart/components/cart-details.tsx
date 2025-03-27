@@ -10,7 +10,7 @@ export function CartDetails({ cart }: { cart: CartDTO }) {
       <CartHeading itemsCount={cart.items.length} />
       <div className="flex flex-col justify-center gap-4 lg:flex-row">
         <div className="flex flex-1 flex-col gap-4">
-          <FreeShippingPriceThreshold currentThreshold={100} />
+          <FreeShippingPriceThreshold currentThreshold={cart.subtotal} />
           <CartItems cart={cart} />
         </div>
         <div className="basis-[450px]">
