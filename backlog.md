@@ -10,7 +10,6 @@
 - [ ] Refactor command inputs that are one shot to close on select
 - [ ] Fix input fields with undefined default values in forms
 - [ ] Fix issues with errors in `product-delivery-promises-control.tsx`
-- [ ] See if we can programatically prefetch images
 - [ ] Fix UI inconsistencies in header
 - [ ] Footer Newsletter functionality implementation
 - [ ] Remove Text component (kinda annoying)
@@ -28,8 +27,10 @@
 - [ ] Figure out why TBT is >= 50 in PLP
 - [ ] Add more sort by options in PLP
 - [ ] Update order model with new changes in cart
-- [ ] Make delivery promise price required
 - [ ] Error handling in cart
+- [ ] Add Recent Searches
+- [ ] Add Search Suggestions
+- [ ] Add popular categories
 
 - [=] Fix plp content shift (accordions are initially closed even with the default value added)
 

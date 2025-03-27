@@ -12,6 +12,7 @@ export const link = {
     signIn: '/sign-in',
     joinUs: '/create-account',
   },
+  search: (query: string) => `/search?query=${query}`,
   cart: '/cart',
   help: '/help',
   checkout: '/checkout',

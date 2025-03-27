@@ -8,7 +8,7 @@ import type {
   HeaderTier2NavigationItem,
 } from '@/sanity/queries/header/types';
 import { Button } from '@ecomm/ui/button';
-import { Globe, Heart, Menu, Search, ShoppingCart } from 'lucide-react';
+import { Globe, Menu } from 'lucide-react';
 import { Fragment, useEffect, useState } from 'react';
 import type { CategoryHierarchy } from '@ecomm/services/categories/category-dto';
 import { ConditionalLink, NextLink } from '../link';
@@ -46,8 +46,10 @@ const SheetComponents = dynamicImport(
 
 export function NavigationBarMobile({
   navigation,
+  actionComponents,
 }: {
   navigation: HeaderNavigation | null | undefined;
+  actionComponents: React.ReactNode;
 }) {
   const { navigationItems } = navigation ?? {};
   const t = useScopedI18n('header.navigation');
@@ -58,30 +60,7 @@ export function NavigationBarMobile({
         <Text className="!font-bold">{t('title')}</Text>
       </NextLink>
       <div className="flex items-center justify-end gap-3">
-        <Button
-          aria-label={t('actions.search.open')}
-          variant="none"
-          size="icon"
-          className="h-min w-min"
-        >
-          <Search aria-hidden />
-        </Button>
-        <Button
-          aria-label={t('actions.wishlist.open')}
-          variant="none"
-          size="icon"
-          className="h-min w-min"
-        >
-          <Heart aria-hidden />
-        </Button>
-        <Button
-          aria-label={t('actions.cart.open')}
-          variant="none"
-          size="icon"
-          className="h-min w-min"
-        >
-          <ShoppingCart aria-hidden />
-        </Button>
+        {actionComponents}
         <NavigationMenu navigationItems={navigationItems ?? []} />
       </div>
     </nav>

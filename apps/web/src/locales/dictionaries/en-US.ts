@@ -4,6 +4,29 @@ export default {
       label: 'Home',
     },
   },
+  autocomplete: {
+    actions: {
+      viewAll: 'View All',
+    },
+    results: 'Results for "{query}"',
+    noResult: {
+      title: 'No results found for "{query}"',
+      description:
+        'We could not find any products matching your search. Try checking the spelling or using different keywords.',
+      suggestions: {
+        title: 'Search suggestions',
+        suggestionOne: 'Check for typos or spelling errors',
+        suggestionTwo: ' Try more general keywords',
+        suggestionThree: 'Try searching by product name or category slug',
+      },
+    },
+  },
+  searchMenu: {
+    placeholder: 'Search for products',
+    actions: {
+      close: 'Close',
+    },
+  },
   cart: {
     'title#zero': 'Shopping Cart',
     'title#one': 'Shopping Cart ({count} item)',

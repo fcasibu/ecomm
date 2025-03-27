@@ -15,20 +15,15 @@ import { link } from '@/lib/utils/link-helper';
 import { useScopedI18n } from '@/locales/client';
 import { cn } from '@ecomm/ui/lib/utils';
 import { ImageComponent } from '@ecomm/ui/image';
-import {
-  ChevronDown,
-  ChevronRight,
-  Heart,
-  Search,
-  ShoppingCart,
-} from 'lucide-react';
-import { Button } from '@ecomm/ui/button';
+import { ChevronDown, ChevronRight } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 
 export function NavigationBar({
   navigation,
+  actionComponents,
 }: {
   navigation: HeaderNavigation | null | undefined;
+  actionComponents: React.ReactNode;
 }) {
   const [openedMenu, setOpenedMenu] = useState<number | null>(null);
   const { navigationItems } = navigation ?? {};
@@ -73,35 +68,7 @@ export function NavigationBar({
             </Fragment>
           ))}
         </ul>
-        <div className="flex items-center gap-3">
-          <Button
-            aria-label={t('actions.search.open')}
-            variant="none"
-            size="icon"
-            className="h-min w-min"
-          >
-            <Search aria-hidden />
-          </Button>
-          <Button
-            aria-label={t('actions.wishlist.open')}
-            variant="none"
-            size="icon"
-            className="h-min w-min"
-          >
-            <Heart aria-hidden />
-          </Button>
-          <Button
-            aria-label={t('actions.cart.open')}
-            variant="none"
-            size="icon"
-            className="h-min w-min"
-            asChild
-          >
-            <a href={link.cart}>
-              <ShoppingCart aria-hidden />
-            </a>
-          </Button>
-        </div>
+        <div className="flex items-center gap-3">{actionComponents}</div>
       </div>
     </nav>
   );

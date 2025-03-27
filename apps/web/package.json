@@ -12,6 +12,9 @@
     "check-types": "tsc --noEmit"
   },
   "dependencies": {
+    "@algolia/autocomplete-core": "^1.18.1",
+    "@algolia/autocomplete-js": "^1.18.1",
+    "@algolia/client-query-suggestions": "5.23.0",
     "@ecomm/lib": "workspace:*",
     "@ecomm/services": "workspace:*",
     "@ecomm/ui": "workspace:*",

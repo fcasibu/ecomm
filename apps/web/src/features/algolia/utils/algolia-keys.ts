@@ -8,6 +8,9 @@ export const algoliaKeys = {
     index: (locale: Locale) => `${ENVIRONMENT}_categories_${locale}` as const,
   },
   product: {
-    index: (locale: Locale) => `${ENVIRONMENT}_products_${locale}` as const,
+    main: (locale: Locale) => `${ENVIRONMENT}_products_${locale}` as const,
+    priceAsc: (locale: string) => `${ENVIRONMENT}_products_price_asc_${locale}`,
+    priceDesc: (locale: string) =>
+      `${ENVIRONMENT}_products_price_desc_${locale}`,
   },
 } as const;

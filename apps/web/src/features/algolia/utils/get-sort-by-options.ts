@@ -1,12 +1,12 @@
+import type { Locale } from '@ecomm/lib/locale-helper';
+import { algoliaKeys } from './algolia-keys';
+
 export type SortByLabel = 'main' | 'priceAsc' | 'priceDesc';
 
-export function getProductSortByOptions(locale: string) {
-  const envName =
-    process.env.NODE_ENV === 'production' ? 'production' : 'development';
-
+export function getProductSortByOptions(locale: Locale) {
   return [
-    { label: 'main', value: `${envName}_products_${locale}` },
-    { label: 'priceAsc', value: `${envName}_products_price_asc_${locale}` },
-    { label: 'priceDesc', value: `${envName}_products_price_desc_${locale}` },
+    { label: 'main', value: algoliaKeys.product.main(locale) },
+    { label: 'priceAsc', value: algoliaKeys.product.priceAsc(locale) },
+    { label: 'priceDesc', value: algoliaKeys.product.priceDesc(locale) },
   ];
 }

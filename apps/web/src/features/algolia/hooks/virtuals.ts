@@ -5,11 +5,13 @@ import {
   usePagination,
   useRange,
   useRefinementList,
+  useSearchBox,
   useSortBy,
   type UseConfigureProps,
   type UsePaginationProps,
   type UseRangeProps,
   type UseRefinementListProps,
+  type UseSearchBoxProps,
   type UseSortByProps,
 } from 'react-instantsearch-core';
 
@@ -39,6 +41,12 @@ export function VirtualSortBy(props: UseSortByProps) {
 
 export function VirtualPagination(props: UsePaginationProps) {
   usePagination(props);
+
+  return null;
+}
+
+export function VirtualSearchBox(props: UseSearchBoxProps) {
+  useSearchBox(props);
 
   return null;
 }

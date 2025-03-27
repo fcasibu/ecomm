@@ -7,12 +7,16 @@ import { link } from '@/lib/utils/link-helper';
 import { Separator } from '@ecomm/ui/separator';
 import { Text } from '@ecomm/ui/typography';
 import { Globe } from 'lucide-react';
+import { ActionComponents } from './action-components';
 
 export async function Header() {
   const locale = await getCurrentLocale();
   const header = await getHeader(locale);
   const t = await getScopedI18n('header.menu');
   const [lang, region] = locale.split('-');
+
+  // NOTE(fcasibu): this is fine since we are in server
+  const actionComponents = <ActionComponents />;
 
   return (
     <header className="sticky top-0 z-10 w-full border border-b-gray-300 bg-white">
@@ -38,9 +42,11 @@ export async function Header() {
       </div>
       <NavigationBar
         navigation={header?.success ? header.data?.navigation : null}
+        actionComponents={actionComponents}
       />
       <NavigationBarMobile
         navigation={header?.success ? header.data?.navigation : null}
+        actionComponents={actionComponents}
       />
     </header>
   );

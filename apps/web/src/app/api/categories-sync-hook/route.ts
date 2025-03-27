@@ -6,7 +6,7 @@ import type { CategoryDTO } from '@ecomm/services/categories/category-dto'; // A
 import { NextResponse } from 'next/server';
 import assert from 'node:assert';
 
-const client = algoliaWriteClient();
+const { search: client } = algoliaWriteClient();
 
 function transformCategoryForAlgolia(category: CategoryDTO) {
   assert(category.slug, 'Category must have a slug');

@@ -114,7 +114,9 @@ export const productCreateSchema = z.object({
   variants: z
     .array(productCreateVariantSchema)
     .min(1, 'A product must have a variant'),
-  deliveryPromises: z.array(productDeliveryPromiseCreateSchema),
+  deliveryPromises: z
+    .array(productDeliveryPromiseCreateSchema)
+    .min(1, 'Please select at least one delivery promise'),
 });
 
 export const productUpdateSchema = z.object({
@@ -125,7 +127,9 @@ export const productUpdateSchema = z.object({
   variants: z
     .array(productUpdateVariantSchema)
     .min(1, 'A product must have a variant'),
-  deliveryPromises: z.array(productDeliveryPromiseUpdateSchema),
+  deliveryPromises: z
+    .array(productDeliveryPromiseUpdateSchema)
+    .min(1, 'Please select at least one delivery promise'),
 });
 
 export type ProductCreateInput = z.infer<typeof productCreateSchema>;

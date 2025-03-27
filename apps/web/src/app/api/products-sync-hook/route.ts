@@ -6,7 +6,7 @@ import type { ProductDTO } from '@ecomm/services/products/product-dto';
 import { NextResponse } from 'next/server';
 import assert from 'node:assert';
 
-const client = algoliaWriteClient();
+const { search: client } = algoliaWriteClient();
 
 function transformProductForAlgolia(product: ProductDTO) {
   const variant = product.variants[0];
@@ -50,7 +50,7 @@ async function syncProductsToAlgolia(locale: string, products: ProductDTO[]) {
       indexName,
       forwardToReplicas: true,
       indexSettings: {
-        searchableAttributes: ['categorySlug'],
+        searchableAttributes: ['categorySlug', 'name'],
         attributesForFaceting: [
           'filterOnly(categorySlug)',
           'attributes.color',

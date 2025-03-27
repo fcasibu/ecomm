@@ -8,10 +8,10 @@ import { algoliaSearchClient } from '../algolia-search-client';
 import { useCurrentLocale } from '@/locales/client';
 import { algoliaKeys } from '../utils/algolia-keys';
 import {
-  VirtualAlgoliaConfigure,
   VirtualPagination,
   VirtualRange,
   VirtualRefinementList,
+  VirtualSearchBox,
   VirtualSortBy,
 } from '../hooks/virtuals';
 import {
@@ -22,12 +22,10 @@ import { getProductSortByOptions } from '../utils/get-sort-by-options';
 
 const { search: client } = algoliaSearchClient();
 
-export function InstantSearchProductProvider({
+export function InstantSearchQueryProvider({
   children,
-  filters,
 }: {
   children: React.ReactNode;
-  filters: string;
 }) {
   const locale = useCurrentLocale();
 
@@ -46,8 +44,8 @@ export function InstantSearchProductProvider({
         algoliaKeys.product.main(locale),
       )}
     >
+      <VirtualSearchBox />
       <VirtualPagination />
-      <VirtualAlgoliaConfigure filters={filters} />
       {ATTRIBUTES_FOR_FACETING['range'].map((item) => (
         <VirtualRange key={item.attribute} attribute={item.attribute} />
       ))}
@@ -90,6 +88,7 @@ function createRouting(
         }
 
         return {
+          ...(indexUiState?.query && { query: indexUiState.query }),
           sort_by: sortByOptions.find(
             (opt) => opt.value === indexUiState?.sortBy,
           )?.label,
@@ -110,6 +109,7 @@ function createRouting(
 
         return {
           [algoliaProductsIndex]: {
+            query: routeState.query,
             sortBy: sortByOptions.find(
               (opt) => opt.label === routeState.sort_by,
             )?.value,

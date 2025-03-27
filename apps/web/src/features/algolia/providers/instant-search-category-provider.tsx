@@ -5,7 +5,7 @@ import { algoliaSearchClient } from '../algolia-search-client';
 import { useCurrentLocale } from '@/locales/client';
 import { algoliaKeys } from '../utils/algolia-keys';
 
-const client = algoliaSearchClient();
+const { search: client } = algoliaSearchClient();
 
 export function InstantSearchCategoryProvider({
   children,
