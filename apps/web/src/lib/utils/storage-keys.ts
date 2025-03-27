@@ -14,4 +14,6 @@ export type StorageKeys = ReturnType<
 export const storageKeys = {
   recentlyViewedProducts: (locale: Locale) =>
     `recently_viewed_products_${toUnderscoreLocale(locale)}` as const,
+  recentSearches: (locale: Locale) =>
+    `recent_searches_${toUnderscoreLocale(locale)}` as const,
 } as const;

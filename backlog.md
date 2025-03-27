@@ -28,7 +28,6 @@
 - [ ] Add more sort by options in PLP
 - [ ] Update order model with new changes in cart
 - [ ] Error handling in cart
-- [ ] Add Recent Searches
 - [ ] Add Search Suggestions
 - [ ] Add popular categories
 

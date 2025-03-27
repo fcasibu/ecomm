@@ -4,7 +4,7 @@ import { dynamicImport } from '@/lib/utils/dynamic-import';
 import { useScopedI18n } from '@/locales/client';
 import { Button } from '@ecomm/ui/button';
 import { Search } from 'lucide-react';
-import { usePathname } from 'next/navigation';
+import { usePathname, useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
 const { SearchContent } = dynamicImport(
@@ -19,10 +19,12 @@ export function SearchBar() {
   const [open, setOpen] = useState(false);
   const t = useScopedI18n('header.navigation');
   const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const query = searchParams.get('query');
 
   useEffect(() => {
     setOpen(false);
-  }, [pathname]);
+  }, [pathname, query]);
 
   return (
     <>

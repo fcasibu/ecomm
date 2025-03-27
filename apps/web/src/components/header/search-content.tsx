@@ -12,6 +12,14 @@ const styles = `
     width: 100%;
   }
 
+  .aa-Source[data-autocomplete-source-id="recentSearches"] {
+    .aa-List {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+  }
+
   .aa-List {
     display: grid;
     grid-template-columns: 1fr;

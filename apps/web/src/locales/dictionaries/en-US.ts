@@ -8,6 +8,13 @@ export default {
     actions: {
       viewAll: 'View All',
     },
+    recentSearches: {
+      title: 'Recent searches',
+      empty: 'No recent searches',
+      actions: {
+        clear: 'Clear',
+      },
+    },
     results: 'Results for "{query}"',
     noResult: {
       title: 'No results found for "{query}"',
