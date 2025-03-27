@@ -14,6 +14,8 @@ import { Footer } from '@/components/footer';
 import { getStoreByLocale } from '@/features/store/services/queries';
 import { StoreProvider } from '@/features/store/providers/store-provider';
 import { AVAILABLE_LOCALES, type Locale } from '@ecomm/lib/locale-helper';
+import { GoogleTagManager } from '@next/third-parties/google';
+import { clientEnv } from '@/env/client';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -61,6 +63,7 @@ export default async function RootLayout({
   return (
     <html lang={locale}>
       <body className={inter.className}>
+        <GoogleTagManager gtmId={clientEnv.NEXT_PUBLIC_GTM_ID} />
         <NuqsAdapter>
           <Providers locale={locale}>
             <div>

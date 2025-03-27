@@ -1,6 +1,5 @@
 # BACKLOG
 
-- [ ] Implement GTM in web
 - [ ] Add asterisk on required input fields
 - [ ] Implement merge cart
   - It should be done on post-login

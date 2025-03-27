@@ -21,6 +21,7 @@
     "@ecomm/ui": "workspace:*",
     "@ecomm/validations": "workspace:*",
     "@hookform/resolvers": "^4.1.2",
+    "@next/third-parties": "latest",
     "@prisma/nextjs-monorepo-workaround-plugin": "^6.4.1",
     "@sanity/color-input": "^4.0.3",
     "@sanity/document-internationalization": "^3.3.1",

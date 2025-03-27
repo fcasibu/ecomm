@@ -146,7 +146,7 @@ export function SearchContent({ close }: { close: () => void }) {
               dangerouslySetInnerHTML={{
                 __html: styles,
               }}
-            ></style>
+            />
             <Autocomplete
               className="w-full py-3"
               detachedMediaQuery="none"

@@ -1,3 +1,4 @@
+import type { AlgoliaProductHit } from '@/features/algolia/types';
 import { toUnderscoreLocale, type Locale } from '@ecomm/lib/locale-helper';
 
 export interface StorageValues {
@@ -5,6 +6,8 @@ export interface StorageValues {
     value: string;
     timestamp: number;
   }[];
+
+  [key: `recent_searches_${string}`]: AlgoliaProductHit[];
 }
 
 export type StorageKeys = ReturnType<
