@@ -13,11 +13,12 @@ import { ProductFiltersMobile } from './product-filters-mobile';
 import { ProductNoResults } from './product-no-results';
 import { ProductSortBy } from './product-sort-by';
 import { ProductListingPagination } from './product-listing-pagination';
+import type { GridLayout } from '../types';
 
 export function ProductListingContent() {
   const { results } = useHits<AlgoliaProductHit>();
   const t = useScopedI18n('productListing');
-  const [gridLayout, setGridLayout] = useState<'1x1' | '2x2' | '3x3'>('3x3');
+  const [gridLayout, setGridLayout] = useState<GridLayout>('3x3');
 
   const hits = results?.hits ?? [];
 

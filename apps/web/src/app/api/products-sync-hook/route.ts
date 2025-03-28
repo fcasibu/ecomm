@@ -1,9 +1,10 @@
+import { serverEnv } from '@/env/server';
 import { algoliaWriteClient } from '@/features/algolia/algolia-write-client';
 import { getProductsWithAssociatedCategory } from '@/features/products/services/queries';
 import { getCurrentLocale } from '@/locales/server';
 import { isDefined } from '@ecomm/lib/is-defined';
 import type { ProductDTO } from '@ecomm/services/products/product-dto';
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import assert from 'node:assert';
 
 const { search: client } = algoliaWriteClient();
@@ -97,8 +98,16 @@ async function syncProductsToAlgolia(locale: string, products: ProductDTO[]) {
   }
 }
 
-// TODO(fcasibu): make it secure
-export async function GET() {
+export async function GET(request: NextRequest) {
+  const [_, token] = request.headers.get('Authorization')?.split(' ') ?? [];
+
+  if (token !== serverEnv.CRON_SECRET) {
+    return NextResponse.json(
+      { success: false, error: 'Unauthorized' },
+      { status: 401 },
+    );
+  }
+
   const locale = await getCurrentLocale();
   const result = await getProductsWithAssociatedCategory(locale);
 

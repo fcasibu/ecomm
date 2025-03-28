@@ -1,9 +1,10 @@
+import { serverEnv } from '@/env/server';
 import { algoliaWriteClient } from '@/features/algolia/algolia-write-client';
 import { getNonRootCategories } from '@/features/categories/services/queries';
 import { getCurrentLocale } from '@/locales/server';
 import { isDefined } from '@ecomm/lib/is-defined';
 import type { CategoryDTO } from '@ecomm/services/categories/category-dto'; // Assuming this exists
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import assert from 'node:assert';
 
 const { search: client } = algoliaWriteClient();
@@ -54,8 +55,15 @@ async function syncCategoriesToAlgolia(
   }
 }
 
-// TODO(fcasibu): make it secure
-export async function GET() {
+export async function GET(request: NextRequest) {
+  const [_, token] = request.headers.get('Authorization')?.split(' ') ?? [];
+
+  if (token !== serverEnv.CRON_SECRET) {
+    return NextResponse.json(
+      { success: false, error: 'Unauthorized' },
+      { status: 401 },
+    );
+  }
   const locale = await getCurrentLocale();
   const result = await getNonRootCategories(locale);
 

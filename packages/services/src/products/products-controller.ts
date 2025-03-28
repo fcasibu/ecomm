@@ -190,7 +190,7 @@ export class ProductsController extends BaseController {
         .map((item) => this.transformer.toDTO(item))
         .filter(isDefined);
 
-      logger.info('ProduisDefinedcts by skus fetched successfully');
+      logger.info('Products by skus fetched successfully');
 
       return transformedProducts;
     } catch (error) {

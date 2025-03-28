@@ -3,10 +3,8 @@
 import { NextLink } from '@/components/link';
 import { link } from '@/lib/utils/link-helper';
 import { useScopedI18n } from '@/locales/client';
-import { Button } from '@ecomm/ui/button';
 import { Heading } from '@ecomm/ui/typography';
 import { ArrowLeft } from 'lucide-react';
-import { useSearchBox } from 'react-instantsearch-core';
 
 export function SearchHeading({ query }: { query: string }) {
   const t = useScopedI18n('search');
