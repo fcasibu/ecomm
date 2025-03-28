@@ -4,12 +4,7 @@ import { link } from '@/lib/utils/link-helper';
 import { Separator } from '@ecomm/ui/separator';
 import { Text } from '@ecomm/ui/typography';
 import { Globe } from 'lucide-react';
-import {
-  ClerkProvider,
-  SignedIn,
-  SignedOut,
-  SignInButton,
-} from '@clerk/nextjs';
+import { AuthStatus } from './auth-status';
 
 export async function UtilityBar() {
   const locale = await getCurrentLocale();
@@ -23,20 +18,7 @@ export async function UtilityBar() {
           {t('help')}
         </NextLink>
         <Separator orientation="vertical" className="h-[20px] bg-gray-500" />
-        <ClerkProvider>
-          <SignedOut>
-            <SignInButton>
-              <span className="cursor-pointer text-[0.6rem] hover:underline">
-                {t('actions.signIn')}
-              </span>
-            </SignInButton>
-          </SignedOut>
-          <SignedIn>
-            <NextLink href={link.myAccount.dashboard} className="text-[0.6rem]">
-              {t('actions.myAccount')}
-            </NextLink>
-          </SignedIn>
-        </ClerkProvider>
+        <AuthStatus />
         <Separator orientation="vertical" className="h-[20px] bg-gray-500" />
         <Text className="flex items-start gap-1 !text-[0.6rem]">
           <Globe size={12} />
