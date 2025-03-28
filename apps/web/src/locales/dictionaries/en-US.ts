@@ -124,7 +124,7 @@ export default {
     menu: {
       actions: {
         signIn: 'Sign In',
-        joinUs: 'Join Us',
+        myAccount: 'My Account',
       },
       help: 'Help',
     },

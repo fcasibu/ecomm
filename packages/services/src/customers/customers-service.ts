@@ -8,6 +8,8 @@ import type { SearchOptions } from '../base-service';
 import { BaseService } from '../base-service';
 import { hashPassword } from '../utils/password';
 import { createTextSearchCondition } from '../utils/prisma-helpers';
+import type { ServerContext } from '@ecomm/lib/types';
+import type { PostLoginInput } from '@ecomm/validations/web/customer/post-login-schema';
 
 export type Customer = Prisma.CustomerGetPayload<{
   include: {
@@ -143,6 +145,25 @@ export class CustomersService extends BaseService {
       where: { id: customerId, locale },
       include: CUSTOMER_INCLUDE,
       omit: CUSTOMER_OMIT,
+    });
+  }
+
+  public async postLogin(context: ServerContext, input: PostLoginInput) {
+    const { locale, user } = context;
+
+    return await this.prismaClient.customer.update({
+      include: CUSTOMER_INCLUDE,
+      omit: CUSTOMER_OMIT,
+      where: { anonymousId: user.anonymousId ?? undefined, locale },
+      data: {
+        id: {
+          set: input.authUserId,
+        },
+        anonymousId: {
+          set: null,
+        },
+        email: input.emailAddress,
+      },
     });
   }
 }

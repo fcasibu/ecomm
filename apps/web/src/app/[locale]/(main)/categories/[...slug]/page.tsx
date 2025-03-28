@@ -5,6 +5,8 @@ import { getCurrentLocale } from '@/locales/server';
 import { getCategoryContentPage } from '@/sanity/queries/content-page/get-content-page';
 import { notFound } from 'next/navigation';
 
+export const dynamic = 'force-dynamic';
+
 export default async function Page({
   params,
 }: {

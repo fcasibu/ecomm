@@ -422,8 +422,6 @@ function CartStage() {
     name: 'items',
   });
 
-  console.log(fields, form.formState.errors);
-
   useEffect(() => {
     setPopoverStates(Array(fields.length).fill(false));
   }, [fields.length]);

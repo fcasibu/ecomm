@@ -36,6 +36,8 @@ async function setCartCookies(locale: Locale, cart: CartDTO): Promise<void> {
       cart.anonymousId,
       commonCookieOptions,
     );
+  } else {
+    cookie.delete(cookieKeys.customer.anonymousId(locale));
   }
 }
 

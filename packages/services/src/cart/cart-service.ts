@@ -8,6 +8,7 @@ import { CartArgsFactory } from '../strategies/cart-args-strategy';
 import type { ServerContext } from '@ecomm/lib/types';
 import type { StockService } from '../stock/stock-service';
 import type { UpdateDeliveryPromiseSelectionInput } from '@ecomm/validations/web/cart/update-delivery-promise-selection-schema';
+import assert from 'node:assert';
 
 export type UserType = 'customer' | 'guest' | 'new';
 
@@ -298,6 +299,34 @@ export class CartService extends BaseService {
                 ],
               },
             },
+          },
+        },
+      },
+    });
+  }
+
+  // TODO(fcasibu): Only for new user, not for existing user
+  public async postLogin(context: ServerContext) {
+    const { locale, user, cart } = context;
+
+    assert(user.customerId, 'User must be logged in');
+    assert(user.anonymousId, 'Should contain anonymousId');
+    assert(cart.id, 'Cart must exist');
+
+    return this.prismaClient.cart.update({
+      include: CART_INCLUDE,
+      where: {
+        locale,
+        anonymousId: user.anonymousId,
+        id: cart.id,
+      },
+      data: {
+        anonymousId: {
+          set: null,
+        },
+        customer: {
+          connect: {
+            id: user.customerId,
           },
         },
       },

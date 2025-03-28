@@ -38,3 +38,8 @@ next-env.d.ts
 
 sanity.types.ts
 schema.json
+
+# clerk configuration (can include secrets)
+/.clerk/
+
+certificates

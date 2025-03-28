@@ -16,7 +16,8 @@
     "SANITY_TOKEN",
     "SANITY_WEBHOOK_SECRET",
     "ALGOLIA_WRITE_KEY",
-    "CRON_SECRET"
+    "CRON_SECRET",
+    "CLERK_SECRET_KEY"
   ],
   "tasks": {
     "build": {

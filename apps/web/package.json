@@ -16,6 +16,7 @@
     "@algolia/autocomplete-js": "^1.18.1",
     "@algolia/autocomplete-plugin-recent-searches": "^1.18.1",
     "@algolia/client-query-suggestions": "5.23.0",
+    "@clerk/nextjs": "^6.12.12",
     "@ecomm/lib": "workspace:*",
     "@ecomm/services": "workspace:*",
     "@ecomm/ui": "workspace:*",

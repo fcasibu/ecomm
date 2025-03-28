@@ -11,6 +11,7 @@ export const serverEnv = createEnv({
     CLOUDINARY_API_SECRET: z.string(),
     ALGOLIA_WRITE_KEY: z.string(),
     CRON_SECRET: z.string(),
+    CLERK_SECRET_KEY: z.string(),
   },
   experimental__runtimeEnv: process.env,
 });

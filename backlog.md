@@ -1,10 +1,6 @@
 # BACKLOG
 
 - [ ] Add asterisk on required input fields
-- [ ] Implement merge cart
-  - It should be done on post-login
-  - Merge the guest cart with the customer cart
-  - It should remove the anonymousId from the cart
 - [ ] Add destructive variant on error toasts
 - [ ] Refactor command inputs that are one shot to close on select
 - [ ] Fix input fields with undefined default values in forms
@@ -29,6 +25,7 @@
 - [ ] Error handling in cart
 - [ ] Add Search Suggestions
 - [ ] Add popular categories
+- [ ] Existing user merge cart
 
 - [=] Fix plp content shift (accordions are initially closed even with the default value added)
 

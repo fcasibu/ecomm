@@ -11,6 +11,11 @@ import {
 } from '@ecomm/validations/cms/customers/customers-schema';
 import type { CustomerDTO } from './customer-dto';
 import { CustomerTransformer } from './customer-transformer';
+import type { ServerContext } from '@ecomm/lib/types';
+import {
+  postLoginSchema,
+  type PostLoginInput,
+} from '@ecomm/validations/web/customer/post-login-schema';
 
 export class CustomersController extends BaseController {
   private readonly transformer = new CustomerTransformer();
@@ -153,6 +158,38 @@ export class CustomersController extends BaseController {
     } catch (error) {
       this.logAndThrowError(error, {
         message: 'Error fetching all customers',
+      });
+    }
+  }
+
+  public async postLogin(context: ServerContext, input: PostLoginInput) {
+    try {
+      logger.info({ input }, 'Running post login');
+      const result = postLoginSchema.safeParse(input);
+
+      if (!result.success) throw new ValidationError(result.error);
+
+      if (!context.user.anonymousId) {
+        return null;
+      }
+
+      const customer = this.transformer.toDTO(
+        await this.customersService.postLogin(context, input),
+      );
+
+      if (!customer) {
+        throw new NotFoundError('Customer not found.');
+      }
+
+      logger.info(
+        { customerId: customer.id },
+        'Successfull executed post login',
+      );
+
+      return customer;
+    } catch (error) {
+      this.logAndThrowError(error, {
+        message: 'Error running post login',
       });
     }
   }

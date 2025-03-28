@@ -12,6 +12,7 @@ import type { AddToCartInput } from '@ecomm/validations/web/cart/add-to-cart-sch
 import type { ServerContext } from '@ecomm/lib/types';
 import { UpdateItemQuantityError } from '../errors/update-item-quantity-error';
 import type { UpdateDeliveryPromiseSelectionInput } from '@ecomm/validations/web/cart/update-delivery-promise-selection-schema';
+import { PostLoginError } from '../errors/post-login-error';
 
 export class CartController extends BaseController {
   private readonly transformer = new CartTransformer();
@@ -184,6 +185,40 @@ export class CartController extends BaseController {
     } catch (error) {
       this.logAndThrowError(error, {
         message: 'Error updating item delivery promise',
+      });
+    }
+  }
+
+  public async postLogin(context: ServerContext) {
+    try {
+      logger.info('Running cart post login');
+
+      if (!context.user.customerId) {
+        throw new PostLoginError('Customer must be logged in');
+      }
+
+      if (!context.user.anonymousId) {
+        throw new PostLoginError('AnonymousId must be present');
+      }
+
+      if (!context.cart.id) {
+        throw new PostLoginError('Cart must be present');
+      }
+
+      const cart = this.transformer.toDTO(
+        await this.cartService.postLogin(context),
+      );
+
+      if (!cart) {
+        throw new NotFoundError('There was an issue with finding the cart');
+      }
+
+      logger.info({ cartId: cart.id }, 'Successfuly executed post login');
+
+      return cart;
+    } catch (error) {
+      this.logAndThrowError(error, {
+        message: 'Error running post login',
       });
     }
   }

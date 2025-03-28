@@ -2,6 +2,8 @@ import { SearchHeading } from '@/features/search/components/search-heading';
 import { SearchListing } from '@/features/search/components/search-listing';
 import { SearchNoResults } from '@/features/search/components/search-no-results';
 
+export const dynamic = 'force-dynamic';
+
 export default async function Page({
   searchParams,
 }: {

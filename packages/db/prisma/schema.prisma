@@ -32,7 +32,6 @@ model Store {
 
 model Customer {
   id          String    @id @default(uuid())
-  userId      String?   @unique
   anonymousId String?   @unique
   firstName   String?
   middleName  String?

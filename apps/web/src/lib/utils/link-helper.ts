@@ -8,9 +8,8 @@ export const link = {
     single: (name: string, sku: string) =>
       `/products/${slugify(name)}/${sku}`.toLowerCase(),
   },
-  auth: {
-    signIn: '/sign-in',
-    joinUs: '/create-account',
+  myAccount: {
+    dashboard: '/my-account/dashboard',
   },
   search: (query: string) => `/search?query=${query}`,
   cart: '/cart',
