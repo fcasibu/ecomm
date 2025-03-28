@@ -20,7 +20,7 @@ export function ProductHitCard({
     'loading' | 'fetchPriority'
   > | null;
 }) {
-  const { name, image, price, variants } = product;
+  const { name, image, price, variants, sku } = product;
   const t = useScopedI18n('productListing.productCard');
 
   const variantList = variants.slice(1, 3);
@@ -28,7 +28,7 @@ export function ProductHitCard({
   return (
     <div className="flex flex-col gap-4">
       <div className="relative overflow-hidden rounded-lg">
-        <NextLink href={link.product.single(name, product.sku)} prefetch>
+        <NextLink href={link.product.single(name, sku)} prefetch>
           <ImageComponent
             src={image}
             alt={name}
@@ -49,9 +49,9 @@ export function ProductHitCard({
         </Button>
       </div>
       <div>
-        <NextLink href={link.product.single(name, product.sku)}>
+        <NextLink href={link.product.single(name, sku)}>
           <Heading as="h2" className="!text-sm !font-normal md:!text-lg">
-            {product.name}
+            {name}
           </Heading>
         </NextLink>
       </div>

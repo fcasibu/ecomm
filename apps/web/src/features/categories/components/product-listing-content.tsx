@@ -4,7 +4,7 @@ import type { AlgoliaProductHit } from '@/features/algolia/types';
 import { renderRichText } from '@/lib/utils/render-rich-text';
 import { useScopedI18n } from '@/locales/client';
 import { Button } from '@ecomm/ui/button';
-import { Grid2x2, Grid3X3 } from 'lucide-react';
+import { Grid2x2, Grid3X3, List } from 'lucide-react';
 import { useState } from 'react';
 import { useHits } from 'react-instantsearch-core';
 import { ProductHits } from './product-hits';
@@ -17,7 +17,7 @@ import { ProductListingPagination } from './product-listing-pagination';
 export function ProductListingContent() {
   const { results } = useHits<AlgoliaProductHit>();
   const t = useScopedI18n('productListing');
-  const [gridLayout, setGridLayout] = useState<'2x2' | '3x3'>('3x3');
+  const [gridLayout, setGridLayout] = useState<'1x1' | '2x2' | '3x3'>('3x3');
 
   const hits = results?.hits ?? [];
 
@@ -46,6 +46,15 @@ export function ProductListingContent() {
           <div className="flex items-center gap-4">
             <ProductSortBy />
             <div className="border-input hidden rounded-lg border lg:block">
+              <Button
+                aria-label={t('actions.gridLayout.one')}
+                type="button"
+                variant="outline"
+                className="border-none"
+                onClick={() => setGridLayout('1x1')}
+              >
+                <List aria-hidden />
+              </Button>
               <Button
                 aria-label={t('actions.gridLayout.two')}
                 type="button"

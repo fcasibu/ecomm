@@ -54,7 +54,8 @@ export function CartItem({
               <Trash2 size={16} />
             </Button>
           </div>
-          <div>
+          <div className="flex flex-col">
+            <span className="text-muted-foreground text-xs">{item.color}</span>
             <span className="text-muted-foreground text-xs">
               {t('size', { value: item.size })}
             </span>

@@ -45,6 +45,8 @@ Issue is about react compiler memoizing the component,
 react-hook-form has not yet worked on this since react compiler is still
 experimental.
 
+Removed the accordion for now
+
 > Inspirations
 
 - zhik.com

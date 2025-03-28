@@ -15,7 +15,7 @@ export function CartHeading({ itemsCount }: { itemsCount: number }) {
       <Button
         variant="none"
         type="button"
-        className="text-primary flex gap-2 p-0 text-sm hover:underline"
+        className="text-muted-foreground flex gap-2 p-0 text-sm hover:underline"
         onClick={() => router.back()}
       >
         <ChevronLeft size={15} />

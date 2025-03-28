@@ -1,8 +1,9 @@
 'use client';
 
+import { Suggestion } from '@/components/suggestion';
 import { useScopedI18n } from '@/locales/client';
 import { Heading } from '@ecomm/ui/typography';
-import { Filter, Tag } from 'lucide-react';
+import { Filter } from 'lucide-react';
 import { useClearRefinements } from 'react-instantsearch-core';
 
 export function ProductNoResults() {
@@ -37,14 +38,5 @@ export function ProductNoResults() {
         </div>
       )}
     </div>
-  );
-}
-
-function Suggestion({ children }: React.PropsWithChildren) {
-  return (
-    <li className="text-muted-foreground flex items-center gap-2 text-sm">
-      <Tag size={15} />
-      {children}
-    </li>
   );
 }

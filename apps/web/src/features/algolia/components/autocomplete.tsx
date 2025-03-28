@@ -8,7 +8,7 @@ import { useCurrentLocale, useScopedI18n } from '@/locales/client';
 import type { AlgoliaProductHit } from '../types';
 import { algoliaKeys } from '../utils/algolia-keys';
 import { Button } from '@ecomm/ui/button';
-import { ChevronRight, Clock, Search, Tag } from 'lucide-react';
+import { ChevronRight, Clock, Search } from 'lucide-react';
 import { ImageComponent } from '@ecomm/ui/image';
 import { useStore } from '@/features/store/providers/store-provider';
 import { formatPrice } from '@ecomm/lib/format-price';
@@ -17,6 +17,7 @@ import { useRouter } from 'next/navigation';
 import { createLocalStorageRecentSearchesPlugin } from '@algolia/autocomplete-plugin-recent-searches';
 import { storageKeys, type StorageKeys } from '@/lib/utils/storage-keys';
 import { storage } from '@/lib/utils/storage';
+import { Suggestion } from '@/components/suggestion';
 
 const { search } = algoliaSearchClient();
 
@@ -263,14 +264,5 @@ function NoResults({
         </ul>
       </div>
     </div>
-  );
-}
-
-function Suggestion({ children }: React.PropsWithChildren) {
-  return (
-    <li className="text-muted-foreground flex items-center gap-2 text-sm [&_svg]:!size-4">
-      <Tag />
-      {children}
-    </li>
   );
 }

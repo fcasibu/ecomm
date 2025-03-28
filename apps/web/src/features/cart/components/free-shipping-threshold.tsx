@@ -24,18 +24,16 @@ export function FreeShippingPriceThreshold({
 
   return (
     <div className="bg-primary/10 flex flex-col gap-2 rounded-lg p-4">
-      {priceNeeded > 0 && (
-        <p className="text-xs">
-          {renderRichText(
-            t('addMoreForFreeShipping', {
-              price: formatPrice(priceNeeded, store.currency),
-            }),
-            {
-              bold: ({ children }) => <strong>{children}</strong>,
-            },
-          )}
-        </p>
-      )}
+      <p className="text-xs">
+        {renderRichText(
+          t('addMoreForFreeShipping', {
+            price: formatPrice(priceNeeded, store.currency),
+          }),
+          {
+            bold: ({ children }) => <strong>{children}</strong>,
+          },
+        )}
+      </p>
       <div className="relative flex flex-col gap-2">
         <div className="bg-primary/15 relative h-2 w-full rounded-full">
           <div

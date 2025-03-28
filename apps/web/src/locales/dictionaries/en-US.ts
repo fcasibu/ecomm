@@ -4,6 +4,25 @@ export default {
       label: 'Home',
     },
   },
+  search: {
+    actions: {
+      backToHome: 'Back to Home',
+    },
+    results: {
+      title: 'Search Results for: "{query}"',
+    },
+    noResult: {
+      title: 'No results found',
+      description:
+        'Your query was empty or there are no results matching your query. Try checking the spelling or using different keywords.',
+      suggestions: {
+        title: 'Search suggestions',
+        suggestionOne: 'Check for typos or spelling errors',
+        suggestionTwo: ' Try more general keywords',
+        suggestionThree: 'Try searching by product name or category slug',
+      },
+    },
+  },
   autocomplete: {
     actions: {
       viewAll: 'View All',
@@ -281,6 +300,7 @@ export default {
       'Showing <bold1>{count}</bold1> of <bold2>{total}</bold2> products',
     actions: {
       gridLayout: {
+        one: '1 Column',
         two: '2 Columns',
         three: '3 Columns',
       },
@@ -290,6 +310,7 @@ export default {
         more: '+ {count} more',
       },
       wishlist: {
+        title: 'Wishlist',
         actions: {
           add: 'Add to Wishlist',
           remove: 'Remove from Wishlist',
